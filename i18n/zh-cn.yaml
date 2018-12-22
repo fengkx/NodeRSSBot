@@ -15,3 +15,4 @@ SUB_SUCCESS: 成功订阅
 UNSUB_SUCCESS: 成功退订
 NOT_SUB: 你没有订阅任何源
 SUB_LIST: 订阅列表
+ERROR_MANY_TIME: 多次抓取失败，建议取消订阅

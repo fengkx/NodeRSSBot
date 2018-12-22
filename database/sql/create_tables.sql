@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS "rss_feed"(
 			primary key autoincrement,
 	url TEXT not null,
 	feed_title TEXT not null,
-	recent_hash_list TEXT default '[]'
+	recent_hash_list TEXT default '[]',
+    error_count INTEGER default 0 not null
 );
 create TABLE IF NOT EXISTS subscribes
 (
@@ -16,4 +17,3 @@ create TABLE IF NOT EXISTS subscribes
 			references rss_feed,
 	user_id INTEGER not null
 );
-

@@ -98,6 +98,17 @@ px.getSubscribedFeedsByUserId = async (userId) => {
     } catch (e) {
         throw new Error('DB_ERROR');
     }
+};
+
+px.failAttempt = async (feedUrl) => {
+    try {
+        const db = await dbPomise;
+        const sql = `UPDATE rss_feed SET error_count=error_count+1 WHERE url=? `
+        await db.run(sql, feedUrl);
+        return 'ok'
+    } catch (e) {
+        throw new Error('DB_ERROR');
+    }
 }
 
 module.exports = px;

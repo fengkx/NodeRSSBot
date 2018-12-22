@@ -15,3 +15,4 @@ SUB_SUCCESS: Subscribe successfully
 UNSUB_SUCCESS: Unubscribe successfully
 NOT_SUB: You haven't subscribed any feed
 SUB_LIST: Subscriptions
+ERROR_MANY_TIME: Unable to fetch for many times, you might want to unsub it
