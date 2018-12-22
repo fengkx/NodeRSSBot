@@ -8,6 +8,7 @@ module.exports = async (ctx, next) => {
         await next();
     } catch (e) {
         if (e instanceof Error) {
+            ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
             ctx.reply(i18n[e.message]);
             logger.error(e.stack);
         } else
