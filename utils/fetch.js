@@ -3,7 +3,7 @@ const Parser = require('rss-parser');
 const config = require('../config');
 const hashFeed = require('../utils/hashFeed');
 const _pick = require('lodash.pick');
-const {getAllFeeds, updateHashList} = require('../proxies/rssFeed');
+const {getAllFeeds, updateHashList, failAttempt, getFeedByUrl} = require('../proxies/rssFeed');
 const schedule = require('node-schedule');
 const logger = require('./logger');
 
@@ -21,28 +21,40 @@ const fetch = async (feedUrl) => {
         );
         return hashList;
     } catch (e) {
-        if (e instanceof Error && e.respone)
+        failAttempt(feedUrl);
+        getFeedByUrl(feedUrl).then(feed => {
+           if(feed.error_count >=5 ) {
+               logger.info(feed, 'ERROR_MANY_TIME')
+               process.send({
+                   success: false,
+                   message: 'MAX_TIME',
+                   feed
+               })
+           }
+        });
+        if (e instanceof Error && e.respone) {
             switch (e.respone.status) {
                 case 404:
                 case 403:
-                    logger.error(e.respone)
+
                     throw new Error(e.respone.status);
                 default:
                     throw  new Error('FETCH_ERROR');
             }
-
-        throw new Error('FETCH_ERROR');
+        }
     }
 };
 
 const fetchAll = async () => {
     process.send && process.send('start fetching');
-    try {
 
-        const allFeeds = await getAllFeeds();
-        await Promise.all(allFeeds.map(async eachFeed => {
-            const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-            const newItems = await fetch(eachFeed.url, eachFeed.feed_id);
+    const allFeeds = await getAllFeeds();
+    await Promise.all(allFeeds.map(async eachFeed => {
+        const oldHashList = JSON.parse(eachFeed.recent_hash_list);
+        const newItems = await fetch(eachFeed.url, eachFeed.feed_id);
+        if(!newItems) {
+            logger.debug(eachFeed.url, `Error`);
+        } else {
             const newHashList = await Promise.all(newItems.map(async item => {
                     return await hashFeed(item.link, item.title)
                 })
@@ -54,21 +66,23 @@ const fetchAll = async () => {
                     return item;
             }));
             sendItems = sendItems.filter(i => i);
-            process.send && process.send({sendItems, eachFeed});
-            logger.debug(sendItems, eachFeed)
-        }));
-        logger.info('fetch a round');
-    } catch (e) {
-        if (e instanceof Error) {
-            process.send && process.send(e);
-        } else {
-            process.send && process.send && process.send(new Error('FETCH_ERROR'));
+            process.send && sendItems && process.send({
+                success: true,
+                sendItems,
+                eachFeed
+            });
         }
-    }
+    }));
+    logger.info('fetch a round');
+
 };
 
 function run() {
-    fetchAll();
+    try {
+        fetchAll();
+    } catch (e) {
+        logger.error(e);
+    }
 }
 
 run();

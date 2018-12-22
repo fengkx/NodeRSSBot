@@ -11,6 +11,7 @@ const {isAdmin} = require('./middlewares/permission');
 const {fork} = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
+const i18n = require('./i18n');
 (async () => {
     await initTable();
 })();
@@ -63,14 +64,20 @@ const chid = fork(`utils/fetch.js`);
 chid.on('message', function (message) {
     if (typeof message === "string")
         logger.info(message);
-    else if (message instanceof Error) {
-        logger.error("ERROR:" + e.stack);
-    } else {
+    else if(message.success) {
         const feed = message.eachFeed;
         const {sendItems} = message;
         if (sendItems.length > 0)
             send(bot, sendItems, feed)
+    } else {
+        if(message.message = 'MAX_TIME') {
+            const {feed} = message;
+            send(bot,
+                `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n['ERROR_MANY_TIME']}`,
+                feed
+            )
+        }
     }
 });
 
-logger.info('NodeRSSBot is ready')
+logger.info('NodeRSSBot is ready');
