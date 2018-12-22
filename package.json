@@ -4,6 +4,7 @@
   "description": "Another Telegram RSSBot in Node.js",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
     "dev": "proxychains -q node $NODE_DEBUG_OPTION  index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
