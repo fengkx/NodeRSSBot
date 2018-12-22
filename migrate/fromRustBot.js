@@ -16,10 +16,12 @@ const dbStr = fs.readFileSync(dbPathFromRust, 'utf8');
     await Promise.all(dataSrc.map(async item => {
         const {link, title, subscribers} = item;
         logger.info(`processing ${title} ${link}`);
-        const res = await db.run(`INSERT INTO rss_feed (url, feed_title) VALUES (?, ?)`, link, title);
+        const res = await db.run(`INSERT INTO rss_feed (url, feed_title)
+                                  VALUES (?, ?)`, link, title);
         const feedId = res.lastID;
         await Promise.all(subscribers.map(async (id) => {
-            await db.run(`INSERT INTO subscribes (feed_id, user_id) VALUES (?,?)`,feedId, id);
+            await db.run(`INSERT INTO subscribes (feed_id, user_id)
+                          VALUES (?, ?)`, feedId, id);
         }))
     }));
     logger.info('finish');

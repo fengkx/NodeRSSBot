@@ -50,13 +50,13 @@ const fetchAll = async () => {
             await updateHashList(eachFeed.feed_id, newHashList);
             let sendItems = await Promise.all(newItems.map(async item => {
                 const hash = await hashFeed(item.link, item.title);
-                if(oldHashList.indexOf(hash) === -1)
+                if (oldHashList.indexOf(hash) === -1)
                     return item;
             }));
-            sendItems = sendItems.filter(i=>i);
+            sendItems = sendItems.filter(i => i);
             process.send && process.send({sendItems, eachFeed});
             logger.debug(sendItems, eachFeed)
-        }))
+        }));
         logger.info('fetch a round');
     } catch (e) {
         if (e instanceof Error) {
@@ -66,12 +66,14 @@ const fetchAll = async () => {
         }
     }
 };
+
 function run() {
     fetchAll();
 }
+
 run();
 const minutes = [];
-for(let i=0;i<60;i=i+config.fetch_gap)
+for (let i = 0; i < 60; i = i + config.fetch_gap)
     minutes.push(i);
 const rule = new schedule.RecurrenceRule();
 rule.minute = minutes;

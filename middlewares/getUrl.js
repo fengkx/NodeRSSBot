@@ -5,12 +5,12 @@ const Parser = require('rss-parser');
 module.exports = async (ctx, next) => {
     const {text} = ctx.message;
     const [command, url] = text.split(/\s/);
-    if(!url) {
-        switch (command.substr(0,4)) {
+    if (!url) {
+        switch (command.substr(0, 4)) {
             case '/sub':
                 throw new Error('SUB_USAGE');
             case '/uns':
-                if(command.substr(0,8) === '/unsubthis')
+                if (command.substr(0, 8) === '/unsubthis')
                     throw new Error('UNSUBTHIS_USAGE');
                 else
                     throw new Error('UNSUB_USAGE');

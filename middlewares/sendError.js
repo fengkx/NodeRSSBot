@@ -7,11 +7,10 @@ module.exports = async (ctx, next) => {
     try {
         await next();
     } catch (e) {
-        if(e instanceof Error){
+        if (e instanceof Error) {
             ctx.reply(i18n[e.message]);
             logger.error(e.stack);
-        }
-        else
+        } else
             throw e;
     }
 };

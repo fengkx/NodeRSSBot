@@ -1,10 +1,10 @@
 const pm = {};
 
 pm.isAdmin = async (ctx, next) => {
-    ctx.state.chat =  await ctx.getChat();
+    ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
     // console.log(chat);
-    if(chat.type !== 'private') {
+    if (chat.type !== 'private') {
         switch (chat.type) {
             case 'group':
             case 'supergroup':
@@ -13,7 +13,7 @@ pm.isAdmin = async (ctx, next) => {
                 const isAdmin = admins.some(function (item) {
                     return item.user.id === ctx.message.from.id;
                 });
-                if(!isAdmin)
+                if (!isAdmin)
                     throw new Error('ADMIN_ONLY');
         }
     }

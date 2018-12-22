@@ -12,7 +12,7 @@ const {fork} = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
 (async () => {
-await initTable();
+    await initTable();
 })();
 
 const bot = new Telegraf(token, {
@@ -61,14 +61,14 @@ bot.startPolling();
 
 const chid = fork(`utils/fetch.js`);
 chid.on('message', function (message) {
-    if(typeof message === "string")
+    if (typeof message === "string")
         logger.info(message);
-    else if(message instanceof Error) {
+    else if (message instanceof Error) {
         logger.error("ERROR:" + e.stack);
     } else {
         const feed = message.eachFeed;
         const {sendItems} = message;
-        if(sendItems.length>0)
+        if (sendItems.length > 0)
             send(bot, sendItems, feed)
     }
 });
