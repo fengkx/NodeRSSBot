@@ -70,7 +70,7 @@ chid.on('message', function (message) {
         if (sendItems.length > 0)
             send(bot, sendItems, feed)
     } else {
-        if(message.message = 'MAX_TIME') {
+        if(message.message === 'MAX_TIME') {
             const {feed} = message;
             send(bot,
                 `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n['ERROR_MANY_TIME']}`,
