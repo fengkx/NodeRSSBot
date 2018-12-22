@@ -3,7 +3,7 @@
 
 #data
 database.db
-
+db
 # Logs
 error.log
 combined.log
