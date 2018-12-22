@@ -1,0 +1,34 @@
+{
+  "name": "noderssbot",
+  "version": "0.0.1",
+  "description": "Another Telegram RSSBot in Node.js",
+  "main": "index.js",
+  "scripts": {
+    "dev": "proxychains -q node $NODE_DEBUG_OPTION  index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fengkx/NodeRSSBot.git"
+  },
+  "keywords": [
+    "Telegram"
+  ],
+  "author": "fengkx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fengkx/NodeRSSBot/issues"
+  },
+  "homepage": "https://github.com/fengkx/NodeRSSBot#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "js-yaml": "^3.12.0",
+    "lodash.pick": "^4.4.0",
+    "node-schedule": "^1.3.1",
+    "rss-parser": "^3.6.0",
+    "socks-proxy-agent": "^4.0.1",
+    "sqlite": "^3.0.0",
+    "telegraf": "^3.25.5",
+    "winston": "^3.1.0"
+  }
+}

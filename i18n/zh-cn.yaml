@@ -1,0 +1,17 @@
+FEED_URL_NOT_PARSE: 无法解析URL
+FETCH_ERROR: 抓取错误
+404: 抓取错误 HTTP404 Not Found
+403: 抓取错误 HTTP403 Forbidden
+ALREADY_SUB: 已经订阅过了
+DB_ERROR: SQLite操作出错
+DID_NOT_SUB: 你没有订阅这个feed
+SUB_USAGE: 使用方法： /sub <RSS URL>
+UNSUB_USAGE: 使用方法： /unsub <RSS URL>
+ADMIN_ONLY: 只有管理员才能操作
+UNSUBTHIS_USAGE: 使用方法：/unsubthis 回复想要退订的 RSS 消息
+SAME_NAME: 有同名的RSS源，请使用/unsub 退订
+PROCESSING: 正在处理请稍候
+SUB_SUCCESS: 成功订阅
+UNSUB_SUCCESS: 成功退订
+NOT_SUB: 你没有订阅任何源
+SUB_LIST: 订阅列表

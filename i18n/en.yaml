@@ -1,0 +1,17 @@
+FEED_URL_NOT_PARSE: Unable to parse the url
+FETCH_ERROR: Fetch error
+404: Fetch error HTTP404 Not Found
+403: Fetch error HTTP403 Forbidden
+ALREADY_SUB: You have already subscribe this feed
+DB_ERROR: SQL error
+DID_NOT_SUB: You haven't subscribed this feed
+SUB_USAGE: Usage： /sub <RSS URL>
+UNSUB_USAGE: Usage： /unsub <RSS URL>
+ADMIN_ONLY: Only enable for admins
+UNSUBTHIS_USAGE: Usage：/unsubthis Reply the message from the feed you want to unsubscribe directly
+SAME_NAME: There is a feed has the same title，Please use /unsub
+PROCESSING: Processing, please wait for a while
+SUB_SUCCESS: Subscribe successfully
+UNSUB_SUCCESS: Unubscribe successfully
+NOT_SUB: You haven't subscribed any feed
+SUB_LIST: Subscriptions
