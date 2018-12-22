@@ -4,7 +4,7 @@ const Parser = require('rss-parser');
 
 module.exports = async (ctx, next) => {
     const {text} = ctx.message;
-    const [command, url] = text.split(/\s/);
+    const [command, url] = text.split(/\s+/);
     if (!url) {
         switch (command.substr(0, 4)) {
             case '/sub':
