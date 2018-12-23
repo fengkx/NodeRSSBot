@@ -114,4 +114,14 @@ px.failAttempt = async (feedUrl) => {
     }
 }
 
+px.unsubAll = async (userId) => {
+    try {
+        const db = await dbPomise;
+        await db.run(`DELETE FROM subscribes WHERE user_id=?`, userId);
+        return 'ok';
+    } catch (e) {
+        throw new Error('DB_ERROR');
+    }
+}
+
 module.exports = px;

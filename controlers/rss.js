@@ -67,4 +67,16 @@ ctrl.rss = async (ctx, next) => {
     await next();
 };
 
+ctrl.unsubAll = async (ctx, next) => {
+    const userId = ctx.state.chat.id;
+    await RSS.unsubAll(userId);
+    ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
+    ctx.telegram.sendMessage(ctx.state.chat.id, i18n['UNSUB_ALL_SUCCESS'],
+        {
+            parse_mode: 'HTML',
+            disable_web_page_preview: true
+        });
+    await next();
+}
+
 module.exports = ctrl;

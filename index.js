@@ -2,19 +2,24 @@ const Telegraf = require('telegraf');
 const {token} = require('./config');
 const agent = require('./utils/agent');
 const initTable = require('./database/initTables');
-const getUrl = require('./middlewares/getUrl');
-const getUrlByTitle = require('./middlewares/getUrlByTitle');
-const testUrl = require('./middlewares/testUrl');
-const sendErro = require('./middlewares/sendError');
 const RSS = require('./controlers/rss');
-const {isAdmin} = require('./middlewares/permission');
-const getFileLink = require('./middlewares/getFileLink');
-const importFromOpml = require('./middlewares/importFromOpml');
-const exportToopml = require('./middlewares/exportToOpml');
 const {fork} = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
 const i18n = require('./i18n');
+
+const {
+    getUrl,
+    exportToopml,
+    importFromOpml,
+    getFileLink,
+    sendError,
+    testUrl,
+    getUrlByTitle,
+    isAdmin
+} = require('./middlewares');
+
+
 (async () => {
     await initTable();
 })();
@@ -30,17 +35,27 @@ bot.catch((err) => logger.error(err));
 // for handling command form group
 bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username
-})
+});
 
 bot.on('document',
-    sendErro,
+    sendError,
     isAdmin,
     getFileLink,
     importFromOpml
 );
 
+bot.command('start', async (ctx) => {
+    let text = i18n['WELCOME'];
+    text += `\n${i18n['SUB_USAGE']}`
+    text += `\n${i18n['UNSUB_USAGE']}`
+    text += `\n${i18n['RSS_USAGE']}`
+    text += `\n${i18n['SEND_FILE_IMPORT']}`
+    text += `\n${i18n['EXPORT']}`
+    await ctx.replyWithMarkdown(text);
+});
+
 bot.command('sub',
-    sendErro,
+    sendError,
     isAdmin,
     getUrl,
     testUrl,
@@ -48,27 +63,33 @@ bot.command('sub',
 );
 
 bot.command('unsub',
-    sendErro,
+    sendError,
     isAdmin,
     getUrl,
     RSS.unsub
 );
 
 bot.command('unsubthis',
-    sendErro,
+    sendError,
     isAdmin,
     getUrlByTitle,
     RSS.unsub
 );
 
+bot.command('allunsub',
+    sendError,
+    isAdmin,
+    RSS.unsubAll
+);
+
 bot.command('rss',
-    sendErro,
+    sendError,
     isAdmin,
     RSS.rss
 );
 
 bot.command('export',
-    sendErro,
+    sendError,
     exportToopml
 );
 
@@ -78,13 +99,13 @@ const chid = fork(`utils/fetch.js`);
 chid.on('message', function (message) {
     if (typeof message === "string")
         logger.info(message);
-    else if(message.success) {
+    else if (message.success) {
         const feed = message.eachFeed;
         const {sendItems} = message;
         if (sendItems.length > 0)
             send(bot, sendItems, feed)
     } else {
-        if(message.message === 'MAX_TIME') {
+        if (message.message === 'MAX_TIME') {
             const {feed} = message;
             send(bot,
                 `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n['ERROR_MANY_TIME']}`,

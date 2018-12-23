@@ -20,3 +20,9 @@ OPML_PARSE_ERRO: opml 文件解析失败
 NETWORK_ERROR: 网络错误
 IMPORT_SUCCESS: 成功导入
 FILESYSTEM_ERROR: 读写文件发生错误
+UNSUB_ALL_SUCCESS: 成功退订所有订阅源
+EXPORT: 使用方法： /export 导出订阅源为 opml 格式
+SEND_FILE_IMPORT: 发送 opml 文件导入订阅源
+RSS_USAGE: 使用方法： /rss 输出订阅列表 加 raw 显示链接
+USB_ALL_USAGE: 使用方法： /allunsub 退订所有源
+WELCOME: 欢迎来到 [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
