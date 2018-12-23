@@ -1,6 +1,4 @@
-const pm = {};
-
-pm.isAdmin = async (ctx, next) => {
+module.exports = async (ctx, next) => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
     if (chat.type !== 'private') {
@@ -19,4 +17,3 @@ pm.isAdmin = async (ctx, next) => {
     await next();
 };
 
-module.exports = pm;
