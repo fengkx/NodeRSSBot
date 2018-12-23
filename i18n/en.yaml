@@ -19,3 +19,4 @@ ERROR_MANY_TIME: Unable to fetch for many times, you might want to unsub it
 OPML_PARSE_ERRO: Unable to parse the opml
 NETWORK_ERROR: Network error
 IMPORT_SUCCESS: Import successfully
+FILESYSTEM_ERROR: Filesystem error

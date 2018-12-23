@@ -67,7 +67,7 @@ bot.command('rss',
     RSS.rss
 );
 
-bot.command('opml',
+bot.command('export',
     sendErro,
     exportToopml
 );

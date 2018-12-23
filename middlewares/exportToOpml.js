@@ -38,12 +38,16 @@ module.exports = async (ctx, next) => {
         throw new Error('NOT_SUB')
     }
     const opml = await render(feeds);
-    const filePath = path.join(__dirname, '../data/',chat.id.toString());
-    fs.writeFileSync(filePath, opml);
-    await ctx.replyWithDocument({
-        source: fs.readFileSync(filePath),
-        filename: 'export.opml'
-    });
-    await remove(filePath);
+    try {
+        const filePath = path.join(__dirname, '../data/',chat.id.toString());
+        fs.writeFileSync(filePath, opml);
+        await ctx.replyWithDocument({
+            source: fs.readFileSync(filePath),
+            filename: 'export.opml'
+        });
+        await remove(filePath);
+    } catch (e) {
+        throw new Error('FILESYSTEM_ERROR');
+    }
     await next();
 };
