@@ -10,7 +10,7 @@ const i18n = require('./i18n');
 
 const {
     getUrl,
-    exportToopml,
+    exportToOpml,
     importFromOpml,
     getFileLink,
     sendError,
@@ -88,12 +88,17 @@ bot.command('allunsub',
 bot.action('UNSUB_ALL_YES',
     sendError,
     isAdmin,
-    RSS.unsubAll
+    RSS.unsubAll,
+    async (ctx, next) => {
+        const cb = ctx.callbackQuery;
+        const res = await ctx.telegram.answerCbQuery();
+    }
 );
 
 bot.action('UNSUB_ALL_NO', async (ctx, next) => {
     const cb = ctx.callbackQuery;
-    const res = await ctx.telegram.answerCallbackQuery(cb.id, i18n['CANCEL']);
+    const res = await ctx.telegram.answerCbQuery(cb.id, i18n['CANCEL']);
+    await ctx.telegram.deleteMessage(cb.from.id , cb.message.message_id);
 });
 
 bot.command('rss',
@@ -104,7 +109,7 @@ bot.command('rss',
 
 bot.command('export',
     sendError,
-    exportToopml
+    exportToOpml
 );
 
 bot.startPolling();
