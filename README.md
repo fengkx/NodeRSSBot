@@ -16,6 +16,8 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 /unsubthis - reply a message from a RSS feed to unsubscribe it
 ```
 
+You can send a opml file directly to import feed 
+
 # Depolyment
 ## Docker
 ### Use autobuild docker image
@@ -55,7 +57,8 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U  
 
 language can be setting in `zh-cn` or `en`     
 
-fetch_gap can be setting in how many minutes or hours。m for minute， h for hour      
+fetch_gap can be setting in how many minutes or hours。m for minute， h for hour
+      
 for example 5m means every 5 minutes， 1h means every 1 hour
 
 # i18n
@@ -85,6 +88,8 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 /unsub     - 退订 RSS: /unsub http://example.com/feed.xml
 /unsubthis - 回复一个 RSS 发来的消息退订该 RSS
 ```
+直接发送opml文件，可以导入RSS源
+
 
 # 部署
 ## Docker
