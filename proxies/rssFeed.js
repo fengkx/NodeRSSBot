@@ -56,8 +56,9 @@ px.unsub = async (userId, feedId) => {
 px.getAllFeeds = async () => {
     try {
         const db = await dbPomise;
-        return await db.all(`SELECT *
-                             FROM rss_feed`);
+        return await db.all(`SELECT rf.*
+                             FROM subscribes
+                                    LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id`);
     } catch (e) {
         throw new Error('DB_ERROR');
     }
@@ -103,7 +104,9 @@ px.getSubscribedFeedsByUserId = async (userId) => {
 px.failAttempt = async (feedUrl) => {
     try {
         const db = await dbPomise;
-        const sql = `UPDATE rss_feed SET error_count=error_count+1 WHERE url=? `
+        const sql = `UPDATE rss_feed
+                     SET error_count=error_count + 1
+                     WHERE url = ? `
         await db.run(sql, feedUrl);
         return 'ok'
     } catch (e) {
