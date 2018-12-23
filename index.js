@@ -9,7 +9,8 @@ const sendErro = require('./middlewares/sendError');
 const RSS = require('./controlers/rss');
 const {isAdmin} = require('./middlewares/permission');
 const getFileLink = require('./middlewares/getFileLink');
-const importFromopml = require('./middlewares/importFromopml');
+const importFromOpml = require('./middlewares/importFromOpml');
+const exportToopml = require('./middlewares/exportToOpml');
 const {fork} = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
@@ -35,7 +36,7 @@ bot.on('document',
     sendErro,
     isAdmin,
     getFileLink,
-    importFromopml
+    importFromOpml
 );
 
 bot.command('sub',
@@ -64,6 +65,11 @@ bot.command('rss',
     sendErro,
     isAdmin,
     RSS.rss
+);
+
+bot.command('opml',
+    sendErro,
+    exportToopml
 );
 
 bot.startPolling();

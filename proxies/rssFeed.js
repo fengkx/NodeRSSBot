@@ -2,6 +2,7 @@ const px = {};
 const dbPomise = require('../database');
 
 px.sub = async (userId, feedUrl, feedTitle) => {
+    feedUrl = encodeURI(feedUrl);
     const db = await dbPomise;
     const feed = await db.get(`SELECT *
                                FROM rss_feed

@@ -14,6 +14,7 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 /sub       - subscribe a RSS: /sub http://example.com/feed.xml
 /unsub     - unsubscribe a RSS: /unsub http://example.com/feed.xml
 /unsubthis - reply a message from a RSS feed to unsubscribe it
+/export    - export subscriptions to opml file
 ```
 
 You can send a opml file directly to import feed 
@@ -80,13 +81,13 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 
 # Usage
 基本与 [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)一致
-暂时不支持`export`
 
 ```
 /rss       - 显示订阅列表，加 `raw`显示链接
 /sub       - 订阅 RSS: /sub http://example.com/feed.xml
 /unsub     - 退订 RSS: /unsub http://example.com/feed.xml
 /unsubthis - 回复一个 RSS 发来的消息退订该 RSS
+/export    - 导出订阅到opml文件
 ```
 直接发送opml文件，可以导入RSS源
 
