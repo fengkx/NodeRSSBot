@@ -26,3 +26,7 @@ SEND_FILE_IMPORT: 发送 opml 文件导入订阅源
 RSS_USAGE: 使用方法： /rss 输出订阅列表 加 raw 显示链接
 USB_ALL_USAGE: 使用方法： /allunsub 退订所有源
 WELCOME: 欢迎来到 [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: 是否继续当前操作
+YES: 是
+NO: 否
+CANCEL: 取消操作

@@ -16,7 +16,8 @@ const {
     sendError,
     testUrl,
     getUrlByTitle,
-    isAdmin
+    isAdmin,
+    confirmation
 } = require('./middlewares');
 
 
@@ -51,6 +52,7 @@ bot.command('start', async (ctx) => {
     text += `\n${i18n['RSS_USAGE']}`
     text += `\n${i18n['SEND_FILE_IMPORT']}`
     text += `\n${i18n['EXPORT']}`
+    text += `\n${i18n['USB_ALL_USAGE']}`
     await ctx.replyWithMarkdown(text);
 });
 
@@ -79,8 +81,20 @@ bot.command('unsubthis',
 bot.command('allunsub',
     sendError,
     isAdmin,
+    // RSS.unsubAll,
+    confirmation
+);
+
+bot.action('UNSUB_ALL_YES',
+    sendError,
+    isAdmin,
     RSS.unsubAll
 );
+
+bot.action('UNSUB_ALL_NO', async (ctx, next) => {
+    const cb = ctx.callbackQuery;
+    const res = await ctx.telegram.answerCallbackQuery(cb.id, i18n['CANCEL']);
+});
 
 bot.command('rss',
     sendError,

@@ -26,3 +26,7 @@ SEND_FILE_IMPORT: Send a opml file to import subscriptions
 RSS_USAGE: USAGE： /rss Output subscriptions list add "raw" to show links
 USB_ALL_USAGE: USAGE： /allunsub unsubscribe all feeds
 WELCOME: Welcome to [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: Do you want to continue the operation
+YES: YES
+NO: NO
+CANCEL: Canceled
