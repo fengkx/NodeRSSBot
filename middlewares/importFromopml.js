@@ -6,10 +6,10 @@ const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
 
 const getOutlines = function (data) {
-    return new Promise((resolve, reject) =>{
+    return new Promise((resolve, reject) => {
         const parser = new Parser();
         parser.parseString(data, function (err, res) {
-            if(err) reject(err);
+            if (err) reject(err);
             const {opml} = res;
             const ret = [];
             opml.body[0].outline.forEach(function (item) {
@@ -19,7 +19,6 @@ const getOutlines = function (data) {
         })
     })
 };
-
 
 
 module.exports = async (ctx, next) => {
@@ -34,18 +33,18 @@ module.exports = async (ctx, next) => {
             try {
                 RSS.sub(ctx.chat.id, outline.xmlUrl, outline.text);
             } catch (e) {
-                if(e.message !== 'ALREADY_SUB') throw new Error('DB_ERROR');
+                if (e.message !== 'ALREADY_SUB') throw new Error('DB_ERROR');
             }
         }));
         let text = `<strong>${i18n['IMPORT_SUCCESS']}</strong>`;
         outlines.forEach(outline => {
-           text += `\n<a href="${outline.xmlUrl}">${outline.text}</a>`
+            text += `\n<a href="${outline.xmlUrl}">${outline.text}</a>`
         });
         ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
         ctx.replyWithHTML(text);
     } catch (e) {
         logger.error(e);
-        if(!!e.response) {
+        if (!!e.response) {
             throw new Error('NETWORK_ERROR');
         } else {
             throw new Error('OPML_PARSE_ERRO')
