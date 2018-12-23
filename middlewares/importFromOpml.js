@@ -31,7 +31,7 @@ module.exports = async (ctx, next) => {
         ctx.state.outlines = outlines;
         await Promise.all(outlines.map(async outline => {
             try {
-                RSS.sub(ctx.chat.id, outline.xmlUrl, outline.text);
+               await RSS.sub(ctx.chat.id, outline.xmlUrl, outline.text);
             } catch (e) {
                 if (e.message !== 'ALREADY_SUB') throw new Error('DB_ERROR');
             }

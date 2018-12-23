@@ -3,7 +3,6 @@ const pm = {};
 pm.isAdmin = async (ctx, next) => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
-    // console.log(chat);
     if (chat.type !== 'private') {
         switch (chat.type) {
             case 'group':

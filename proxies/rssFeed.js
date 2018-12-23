@@ -7,7 +7,6 @@ px.sub = async (userId, feedUrl, feedTitle) => {
     const feed = await db.get(`SELECT *
                                FROM rss_feed
                                WHERE url = ?`, [feedUrl]);
-    // console.log(feed)
     if (!!feed) {
         const sql = `SELECT *
                      FROM subscribes
