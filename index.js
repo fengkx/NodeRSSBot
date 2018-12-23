@@ -8,6 +8,8 @@ const testUrl = require('./middlewares/testUrl');
 const sendErro = require('./middlewares/sendError');
 const RSS = require('./controlers/rss');
 const {isAdmin} = require('./middlewares/permission');
+const getFileLink = require('./middlewares/getFileLink');
+const importFromopml = require('./middlewares/importFromopml');
 const {fork} = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
@@ -29,6 +31,12 @@ bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username
 })
 
+bot.on('document',
+    sendErro,
+    isAdmin,
+    getFileLink,
+    importFromopml
+);
 
 bot.command('sub',
     sendErro,
