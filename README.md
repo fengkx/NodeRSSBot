@@ -18,7 +18,14 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 
 # Depolyment
 ## Docker
+### Use autobuild docker image
+After install docker
+1. Run`docker pull fengkx/node_rssbot`
+1. Run `docker run --name rssbot -d -v <directory to store database file>:/app/data/ -e RSSBOT_TOKEN=<YOUR_TGBOT_TOKEN>  fengkx/node_rssbot`
 
+for exmaple `docker run --name rssbot -d -v /var/data:/app/data/ -e RSSBOT_TOKEN=123456:abcdef123456-U  fengkx/rssbot`
+
+### Build docker locally
 1. Install Docker
 1. clone this repository `git clone https://github.com/fengkx/NodeRSSBot.git`
 1. Run `docker build .` then you will get a image id
@@ -79,6 +86,14 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 # 部署
 ## Docker
 
+### 使用自动构建的 docker image
+安装好了 docker 之后
+1. 运行`docker pull fengkx/node_rssbot`
+1. 运行 `docker run --name rssbot -d -v <directory to store database file>:/app/data/ -e RSSBOT_TOKEN=<YOUR_TGBOT_TOKEN>  fengkx/node_rssbot`
+
+例如 `docker run --name rssbot -d -v /var/data:/app/data/ -e RSSBOT_TOKEN=123456:abcdef123456-U  fengkx/rssbot`
+
+### 本地构建
 1. 安装 Docker
 1. 克隆仓库 `git clone https://github.com/fengkx/NodeRSSBot.git`
 1. 构建 docker image `docker build .` then you will get a image id
