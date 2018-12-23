@@ -23,14 +23,14 @@ const fetch = async (feedUrl) => {
     } catch (e) {
         failAttempt(feedUrl);
         getFeedByUrl(feedUrl).then(feed => {
-           if(feed.error_count >=5 ) {
-               logger.info(feed, 'ERROR_MANY_TIME')
-               process.send({
-                   success: false,
-                   message: 'MAX_TIME',
-                   feed
-               })
-           }
+            if (feed.error_count >= 5) {
+                logger.info(feed, 'ERROR_MANY_TIME')
+                process.send({
+                    success: false,
+                    message: 'MAX_TIME',
+                    feed
+                })
+            }
         });
         if (e instanceof Error && e.respone) {
             switch (e.respone.status) {
@@ -52,7 +52,7 @@ const fetchAll = async () => {
     await Promise.all(allFeeds.map(async eachFeed => {
         const oldHashList = JSON.parse(eachFeed.recent_hash_list);
         const newItems = await fetch(eachFeed.url, eachFeed.feed_id);
-        if(!newItems) {
+        if (!newItems) {
             logger.debug(eachFeed.url, `Error`);
         } else {
             const newHashList = await Promise.all(newItems.map(async item => {
@@ -86,10 +86,26 @@ function run() {
 }
 
 run();
-const minutes = [];
-for (let i = 0; i < 60; i = i + config.fetch_gap)
-    minutes.push(i);
 const rule = new schedule.RecurrenceRule();
-rule.minute = minutes;
-logger.info('fetch every ' + config.fetch_gap + ' minutes');
+const unit = config.fetch_gap.substring(config.fetch_gap.length - 1);
+const gapNum = parseInt(config.fetch_gap.substring(0, config.fetch_gap.length - 1));
+switch (unit) {
+    case 'h':
+        const hours = [];
+        for (let i = 0; i < 24; i = i + gapNum) {
+            hours.push(i);
+        }
+        rule.hour = hours;
+        logger.info('fetch every ' + gapNum + ' hour(s)');
+        break;
+    case 'm':
+    default:
+        const minutes = [];
+        for (let i = 0; i < 60; i = i + gapNum)
+            minutes.push(i);
+        rule.minute = minutes;
+        logger.info('fetch every ' + gapNum + ' minutes');
+        break;
+}
+
 const j = schedule.scheduleJob(rule, run);

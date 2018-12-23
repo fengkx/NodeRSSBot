@@ -50,10 +50,13 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U  
 | db_path            | RSSBOT_DB_PATH   | data/database.db |
 | lang               | RSSBOT_lang      | zh-cn            |
 | item_num           | RSSBOT_ITEM_NUM  | 5                |
-| fetch_gap          | RSSBOT_FETCH_GAP | 5                |
+| fetch_gap          | RSSBOT_FETCH_GAP | 5m               |
 | notify_error_count | NOTIFY_ERR_COUNT | 5                |
 
-language can be setting in `zh-cn` or `en`
+language can be setting in `zh-cn` or `en`     
+
+fetch_gap can be setting in how many minutes or hours。m for minute， h for hour      
+for example 5m means every 5 minutes， 1h means every 1 hour
 
 # i18n
 
@@ -123,10 +126,13 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 | db_path            | RSSBOT_DB_PATH   | data/database.db |
 | lang               | RSSBOT_lang      | zh-cn            |
 | item_num           | RSSBOT_ITEM_NUM  | 5                |
-| fetch_gap          | RSSBOT_FETCH_GAP | 5                |
+| fetch_gap          | RSSBOT_FETCH_GAP | 5m               |
 | notify_error_count | NOTIFY_ERR_COUNT | 5                |
 
 语言可以设置为 `zh-cn` or `en`
+时间间隔可设置为每多少分钟或多少小时。m 表示分钟， h表示小时
+
+例如 5m 表示每5分钟， 1h 表示每1小时
 
 # i18n
 在 `i18n`目录翻译yaml文件然后来个 ·pr· (๑•̀ㅂ•́)و✧
