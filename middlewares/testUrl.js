@@ -9,12 +9,16 @@ module.exports = async (ctx, next) => {
         delete feed.items;
         ctx.state.feed = feed;
     } catch (e) {
-        switch (e.respone.status) {
-            case 404:
-            case 403:
-                throw new Error(e.respone.status);
-            default:
-                throw  new Error('FETCH_ERROR');
+        if(!!e.respone){
+            switch (e.respone.status) {
+                case 404:
+                case 403:
+                    throw new Error(e.respone.status);
+                default:
+                    throw  new Error('FETCH_ERROR');
+            }
+        } else {
+            throw new Error('FETCH_ERROR');
         }
     }
     await next();
