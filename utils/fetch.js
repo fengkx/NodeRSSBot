@@ -3,9 +3,15 @@ const Parser = require('rss-parser');
 const config = require('../config');
 const hashFeed = require('../utils/hashFeed');
 const _pick = require('lodash.pick');
-const {getAllFeeds, updateHashList, failAttempt, getFeedByUrl} = require('../proxies/rssFeed');
 const schedule = require('node-schedule');
 const logger = require('./logger');
+const {
+    getAllFeeds,
+    updateHashList,
+    failAttempt,
+    getFeedByUrl,
+    resetErrorCount
+} = require('../proxies/rssFeed');
 
 const fetch = async (feedUrl) => {
     try {
@@ -14,14 +20,14 @@ const fetch = async (feedUrl) => {
         const parser = new Parser();
         const feed = await parser.parseString(res.data);
         const items = feed.items.slice(0, config.item_num);
-        const hashList = await Promise.all(
+        await resetErrorCount(feedUrl);
+        return await Promise.all(
             items.map(async item => {
                 return _pick(item, ['link', 'title', 'content']);
             })
         );
-        return hashList;
     } catch (e) {
-        failAttempt(feedUrl);
+        await failAttempt(feedUrl);
         getFeedByUrl(feedUrl).then(feed => {
             if (feed.error_count >= 5) {
                 logger.info(feed, 'ERROR_MANY_TIME')

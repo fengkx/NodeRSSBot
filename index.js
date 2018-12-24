@@ -91,7 +91,7 @@ bot.action('UNSUB_ALL_YES',
     RSS.unsubAll,
     async (ctx, next) => {
         const cb = ctx.callbackQuery;
-        const res = await ctx.telegram.answerCbQuery();
+        const res = await ctx.telegram.answerCbQuery(cb.id);
     }
 );
 

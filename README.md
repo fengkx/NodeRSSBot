@@ -121,8 +121,9 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 1. 推荐用 `pm2` 守护进程 `pm2 start index.js` 如果没有安装`pm2` 就先安装 `npm i -g pm2`
 
 # TODO
-1. export 命令
-1. 代理 
+- [x] export 命令
+- 代理 
+- unit test
 
 # 配置项
 **所有配置项都可以用环境变量或者直接在 `config/index.js`中修改**
