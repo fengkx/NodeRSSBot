@@ -19,7 +19,8 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 /viewall   - view all subscriptions and number of subscribers need to enable in settings，add raw to show links
 ```
 
-You can send a opml file directly to import feed 
+You can send a opml file directly to import feed       
+viewall can only be uesed in private chat     
 
 # Depolyment
 ## Docker
@@ -95,7 +96,8 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 /export    - 导出订阅到opml文件
 /viewall   - 查看所有订阅和订阅人数 需要在设置中打开，加 `raw`显示链接
 ```
-直接发送opml文件，可以导入RSS源
+直接发送opml文件，可以导入RSS源              
+viewall 只能在私聊中使用
 
 
 # 部署
