@@ -101,6 +101,17 @@ px.getSubscribedFeedsByUserId = async (userId) => {
     }
 };
 
+px.resetErrorCount = async (feedUrl) => {
+    try {
+        const db = await dbPomise;
+        await db.run(`UPDATE rss_feed
+                      SET error_count=0
+                      WHERE url = ?`, feedUrl);
+    } catch (e) {
+        throw new Error('DB_ERROR');
+    }
+};
+
 px.failAttempt = async (feedUrl) => {
     try {
         const db = await dbPomise;
@@ -117,7 +128,9 @@ px.failAttempt = async (feedUrl) => {
 px.unsubAll = async (userId) => {
     try {
         const db = await dbPomise;
-        await db.run(`DELETE FROM subscribes WHERE user_id=?`, userId);
+        await db.run(`DELETE
+                      FROM subscribes
+                      WHERE user_id = ?`, userId);
         return 'ok';
     } catch (e) {
         throw new Error('DB_ERROR');
