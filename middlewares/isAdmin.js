@@ -7,13 +7,11 @@ module.exports = async (ctx, next) => {
             case 'supergroup':
             case 'channel':
                 const admins = await ctx.getChatAdministrators(chat.id);
-                const isAdmin = admins.some(function (item) {
+                const isAdmin = admins.some(function(item) {
                     return item.user.id === ctx.message.from.id;
                 });
-                if (!isAdmin)
-                    throw new Error('ADMIN_ONLY');
+                if (!isAdmin) throw new Error('ADMIN_ONLY');
         }
     }
     await next();
 };
-

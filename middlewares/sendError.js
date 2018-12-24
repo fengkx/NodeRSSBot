@@ -1,7 +1,7 @@
 const i18n = require('../i18n');
 const logger = require('../utils/logger');
 module.exports = async (ctx, next) => {
-    const m = await ctx.reply(i18n['PROCESSING'])
+    const m = await ctx.reply(i18n['PROCESSING']);
     ctx.state.processMesId = m.message_id;
     logger.debug(ctx.message);
     try {
@@ -11,7 +11,6 @@ module.exports = async (ctx, next) => {
             ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
             ctx.reply(i18n[e.message]);
             logger.error(e.stack);
-        } else
-            throw e;
+        } else throw e;
     }
 };
