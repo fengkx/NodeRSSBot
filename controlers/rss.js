@@ -46,18 +46,19 @@ ctrl.rss = async (ctx, next) => {
     if (feeds.length === 0) {
         throw new Error('NOT_SUB');
     }
-    let text = `<strong>${i18n['SUB_LIST']}</strong>`;
+    let builder = [];
+    builder.push(`<strong>${i18n['SUB_LIST']}</strong>`);
     if (ctx.message.text.split(/\s/)[1] === 'raw') {
         feeds.forEach(feed => {
-            text += `\n${feed.feed_title.trim()}: <a href="${feed.url.trim()}">${decodeURI(feed.url.trim())}</a>`;
+            builder.push(`${feed.feed_title.trim()}: <a href="${feed.url.trim()}">${decodeURI(feed.url.trim())}</a>`);
         });
     } else {
         feeds.forEach(feed => {
-            text += `\n<a href="${feed.url.trim()}">${feed.feed_title.trim()}</a>`;
+            builder.push(`<a href="${feed.url.trim()}">${feed.feed_title.trim()}</a>`);
         });
     }
     await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
-    ctx.telegram.sendMessage(ctx.state.chat.id, text, {
+    ctx.telegram.sendMessage(ctx.state.chat.id, builder.join('\n'), {
         parse_mode: 'HTML',
         disable_web_page_preview: true
     });
@@ -79,23 +80,24 @@ ctrl.viewAll = async (ctx, next) => {
     if (feeds.length === 0) {
         throw new Error('NOT_SUB');
     }
-    let text = `<strong>${i18n['ALL_FEED']}</strong>`;
+    let builder = [];
+    builder.push(`<strong>${i18n['ALL_FEED']}</strong>`);
 
     if (ctx.message.text.split(/\s/)[1] === 'raw') {
         feeds.forEach(feed => {
             const title = feed.feed_title.trim();
             const url = feed.url.trim();
-            text += `\n${title}: <a href="${url}">${decodeURI(url)}</a> <code>${i18n['NUMBER_OF_SUBSCRIBER']}: ${feed.sub_count}</code>`;
+            builder.push(`${title}: <a href="${url}">${decodeURI(url)}</a> <code>${i18n['NUMBER_OF_SUBSCRIBER']}: ${feed.sub_count}</code>`);
         });
     } else {
         feeds.forEach(feed => {
             const url = feed.url.trim();
             const title = feed.feed_title.trim();
-            text += `\n<a href="${url}">${title}</a> <code>${i18n['NUMBER_OF_SUBSCRIBER']}: ${feed.sub_count}</code>`;
+            builder.push(`<a href="${url}">${title}</a> <code>${i18n['NUMBER_OF_SUBSCRIBER']}: ${feed.sub_count}</code>`);
         });
     }
     await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
-    ctx.telegram.sendMessage(ctx.state.chat.id, text, {
+    ctx.telegram.sendMessage(ctx.state.chat.id, builder.join('\n'), {
         parse_mode: 'HTML',
         disable_web_page_preview: true
     });
