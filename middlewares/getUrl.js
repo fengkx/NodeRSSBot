@@ -10,7 +10,8 @@ module.exports = async (ctx, next) => {
             case '/sub':
                 throw new Error('SUB_USAGE');
             case '/uns':
-                if (command.substr(0, 8) === '/unsubthis') throw new Error('UNSUBTHIS_USAGE');
+                if (command.substr(0, 8) === '/unsubthis')
+                    throw new Error('UNSUBTHIS_USAGE');
                 else throw new Error('UNSUB_USAGE');
         }
     }

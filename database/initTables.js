@@ -12,7 +12,7 @@ const initTables = async () => {
     });
     const db = await dbPromise;
     await Promise.all(
-        sql.split(';\n').map(async i => {
+        sql.split(';\n').map(async (i) => {
             if (i.trim().length !== 0) await db.run(i);
         })
     );

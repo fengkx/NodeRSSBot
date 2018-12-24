@@ -29,16 +29,17 @@ module.exports = async (ctx, next) => {
         const outlines = await getOutlines(opmlStr);
         ctx.state.outlines = outlines;
         await Promise.all(
-            outlines.map(async outline => {
+            outlines.map(async (outline) => {
                 try {
                     await RSS.sub(ctx.chat.id, outline.xmlUrl, outline.text);
                 } catch (e) {
-                    if (e.message !== 'ALREADY_SUB') throw new Error('DB_ERROR');
+                    if (e.message !== 'ALREADY_SUB')
+                        throw new Error('DB_ERROR');
                 }
             })
         );
         let text = `<strong>${i18n['IMPORT_SUCCESS']}</strong>`;
-        outlines.forEach(outline => {
+        outlines.forEach((outline) => {
             text += `\n<a href="${outline.xmlUrl}">${outline.text}</a>`;
         });
         ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);

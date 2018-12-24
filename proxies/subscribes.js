@@ -1,6 +1,6 @@
 const dbPomise = require('../database');
 const px = {};
-px.getSubscribersByFeedId = async feedId => {
+px.getSubscribersByFeedId = async (feedId) => {
     const db = await dbPomise;
     return await db.all(
         `SELECT *

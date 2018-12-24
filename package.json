@@ -7,7 +7,17 @@
     "start": "node index",
     "dev": "proxychains -q node $NODE_DEBUG_OPTION  index",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier \"**/*.js\" --write"
+    "format": "prettier \"**/*.js\" --write",
+    "pre-commit": "lint-staged"
+  },
+  "pre-commit": [
+    "pre-commit"
+  ],
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -33,7 +43,11 @@
     "sqlite": "^3.0.0",
     "telegraf": "^3.25.5",
     "winston": "^3.1.0",
-    "xml2js": "^0.4.19",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "lint-staged": "^8.1.0",
+    "pre-commit": "^1.2.2",
     "prettier": "^1.15.3"
   }
 }

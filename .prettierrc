@@ -1,10 +1,11 @@
 {
-  "printWidth": 233,
+  "printWidth": 80,
   "tabWidth": 4,
   "useTabs": false,
   "singleQuote": true,
   "semi": true,
   "trailingComma": "none",
   "bracketSpacing": true,
+  "arrowParens": "always",
   "parser": "babylon"
 }

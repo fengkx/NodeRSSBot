@@ -17,7 +17,10 @@ px.sub = async (userId, feedUrl, feedTitle) => {
                        AND feed_id = ?`;
         const res = await db.all(sql, [userId, feed.feed_id]);
         if (res.length === 0) {
-            await db.run('INSERT INTO subscribes(feed_id, user_id) VALUES (?, ?)', [feed.feed_id, userId]);
+            await db.run(
+                'INSERT INTO subscribes(feed_id, user_id) VALUES (?, ?)',
+                [feed.feed_id, userId]
+            );
             return 'ok';
         } else {
             throw new Error('ALREADY_SUB');
@@ -35,12 +38,15 @@ px.sub = async (userId, feedUrl, feedTitle) => {
              WHERE url = ?`,
             feedUrl
         );
-        await db.run('INSERT INTO subscribes(feed_id, user_id) VALUES (?, ?)', [feed.feed_id, userId]);
+        await db.run('INSERT INTO subscribes(feed_id, user_id) VALUES (?, ?)', [
+            feed.feed_id,
+            userId
+        ]);
         return 'ok';
     }
 };
 
-px.getFeedByUrl = async feedUrl => {
+px.getFeedByUrl = async (feedUrl) => {
     try {
         const db = await dbPomise;
         return await db.get(
@@ -57,7 +63,10 @@ px.getFeedByUrl = async feedUrl => {
 px.unsub = async (userId, feedId) => {
     try {
         const db = await dbPomise;
-        await db.run('DELETE FROM subscribes WHERE feed_id=? AND user_id=?', [feedId, userId]);
+        await db.run('DELETE FROM subscribes WHERE feed_id=? AND user_id=?', [
+            feedId,
+            userId
+        ]);
         return 'ok';
     } catch (e) {
         throw new Error('DB_ERROR');
@@ -90,7 +99,7 @@ px.updateHashList = async (feedId, hashList) => {
     }
 };
 
-px.getFeedsByTitle = async title => {
+px.getFeedsByTitle = async (title) => {
     try {
         const db = await dbPomise;
         return await db.all(
@@ -104,7 +113,7 @@ px.getFeedsByTitle = async title => {
     }
 };
 
-px.getSubscribedFeedsByUserId = async userId => {
+px.getSubscribedFeedsByUserId = async (userId) => {
     try {
         const db = await dbPomise;
         const sql = `
@@ -119,7 +128,7 @@ px.getSubscribedFeedsByUserId = async userId => {
     }
 };
 
-px.resetErrorCount = async feedUrl => {
+px.resetErrorCount = async (feedUrl) => {
     try {
         const db = await dbPomise;
         await db.run(
@@ -133,7 +142,7 @@ px.resetErrorCount = async feedUrl => {
     }
 };
 
-px.failAttempt = async feedUrl => {
+px.failAttempt = async (feedUrl) => {
     try {
         const db = await dbPomise;
         const sql = `UPDATE rss_feed
@@ -146,7 +155,7 @@ px.failAttempt = async feedUrl => {
     }
 };
 
-px.unsubAll = async userId => {
+px.unsubAll = async (userId) => {
     try {
         const db = await dbPomise;
         await db.run(

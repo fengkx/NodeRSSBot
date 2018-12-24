@@ -10,9 +10,14 @@ ctrl.sub = async (ctx, next) => {
     try {
         const res = await RSS.sub(userId, feedUrl, feedTitle);
         if (res === 'ok') {
-            await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
+            await ctx.telegram.deleteMessage(
+                ctx.state.chat.id,
+                ctx.state.processMesId
+            );
             ctx.replyWithMarkdown(`
-            ${i18n['SUB_SUCCESS']}[${ctx.state.feed.title}](${ctx.state.feedUrl})`);
+            ${i18n['SUB_SUCCESS']}[${ctx.state.feed.title}](${
+                ctx.state.feedUrl
+            })`);
         }
     } catch (e) {
         if (e instanceof Error) throw e;
@@ -30,7 +35,10 @@ ctrl.unsub = async (ctx, next) => {
         if (!feed) throw new Error('DID_NOT_SUB');
         const res = await RSS.unsub(userId, feed.feed_id);
         if (res === 'ok') {
-            await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
+            await ctx.telegram.deleteMessage(
+                ctx.state.chat.id,
+                ctx.state.processMesId
+            );
             ctx.replyWithMarkdown(`
         ${i18n['UNSUB_SUCCESS']}[${feed.feed_title}](${ctx.state.feedUrl})`);
         }
@@ -49,12 +57,18 @@ ctrl.rss = async (ctx, next) => {
     let builder = [];
     builder.push(`<strong>${i18n['SUB_LIST']}</strong>`);
     if (ctx.message.text.split(/\s/)[1] === 'raw') {
-        feeds.forEach(feed => {
-            builder.push(`${feed.feed_title.trim()}: <a href="${feed.url.trim()}">${decodeURI(feed.url.trim())}</a>`);
+        feeds.forEach((feed) => {
+            builder.push(
+                `${feed.feed_title.trim()}: <a href="${feed.url.trim()}">${decodeURI(
+                    feed.url.trim()
+                )}</a>`
+            );
         });
     } else {
-        feeds.forEach(feed => {
-            builder.push(`<a href="${feed.url.trim()}">${feed.feed_title.trim()}</a>`);
+        feeds.forEach((feed) => {
+            builder.push(
+                `<a href="${feed.url.trim()}">${feed.feed_title.trim()}</a>`
+            );
         });
     }
     await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
@@ -68,10 +82,14 @@ ctrl.rss = async (ctx, next) => {
 ctrl.unsubAll = async (ctx, next) => {
     const userId = ctx.state.chat.id;
     await RSS.unsubAll(userId);
-    await ctx.telegram.sendMessage(ctx.state.chat.id, i18n['UNSUB_ALL_SUCCESS'], {
-        parse_mode: 'HTML',
-        disable_web_page_preview: true
-    });
+    await ctx.telegram.sendMessage(
+        ctx.state.chat.id,
+        i18n['UNSUB_ALL_SUCCESS'],
+        {
+            parse_mode: 'HTML',
+            disable_web_page_preview: true
+        }
+    );
     await next();
 };
 
@@ -84,16 +102,24 @@ ctrl.viewAll = async (ctx, next) => {
     builder.push(`<strong>${i18n['ALL_FEED']}</strong>`);
 
     if (ctx.message.text.split(/\s/)[1] === 'raw') {
-        feeds.forEach(feed => {
+        feeds.forEach((feed) => {
             const title = feed.feed_title.trim();
             const url = feed.url.trim();
-            builder.push(`${title}: <a href="${url}">${decodeURI(url)}</a> <code>${i18n['NUMBER_OF_SUBSCRIBER']}: ${feed.sub_count}</code>`);
+            builder.push(
+                `${title}: <a href="${url}">${decodeURI(url)}</a> <code>${
+                    i18n['NUMBER_OF_SUBSCRIBER']
+                }: ${feed.sub_count}</code>`
+            );
         });
     } else {
-        feeds.forEach(feed => {
+        feeds.forEach((feed) => {
             const url = feed.url.trim();
             const title = feed.feed_title.trim();
-            builder.push(`<a href="${url}">${title}</a> <code>${i18n['NUMBER_OF_SUBSCRIBER']}: ${feed.sub_count}</code>`);
+            builder.push(
+                `<a href="${url}">${title}</a> <code>${
+                    i18n['NUMBER_OF_SUBSCRIBER']
+                }: ${feed.sub_count}</code>`
+            );
         });
     }
     await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);

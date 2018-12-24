@@ -8,7 +8,18 @@ const send = require('./utils/send');
 const logger = require('./utils/logger');
 const i18n = require('./i18n');
 
-const { getUrl, exportToOpml, importFromOpml, getFileLink, sendError, testUrl, getUrlByTitle, isAdmin, confirmation, onlyPrivateChat } = require('./middlewares');
+const {
+    getUrl,
+    exportToOpml,
+    importFromOpml,
+    getFileLink,
+    sendError,
+    testUrl,
+    getUrlByTitle,
+    isAdmin,
+    confirmation,
+    onlyPrivateChat
+} = require('./middlewares');
 
 (async () => {
     await initTable();
@@ -21,16 +32,16 @@ const bot = new Telegraf(token, {
     }
 });
 
-bot.catch(err => logger.error(err));
+bot.catch((err) => logger.error(err));
 
 // for handling command form group
-bot.telegram.getMe().then(botInfo => {
+bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username;
 });
 
 bot.on('document', sendError, isAdmin, getFileLink, importFromOpml);
 
-bot.command('start', async ctx => {
+bot.command('start', async (ctx) => {
     let builder = [];
     builder.push(i18n['WELCOME']);
     builder.push(i18n['SUB_USAGE']);
@@ -43,7 +54,7 @@ bot.command('start', async ctx => {
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
 
-bot.command('help', async ctx => {
+bot.command('help', async (ctx) => {
     let builder = [];
     builder.push(i18n['SUB_USAGE']);
     builder.push(i18n['UNSUB_USAGE']);
@@ -69,10 +80,16 @@ bot.command(
     confirmation
 );
 
-bot.action('UNSUB_ALL_YES', sendError, isAdmin, RSS.unsubAll, async (ctx, next) => {
-    const cb = ctx.callbackQuery;
-    const res = await ctx.telegram.answerCbQuery(cb.id);
-});
+bot.action(
+    'UNSUB_ALL_YES',
+    sendError,
+    isAdmin,
+    RSS.unsubAll,
+    async (ctx, next) => {
+        const cb = ctx.callbackQuery;
+        const res = await ctx.telegram.answerCbQuery(cb.id);
+    }
+);
 
 bot.action('UNSUB_ALL_NO', async (ctx, next) => {
     const cb = ctx.callbackQuery;
@@ -107,7 +124,13 @@ chid.on('message', function(message) {
     } else {
         if (message.message === 'MAX_TIME') {
             const { feed } = message;
-            send(bot, `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n['ERROR_MANY_TIME']}`, feed);
+            send(
+                bot,
+                `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${
+                    i18n['ERROR_MANY_TIME']
+                }`,
+                feed
+            );
         }
     }
 });

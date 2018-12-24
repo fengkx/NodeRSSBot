@@ -14,7 +14,7 @@ const dbStr = fs.readFileSync(dbPathFromRust, 'utf8');
     const dataSrc = JSON.parse(dbStr);
     const db = await dbPromise;
     await Promise.all(
-        dataSrc.map(async item => {
+        dataSrc.map(async (item) => {
             const { link, title, subscribers } = item;
             logger.info(`processing ${title} ${link}`);
             const res = await db.run(
@@ -25,7 +25,7 @@ const dbStr = fs.readFileSync(dbPathFromRust, 'utf8');
             );
             const feedId = res.lastID;
             await Promise.all(
-                subscribers.map(async id => {
+                subscribers.map(async (id) => {
                     await db.run(
                         `INSERT INTO subscribes (feed_id, user_id)
                           VALUES (?, ?)`,

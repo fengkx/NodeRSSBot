@@ -19,8 +19,10 @@ function readFilePromise(path) {
     });
 }
 
-const render = async outlines => {
-    const tpl = await readFilePromise(path.join(__dirname, '../template/opml.ejs'));
+const render = async (outlines) => {
+    const tpl = await readFilePromise(
+        path.join(__dirname, '../template/opml.ejs')
+    );
     // console.log(tpl)
     return ejs.render(tpl, { outlines });
 };
