@@ -13,7 +13,7 @@ SAME_NAME: 有同名的RSS源，请使用/unsub 退订
 PROCESSING: 正在处理请稍候
 SUB_SUCCESS: 成功订阅
 UNSUB_SUCCESS: 成功退订
-NOT_SUB: 你没有订阅任何源
+NOT_SUB: 没有订阅任何源
 SUB_LIST: 订阅列表
 ERROR_MANY_TIME: 多次抓取失败，建议取消订阅
 OPML_PARSE_ERRO: opml 文件解析失败
@@ -24,9 +24,14 @@ UNSUB_ALL_SUCCESS: 成功退订所有订阅源
 EXPORT: 使用方法： /export 导出订阅源为 opml 格式
 SEND_FILE_IMPORT: 发送 opml 文件导入订阅源
 RSS_USAGE: 使用方法： /rss 输出订阅列表 加 raw 显示链接
+VIEW_ALL_USAGE: 使用方法：/viewall 查看所有订阅和订阅人数 需要在设置中打开，加 `raw`显示链接
 USB_ALL_USAGE: 使用方法： /allunsub 退订所有源
 WELCOME: 欢迎来到 [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
 CONFIRM: 是否继续当前操作
+PRIVATE_CHAT_ONLY: 只能在私聊中使用
+ALL_FEED: 所有被订阅的feed
+COMMAND_NOT_ENABLED: 没有启用该命令
+NUMBER_OF_SUBSCRIBER: 订阅人数
 YES: 是
 NO: 否
 CANCEL: 取消操作

@@ -1,5 +1,5 @@
 const Telegraf = require('telegraf');
-const {token} = require('./config');
+const {token, view_all} = require('./config');
 const agent = require('./utils/agent');
 const initTable = require('./database/initTables');
 const RSS = require('./controlers/rss');
@@ -17,7 +17,8 @@ const {
     testUrl,
     getUrlByTitle,
     isAdmin,
-    confirmation
+    confirmation,
+    onlyPrivateChat
 } = require('./middlewares');
 
 
@@ -47,14 +48,27 @@ bot.on('document',
 
 bot.command('start', async (ctx) => {
     let text = i18n['WELCOME'];
-    text += `\n${i18n['SUB_USAGE']}`
-    text += `\n${i18n['UNSUB_USAGE']}`
-    text += `\n${i18n['RSS_USAGE']}`
-    text += `\n${i18n['SEND_FILE_IMPORT']}`
-    text += `\n${i18n['EXPORT']}`
-    text += `\n${i18n['USB_ALL_USAGE']}`
+    text += `\n${i18n['SUB_USAGE']}`;
+    text += `\n${i18n['UNSUB_USAGE']}`;
+    text += `\n${i18n['RSS_USAGE']}`;
+    text += `\n${i18n['SEND_FILE_IMPORT']}`;
+    text += `\n${i18n['EXPORT']}`;
+    text += `\n${i18n['USB_ALL_USAGE']}`;
+    if(view_all) text += `\n${i18n['VIEW_ALL_USAGE']}`;
     await ctx.replyWithMarkdown(text);
 });
+
+bot.command('help', async (ctx) => {
+    let text = '';
+    text += `\n${i18n['SUB_USAGE']}`;
+    text += `\n${i18n['UNSUB_USAGE']}`;
+    text += `\n${i18n['RSS_USAGE']}`;
+    text += `\n${i18n['SEND_FILE_IMPORT']}`;
+    text += `\n${i18n['EXPORT']}`;
+    text += `\n${i18n['USB_ALL_USAGE']}`;
+    if(view_all) text += `\n${i18n['VIEW_ALL_USAGE']}`;
+    await ctx.replyWithMarkdown(text);
+})
 
 bot.command('sub',
     sendError,
@@ -98,7 +112,7 @@ bot.action('UNSUB_ALL_YES',
 bot.action('UNSUB_ALL_NO', async (ctx, next) => {
     const cb = ctx.callbackQuery;
     const res = await ctx.telegram.answerCbQuery(cb.id, i18n['CANCEL']);
-    await ctx.telegram.deleteMessage(cb.from.id , cb.message.message_id);
+    await ctx.telegram.deleteMessage(cb.from.id, cb.message.message_id);
 });
 
 bot.command('rss',
@@ -110,6 +124,16 @@ bot.command('rss',
 bot.command('export',
     sendError,
     exportToOpml
+);
+
+bot.command('viewall',
+    sendError,
+    onlyPrivateChat,
+    async (ctx, next) => {
+        if (view_all) await next();
+        else throw new Error('COMMAND_NOT_ENABLED');
+    },
+    RSS.viewAll
 );
 
 bot.startPolling();

@@ -10,12 +10,13 @@ RSS is parsered using [rss-parser](https://www.npmjs.com/package/rss-parser)
 The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 
 ```
-/rss       - show subscriptions，add raw to show the link
+/rss       - show subscriptions，add raw to show links
 /sub       - subscribe a RSS: /sub http://example.com/feed.xml
 /unsub     - unsubscribe a RSS: /unsub http://example.com/feed.xml
 /unsubthis - reply a message from a RSS feed to unsubscribe it
 /allunsub  - unsubscribe all feeds
 /export    - export subscriptions to opml file
+/viewall   - view all subscriptions and number of subscribers need to enable in settings，add raw to show links
 ```
 
 You can send a opml file directly to import feed 
@@ -47,15 +48,17 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U  
 # Setting
 **All setting can be set by either environment variable or in `config/index.js`**
 
+| 设置项                | 环境变量             | 默认/必填            | 描述                                       |
+| ------------------ | ---------------- | ---------------- | ---------------------------------------- |
+| token              | RSSBOT_TOKEN     | **require**      | [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) |
+| db_path            | RSSBOT_DB_PATH   | data/database.db | 数据库文件路径                                  |
+| lang               | RSSBOT_LANG      | zh-cn            | 语言                                       |
+| item_num           | RSSBOT_ITEM_NUM  | 5                | 发送最新几条信息                                 |
+| fetch_gap          | RSSBOT_FETCH_GAP | 5m               | 抓取间隔                                     |
+| notify_error_count | NOTIFY_ERR_COUNT | 5                | 发出通知的错误次数                                |
+| view_all           | RSSBOT_VIEW_ALL  | false            | 是否开启                                     |
 
-| setting            | env              | default/require  |
-| ------------------ | ---------------- | ---------------- |
-| token              | RSSBOT_TOKEN     | ***require*      |
-| db_path            | RSSBOT_DB_PATH   | data/database.db |
-| lang               | RSSBOT_lang      | zh-cn            |
-| item_num           | RSSBOT_ITEM_NUM  | 5                |
-| fetch_gap          | RSSBOT_FETCH_GAP | 5m               |
-| notify_error_count | NOTIFY_ERR_COUNT | 5                |
+
 
 language can be setting in `zh-cn` or `en`     
 
@@ -90,6 +93,7 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 /unsubthis - 回复一个 RSS 发来的消息退订该 RSS
 /allunsub  - 退订所有源
 /export    - 导出订阅到opml文件
+/viewall   - 查看所有订阅和订阅人数 需要在设置中打开，加 `raw`显示链接
 ```
 直接发送opml文件，可以导入RSS源
 
@@ -129,14 +133,15 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 **所有配置项都可以用环境变量或者直接在 `config/index.js`中修改**
 
 
-| setting            | env              | default/require  |
-| ------------------ | ---------------- | ---------------- |
-| token              | RSSBOT_TOKEN     | ***require*      |
-| db_path            | RSSBOT_DB_PATH   | data/database.db |
-| lang               | RSSBOT_lang      | zh-cn            |
-| item_num           | RSSBOT_ITEM_NUM  | 5                |
-| fetch_gap          | RSSBOT_FETCH_GAP | 5m               |
-| notify_error_count | NOTIFY_ERR_COUNT | 5                |
+| setting            | env              | default/require  | description                              |
+| ------------------ | ---------------- | ---------------- | ---------------------------------------- |
+| token              | RSSBOT_TOKEN     | **require**      | [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) |
+| db_path            | RSSBOT_DB_PATH   | data/database.db | path to store database file              |
+| lang               | RSSBOT_LANG      | zh-cn            | language                                 |
+| item_num           | RSSBOT_ITEM_NUM  | 5                | send the laset number of item            |
+| fetch_gap          | RSSBOT_FETCH_GAP | 5m               | fetch gap                                |
+| notify_error_count | NOTIFY_ERR_COUNT | 5                | error count  when it will notfiy         |
+| view_all           | RSSBOT_VIEW_ALL  | false            | enable or not                            |
 
 语言可以设置为 `zh-cn` or `en`
 时间间隔可设置为每多少分钟或多少小时。m 表示分钟， h表示小时

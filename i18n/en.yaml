@@ -13,7 +13,7 @@ SAME_NAME: There is a feed has the same title，Please use /unsub
 PROCESSING: Processing, please wait for a while
 SUB_SUCCESS: Subscribe successfully
 UNSUB_SUCCESS: Unubscribe successfully
-NOT_SUB: You haven't subscribed any feed
+NOT_SUB: No feed is subscribed
 SUB_LIST: Subscriptions
 ERROR_MANY_TIME: Unable to fetch for many times, you might want to unsub it
 OPML_PARSE_ERRO: Unable to parse the opml
@@ -24,9 +24,14 @@ UNSUB_ALL_SUCCESS: Unubscribe all successfully
 EXPORT: USAGE: USAGE： /export Export subscriptions to opml format
 SEND_FILE_IMPORT: Send a opml file to import subscriptions
 RSS_USAGE: USAGE： /rss Output subscriptions list add "raw" to show links
+VIEW_ALL_USAGE: /viewall View all subscriptions and number of subscribers add raw to show links
 USB_ALL_USAGE: USAGE： /allunsub unsubscribe all feeds
 WELCOME: Welcome to [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
 CONFIRM: Do you want to continue the operation
+PRIVATE_CHAT_ONLY: Can only be used in private chat
+ALL_FEED: All feed subscribed
+COMMAND_NOT_ENABLED: Command not enabled
+NUMBER_OF_SUBSCRIBER: Number of subscribers
 YES: YES
 NO: NO
 CANCEL: Canceled
