@@ -2,43 +2,41 @@ const ctrl = {};
 const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
 
-
 ctrl.sub = async (ctx, next) => {
-    const {feedUrl} = ctx.state;
+    const { feedUrl } = ctx.state;
     const feedTitle = ctx.state.feed.title;
     const chat = await ctx.getChat();
     const userId = chat.id;
     try {
         const res = await RSS.sub(userId, feedUrl, feedTitle);
-        if (res === "ok") {
+        if (res === 'ok') {
             await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
             ctx.replyWithMarkdown(`
-            ${i18n['SUB_SUCCESS']}[${ctx.state.feed.title}](${ctx.state.feedUrl})`)
+            ${i18n['SUB_SUCCESS']}[${ctx.state.feed.title}](${ctx.state.feedUrl})`);
         }
     } catch (e) {
         if (e instanceof Error) throw e;
-        throw  new Error('DB_ERROR')
+        throw new Error('DB_ERROR');
     }
     await next();
 };
 
 ctrl.unsub = async (ctx, next) => {
-    const {feedUrl} = ctx.state;
+    const { feedUrl } = ctx.state;
     const chat = await ctx.getChat();
     const userId = chat.id;
     try {
         const feed = await RSS.getFeedByUrl(feedUrl);
-        if (!feed)
-            throw new Error('DID_NOT_SUB');
+        if (!feed) throw new Error('DID_NOT_SUB');
         const res = await RSS.unsub(userId, feed.feed_id);
-        if (res === "ok") {
+        if (res === 'ok') {
             await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
             ctx.replyWithMarkdown(`
-        ${i18n['UNSUB_SUCCESS']}[${feed.feed_title}](${ctx.state.feedUrl})`)
+        ${i18n['UNSUB_SUCCESS']}[${feed.feed_title}](${ctx.state.feedUrl})`);
         }
     } catch (e) {
         if (e instanceof Error) throw e;
-        throw  new Error('DB_ERROR');
+        throw new Error('DB_ERROR');
     }
     await next();
 };
@@ -46,7 +44,7 @@ ctrl.unsub = async (ctx, next) => {
 ctrl.rss = async (ctx, next) => {
     const feeds = await RSS.getSubscribedFeedsByUserId(ctx.chat.id);
     if (feeds.length === 0) {
-        throw new Error('NOT_SUB')
+        throw new Error('NOT_SUB');
     }
     let text = `<strong>${i18n['SUB_LIST']}</strong>`;
     if (ctx.message.text.split(/\s/)[1] === 'raw') {
@@ -59,31 +57,29 @@ ctrl.rss = async (ctx, next) => {
         });
     }
     await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
-    ctx.telegram.sendMessage(ctx.state.chat.id, text,
-        {
-            parse_mode: 'HTML',
-            disable_web_page_preview: true
-        });
+    ctx.telegram.sendMessage(ctx.state.chat.id, text, {
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+    });
     await next();
 };
 
 ctrl.unsubAll = async (ctx, next) => {
     const userId = ctx.state.chat.id;
     await RSS.unsubAll(userId);
-    await ctx.telegram.sendMessage(ctx.state.chat.id, i18n['UNSUB_ALL_SUCCESS'],
-        {
-            parse_mode: 'HTML',
-            disable_web_page_preview: true
-        });
+    await ctx.telegram.sendMessage(ctx.state.chat.id, i18n['UNSUB_ALL_SUCCESS'], {
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+    });
     await next();
 };
 
 ctrl.viewAll = async (ctx, next) => {
     const feeds = await RSS.getAllFeedsWithCount();
     if (feeds.length === 0) {
-        throw new Error('NOT_SUB')
+        throw new Error('NOT_SUB');
     }
-    let text = `<strong>${i18n['ALL_FEED']}</strong>`
+    let text = `<strong>${i18n['ALL_FEED']}</strong>`;
 
     if (ctx.message.text.split(/\s/)[1] === 'raw') {
         feeds.forEach(feed => {
@@ -99,11 +95,10 @@ ctrl.viewAll = async (ctx, next) => {
         });
     }
     await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
-    ctx.telegram.sendMessage(ctx.state.chat.id, text,
-        {
-            parse_mode: 'HTML',
-            disable_web_page_preview: true
-        });
+    ctx.telegram.sendMessage(ctx.state.chat.id, text, {
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+    });
     await next();
 };
 
