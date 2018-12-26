@@ -32,6 +32,8 @@ PRIVATE_CHAT_ONLY: 只能在私聊中使用
 ALL_FEED: 所有被订阅的feed
 COMMAND_NOT_ENABLED: 没有启用该命令
 NUMBER_OF_SUBSCRIBER: 订阅人数
+CHANNEL_NOT_FOUND: 找不到该 id 对应频道
+CHANNEL_ADMIN_REQUIRE: 需要将该Bot加入频道管理员并给予对应权限
 YES: 是
 NO: 否
 CANCEL: 取消操作

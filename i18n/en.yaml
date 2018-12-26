@@ -32,6 +32,8 @@ PRIVATE_CHAT_ONLY: Can only be used in private chat
 ALL_FEED: All feed subscribed
 COMMAND_NOT_ENABLED: Command not enabled
 NUMBER_OF_SUBSCRIBER: Number of subscribers
+CHANNEL_NOT_FOUND: Channel not found
+CHANNEL_ADMIN_REQUIRE: You need to add this bot to channel administrators and give right correctly
 YES: YES
 NO: NO
 CANCEL: Canceled

@@ -3,9 +3,8 @@ const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
 
 ctrl.sub = async (ctx, next) => {
-    const { feedUrl } = ctx.state;
+    const { feedUrl, chat } = ctx.state;
     const feedTitle = ctx.state.feed.title;
-    const chat = await ctx.getChat();
     const userId = chat.id;
     try {
         const res = await RSS.sub(userId, feedUrl, feedTitle);
@@ -27,8 +26,7 @@ ctrl.sub = async (ctx, next) => {
 };
 
 ctrl.unsub = async (ctx, next) => {
-    const { feedUrl } = ctx.state;
-    const chat = await ctx.getChat();
+    const { feedUrl, chat } = ctx.state;
     const userId = chat.id;
     try {
         const feed = await RSS.getFeedByUrl(feedUrl);

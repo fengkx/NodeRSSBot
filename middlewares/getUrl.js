@@ -13,6 +13,12 @@ module.exports = async (ctx, next) => {
                 if (command.substr(0, 8) === '/unsubthis')
                     throw new Error('UNSUBTHIS_USAGE');
                 else throw new Error('UNSUB_USAGE');
+            case '/exp':
+                throw new Error('EXPORT');
+            case '/all':
+                throw new Error('USB_ALL_USAGE');
+            case '/vie':
+                throw new Error('VIEW_ALL_USAGE');
         }
     }
     if (!url.startsWith('http') && !url.startsWith('https')) {
