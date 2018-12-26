@@ -58,7 +58,7 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U  
 | token              | RSSBOT_TOKEN     | **require**      | [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) |
 | db_path            | RSSBOT_DB_PATH   | data/database.db | path to store database file              |
 | lang               | RSSBOT_LANG      | zh-cn            | language                                 |
-| item_num           | RSSBOT_ITEM_NUM  | 5                | send the laset number of item            |
+| item_num           | RSSBOT_ITEM_NUM  | 10               | send the laset number of item            |
 | fetch_gap          | RSSBOT_FETCH_GAP | 5m               | fetch gap                                |
 | notify_error_count | NOTIFY_ERR_COUNT | 5                | error count  when it will notfiy         |
 | view_all           | RSSBOT_VIEW_ALL  | false            | enable or not                            |
@@ -146,7 +146,7 @@ viewall 只能在私聊中使用
 | token              | RSSBOT_TOKEN     | **require**      | [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) |
 | db_path            | RSSBOT_DB_PATH   | data/database.db | 数据库文件路径                                  |
 | lang               | RSSBOT_LANG      | zh-cn            | 语言                                       |
-| item_num           | RSSBOT_ITEM_NUM  | 5                | 发送最新几条信息                                 |
+| item_num           | RSSBOT_ITEM_NUM  | 10               | 发送最新几条信息                                 |
 | fetch_gap          | RSSBOT_FETCH_GAP | 5m               | 抓取间隔                                     |
 | notify_error_count | NOTIFY_ERR_COUNT | 5                | 发出通知的错误次数                                |
 | view_all           | RSSBOT_VIEW_ALL  | false            | 是否开启                                     |
