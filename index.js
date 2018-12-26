@@ -1,5 +1,4 @@
 const Telegraf = require('telegraf');
-const { token, view_all } = require('./config');
 const agent = require('./utils/agent');
 const initTable = require('./database/initTables');
 const RSS = require('./controlers/rss');
@@ -7,6 +6,7 @@ const { fork } = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
 const i18n = require('./i18n');
+const { token, view_all, lang, item_num, db_path } = require('./config');
 
 const {
     getUrl,
@@ -135,4 +135,7 @@ chid.on('message', function(message) {
     }
 });
 
+logger.info(`Database file is in ${db_path}`);
+logger.info(`Using language is ${lang}`);
+logger.info(`send the latest ${item_num} items for each feed`);
 logger.info('NodeRSSBot is ready');
