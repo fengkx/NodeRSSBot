@@ -176,7 +176,7 @@ px.getAllFeedsWithCount = async () => {
         return await db.all(`SELECT subscribes.feed_id, COUNT(rf.feed_id) AS sub_count, rf.feed_title, rf.url
                              FROM subscribes
                                     LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
-                             GROUP BY subscribes.feed_id`);
+                             GROUP BY subscribes.feed_id ORDER BY sub_count DESC`);
     } catch (e) {
         throw new Error('DB_ERROR');
     }
