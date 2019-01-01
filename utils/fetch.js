@@ -12,6 +12,7 @@ const {
     getFeedByUrl,
     resetErrorCount
 } = require('../proxies/rssFeed');
+const { notify_error_count } = require('../config');
 
 const fetch = async (feedUrl) => {
     try {
@@ -29,7 +30,11 @@ const fetch = async (feedUrl) => {
     } catch (e) {
         await failAttempt(feedUrl);
         getFeedByUrl(feedUrl).then((feed) => {
-            if (feed.error_count >= 5) {
+            const round_time = notify_error_count * 10;
+            const round_happen =
+                feed.error_count % round_time === 0 &&
+                feed.error_count > round_time;
+            if (feed.error_count === notify_error_count || round_happen) {
                 logger.info(feed, 'ERROR_MANY_TIME');
                 process.send({
                     success: false,
