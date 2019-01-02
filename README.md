@@ -16,7 +16,7 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 /unsubthis - reply a message from a RSS feed to unsubscribe it
 /allunsub  - unsubscribe all feeds
 /export    - export subscriptions to opml file
-/viewall   - view all subscriptions and number of subscribers need to enable in settings，add raw to show links
+/viewall   - view all subscriptions and number of subscribers need to enable in settings
 ```
 
 You can add channel id to subscribe a feed for a channel in private chat after add the bot as administrator    
@@ -97,7 +97,7 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 /unsubthis - 回复一个 RSS 发来的消息退订该 RSS
 /allunsub  - 退订所有源
 /export    - 导出订阅到opml文件
-/viewall   - 查看所有订阅和订阅人数 需要在设置中打开，加 `raw`显示链接
+/viewall   - 查看所有订阅和订阅人数 需要在设置中打开
 ```
 把 bot 设为频道管理员并正确配置权限后，可通过私聊在`/sub`后加上频道 id 来在频道中订阅 feed
 例如 `/sub <频道 id > <feed url>` (频道 id 是@打头的)

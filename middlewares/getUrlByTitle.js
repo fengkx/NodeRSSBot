@@ -11,6 +11,6 @@ module.exports = async (ctx, next) => {
     if (feeds.length > 1) throw new Error('SAME_NAME');
     if (feeds.length === 0) throw new Error('UNSUBTHIS_USAGE');
     ctx.state.feed = feeds[0];
-    ctx.state.feedUrl = feeds[0].url;
+    ctx.state.feedUrl = decodeURI(feeds[0].url);
     await next();
 };

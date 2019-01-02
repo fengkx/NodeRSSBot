@@ -24,6 +24,6 @@ module.exports = async (ctx, next) => {
     if (!url.startsWith('http') && !url.startsWith('https')) {
         throw new Error('FEED_URL_NOT_PARSE');
     }
-    ctx.state.feedUrl = url;
+    ctx.state.feedUrl = decodeURI(url);
     await next();
 };

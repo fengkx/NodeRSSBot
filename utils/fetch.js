@@ -17,7 +17,7 @@ const { notify_error_count } = require('../config');
 const fetch = async (feedUrl) => {
     try {
         logger.debug(`fetching ${feedUrl}`);
-        const res = await axios.get(feedUrl);
+        const res = await axios.get(encodeURI(feedUrl));
         const parser = new Parser();
         const feed = await parser.parseString(res.data);
         const items = feed.items.slice(0, config.item_num);
