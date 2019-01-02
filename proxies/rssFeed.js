@@ -6,8 +6,8 @@ px.sub = async (userId, feedUrl, feedTitle) => {
     const db = await dbPomise;
     const feed = await db.get(
         `SELECT *
-         FROM rss_feed
-         WHERE url = ?`,
+             FROM rss_feed
+             WHERE url = ?`,
         [feedUrl]
     );
     if (!!feed) {
@@ -28,14 +28,14 @@ px.sub = async (userId, feedUrl, feedTitle) => {
     } else {
         await db.run(
             `INSERT INTO rss_feed(url, feed_title)
-                      VALUES (?, ?);`,
+                 VALUES (?, ?);`,
             feedUrl,
             feedTitle
         );
         const feed = await db.get(
             `SELECT feed_id
-             FROM rss_feed
-             WHERE url = ?`,
+                 FROM rss_feed
+                 WHERE url = ?`,
             feedUrl
         );
         await db.run('INSERT INTO subscribes(feed_id, user_id) VALUES (?, ?)', [
@@ -51,8 +51,8 @@ px.getFeedByUrl = async (feedUrl) => {
         const db = await dbPomise;
         return await db.get(
             `SELECT *
-             FROM rss_feed
-             WHERE url = ?`,
+                 FROM rss_feed
+                 WHERE url = ?`,
             [feedUrl]
         );
     } catch (e) {
@@ -78,7 +78,8 @@ px.getAllFeeds = async () => {
         const db = await dbPomise;
         return await db.all(`SELECT rf.*
                              FROM subscribes
-                                    LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id`);
+                                    LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
+                             GROUP BY rf.feed_id`);
     } catch (e) {
         throw new Error('DB_ERROR');
     }
@@ -89,8 +90,8 @@ px.updateHashList = async (feedId, hashList) => {
         const db = await dbPomise;
         await db.run(
             `UPDATE rss_feed
-             SET recent_hash_list=?
-             where feed_id = ?`,
+                 SET recent_hash_list=?
+                 where feed_id = ?`,
             JSON.stringify(hashList),
             feedId
         );
@@ -104,8 +105,8 @@ px.getFeedsByTitle = async (title) => {
         const db = await dbPomise;
         return await db.all(
             `SELECT *
-                             FROM rss_feed
-                             WHERE feed_title = ?`,
+                 FROM rss_feed
+                 WHERE feed_title = ?`,
             title
         );
     } catch (e) {
@@ -133,8 +134,8 @@ px.resetErrorCount = async (feedUrl) => {
         const db = await dbPomise;
         await db.run(
             `UPDATE rss_feed
-                      SET error_count=0
-                      WHERE url = ?`,
+                 SET error_count=0
+                 WHERE url = ?`,
             feedUrl
         );
     } catch (e) {
@@ -160,8 +161,8 @@ px.unsubAll = async (userId) => {
         const db = await dbPomise;
         await db.run(
             `DELETE
-                      FROM subscribes
-                      WHERE user_id = ?`,
+                 FROM subscribes
+                 WHERE user_id = ?`,
             userId
         );
         return 'ok';
@@ -176,7 +177,8 @@ px.getAllFeedsWithCount = async () => {
         return await db.all(`SELECT subscribes.feed_id, COUNT(rf.feed_id) AS sub_count, rf.feed_title, rf.url
                              FROM subscribes
                                     LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
-                             GROUP BY subscribes.feed_id ORDER BY sub_count DESC`);
+                             GROUP BY subscribes.feed_id
+                             ORDER BY sub_count DESC`);
     } catch (e) {
         throw new Error('DB_ERROR');
     }
