@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('../utils/axios');
 const Parser = require('rss-parser');
 const config = require('../config');
 const hashFeed = require('../utils/hashFeed');

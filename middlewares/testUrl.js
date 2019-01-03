@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('../utils/axios');
 const Parser = require('rss-parser');
 const RSS = require('../proxies/rssFeed');
 

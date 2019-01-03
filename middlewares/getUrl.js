@@ -1,7 +1,3 @@
-const axios = require('axios');
-const url = require('url');
-const Parser = require('rss-parser');
-
 module.exports = async (ctx, next) => {
     const { text } = ctx.message;
     const [command, url] = text.split(/\s+/);

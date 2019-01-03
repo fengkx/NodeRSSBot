@@ -10,5 +10,8 @@ module.exports = {
     item_num: process.env.RSSBOT_ITEM_NUM || 10,
     fetch_gap: process.env.RSSBOT_FETCH_GAP || '5m',
     notify_error_count: process.env.NOTIFY_ERR_COUNT || 5,
-    view_all: !!process.env.RSSBOT_VIEW_ALL || false
+    view_all: !!process.env.RSSBOT_VIEW_ALL || false,
+    UA:
+        process.env.RSSBOT_UA ||
+        'Mozilla/5.0  NodeRSSBot(https://github.com/fengkx/NodeRSSBot)'
 };

@@ -62,7 +62,7 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U  
 | fetch_gap          | RSSBOT_FETCH_GAP | 5m               | fetch gap                                |
 | notify_error_count | NOTIFY_ERR_COUNT | 5                | error count  when it will notfiy         |
 | view_all           | RSSBOT_VIEW_ALL  | false            | enable or not                            |
-
+| UA                 | RSSBOT_UA        | 'Mozilla/5.0  NodeRSSBot(https://github.com/fengkx/NodeRSSBot)' | user-agent of requrest|
 
 language can be setting in `zh-cn` or `en`     
 
@@ -150,6 +150,7 @@ viewall 只能在私聊中使用
 | fetch_gap          | RSSBOT_FETCH_GAP | 5m               | 抓取间隔                                     |
 | notify_error_count | NOTIFY_ERR_COUNT | 5                | 发出通知的错误次数                                |
 | view_all           | RSSBOT_VIEW_ALL  | false            | 是否开启                                     |
+| UA                 | RSSBOT_UA        | 'Mozilla/5.0  NodeRSSBot(https://github.com/fengkx/NodeRSSBot)' | 请求的 user-agent |
 
 语言可以设置为 `zh-cn` or `en`
 时间间隔可设置为每多少分钟或多少小时。m 表示分钟， h表示小时
