@@ -5,6 +5,13 @@ const logger = require('../utils/logger');
 const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
 
+function parseOutlines(outlines, lst) {
+    outlines.forEach((outline) => {
+        if (outline.$.type && outline.$.type === 'rss') lst.push(outline.$);
+        else if (outline.outline) parseOutlines(outline.outline, lst);
+    });
+}
+
 const getOutlines = function(data) {
     return new Promise((resolve, reject) => {
         const parser = new Parser();
@@ -12,9 +19,7 @@ const getOutlines = function(data) {
             if (err) reject(err);
             const { opml } = res;
             const ret = [];
-            opml.body[0].outline.forEach(function(item) {
-                ret.push(item.$);
-            });
+            parseOutlines(opml.body[0].outline, ret);
             resolve(ret);
         });
     });
