@@ -104,9 +104,9 @@ ctrl.viewAll = async (ctx, next) => {
         const url = feed.url.trim();
         const title = feed.feed_title.trim();
         builder.push(
-            `<a href="${url}">${title}</a> <code>${
-                i18n['NUMBER_OF_SUBSCRIBER']
-            }: ${feed.sub_count}</code>`
+            `<a href="${url}">${title}</a>  ${i18n['NUMBER_OF_SUBSCRIBER']}: ${
+                feed.sub_count
+            }`
         );
     });
     await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
