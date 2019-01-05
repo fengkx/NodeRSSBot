@@ -7,19 +7,12 @@
     "start": "node index",
     "dev": "proxychains -q node $NODE_DEBUG_OPTION  index",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier \"**/*.js\" --write",
-    "pre-commit": "lint-staged"
+    "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
+    "lint": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\""
   },
   "pre-commit": [
-    "pre-commit"
+    "lint"
   ],
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fengkx/NodeRSSBot.git"
@@ -49,6 +42,7 @@
   "devDependencies": {
     "lint-staged": "^8.1.0",
     "pre-commit": "^1.2.2",
-    "prettier": "^1.15.3"
+    "prettier": "^1.15.3",
+    "prettier-check": "^2.0.0"
   }
 }
