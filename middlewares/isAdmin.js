@@ -3,8 +3,8 @@ const logger = require('../utils/logger');
 module.exports = async (ctx, next) => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
-    const admins = await ctx.getChatAdministrators(chat.id);
     if (chat.type !== 'private') {
+    const admins = await ctx.getChatAdministrators(chat.id);
         switch (chat.type) {
             case 'group':
             case 'supergroup':
