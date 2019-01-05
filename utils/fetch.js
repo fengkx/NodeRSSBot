@@ -14,6 +14,7 @@ const {
 } = require('../proxies/rssFeed');
 const { notify_error_count } = require('../config');
 
+// eslint-disable-next-line  max-lines-per-function
 const fetch = async (feedUrl) => {
     try {
         logger.debug(`fetching ${feedUrl}`);
@@ -28,25 +29,33 @@ const fetch = async (feedUrl) => {
             })
         );
     } catch (e) {
-        e instanceof Error
-            ? logger.error(feedUrl, e.stack)
-            : logger.error(feedUrl, e);
+        if (e instanceof Error) {
+            logger.error({
+                feedUrl,
+                stack: e.stack
+            });
+        } else {
+            logger.error({
+                feedUrl,
+                e
+            });
+        }
         await failAttempt(feedUrl);
-        getFeedByUrl(feedUrl).then((feed) => {
-            const round_time = notify_error_count * 10;
-            const round_happen =
-                feed.error_count % round_time === 0 &&
-                feed.error_count > round_time;
-            if (feed.error_count === notify_error_count || round_happen) {
-                logger.info(feed, 'ERROR_MANY_TIME');
-                process.send({
-                    success: false,
-                    message: 'MAX_TIME',
-                    feed
-                });
-            }
-        });
+        const feed = await getFeedByUrl(feedUrl);
+        const round_time = notify_error_count * 10;
+        const round_happen =
+            feed.error_count % round_time === 0 &&
+            feed.error_count > round_time;
+        if (feed.error_count === notify_error_count || round_happen) {
+            logger.info(feed, 'ERROR_MANY_TIME');
+            process.send({
+                success: false,
+                message: 'MAX_TIME',
+                feed
+            });
+        }
         if (e instanceof Error && e.respone) {
+            logger.error(e.respone);
             switch (e.respone.status) {
                 case 404:
                 case 403:
