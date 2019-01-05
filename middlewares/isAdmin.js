@@ -4,7 +4,7 @@ module.exports = async (ctx, next) => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
     if (chat.type !== 'private') {
-    const admins = await ctx.getChatAdministrators(chat.id);
+        const admins = await ctx.getChatAdministrators(chat.id);
         switch (chat.type) {
             case 'group':
             case 'supergroup':
@@ -20,6 +20,7 @@ module.exports = async (ctx, next) => {
         ctx.message.text &&
         ctx.message.text.search(/@\w+/) !== -1
     ) {
+        const admins = await ctx.getChatAdministrators(chat.id);
         // for channel subscription in private chat
         const channelId = ctx.message.text.match(/@\w+/)[0];
         if (channelId) {
