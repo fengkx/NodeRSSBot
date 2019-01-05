@@ -1,6 +1,4 @@
 const i18n = require('../i18n');
-const { promisify } = require('util');
-const setTimeOutPromise = promisify(setTimeout);
 
 module.exports = async (ctx, next) => {
     await ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);

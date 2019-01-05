@@ -1,3 +1,4 @@
+/* eslint-disable */
 const config = require('../config');
 let agent;
 

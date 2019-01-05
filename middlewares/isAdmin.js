@@ -3,12 +3,13 @@ const logger = require('../utils/logger');
 module.exports = async (ctx, next) => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
+    const admins = await ctx.getChatAdministrators(chat.id);
     if (chat.type !== 'private') {
         switch (chat.type) {
             case 'group':
             case 'supergroup':
             case 'channel':
-                const admins = await ctx.getChatAdministrators(chat.id);
+                // eslint-disable-next-line no-case-declarations
                 const isAdmin = admins.some(function(item) {
                     return item.user.id === ctx.message.from.id;
                 });
@@ -21,7 +22,7 @@ module.exports = async (ctx, next) => {
     ) {
         // for channel subscription in private chat
         const channelId = ctx.message.text.match(/@\w+/)[0];
-        if (!!channelId) {
+        if (channelId) {
             ctx.message.text = ctx.message.text.replace(channelId, ' ');
             try {
                 ctx.state.chat = await ctx.telegram.getChat(channelId);
@@ -30,7 +31,6 @@ module.exports = async (ctx, next) => {
                 if (e.message === '400: Bad Request: chat not found')
                     throw new Error('CHANNEL_NOT_FOUND');
             }
-            const admins = await ctx.getChatAdministrators(ctx.state.chat.id);
             const me = await ctx.telegram.getMe();
             const isAdmin = admins.some(function(item) {
                 return item.user.id === me.id;

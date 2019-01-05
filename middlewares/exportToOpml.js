@@ -2,7 +2,6 @@ const RSS = require('../proxies/rssFeed');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
-const config = require('../config');
 
 function readFilePromise(path) {
     return new Promise((resolve, reject) => {

@@ -5,7 +5,7 @@ const RSS = require('../proxies/rssFeed');
 module.exports = async (ctx, next) => {
     const url = encodeURI(ctx.state.feedUrl);
     const feed = await RSS.getFeedByUrl(url);
-    if (!!feed) {
+    if (feed) {
         ctx.state.feed = feed;
         ctx.state.feed.title = feed.feed_title;
         await next();
@@ -17,7 +17,7 @@ module.exports = async (ctx, next) => {
             delete feed.items;
             ctx.state.feed = feed;
         } catch (e) {
-            if (!!e.respone) {
+            if (e.respone) {
                 switch (e.respone.status) {
                     case 404:
                     case 403:

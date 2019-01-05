@@ -1,5 +1,4 @@
 const Telegraf = require('telegraf');
-const agent = require('./utils/agent');
 const initTable = require('./database/initTables');
 const RSS = require('./controlers/rss');
 const { fork } = require('child_process');
@@ -87,14 +86,16 @@ bot.action(
     RSS.unsubAll,
     async (ctx, next) => {
         const cb = ctx.callbackQuery;
-        const res = await ctx.telegram.answerCbQuery(cb.id);
+        ctx.telegram.answerCbQuery(cb.id);
+        await next();
     }
 );
 
 bot.action('UNSUB_ALL_NO', async (ctx, next) => {
     const cb = ctx.callbackQuery;
-    const res = await ctx.telegram.answerCbQuery(cb.id, i18n['CANCEL']);
+    ctx.telegram.answerCbQuery(cb.id, i18n['CANCEL']);
     await ctx.telegram.deleteMessage(cb.from.id, cb.message.message_id);
+    await next();
 });
 
 bot.command('rss', sendError, isAdmin, RSS.rss);

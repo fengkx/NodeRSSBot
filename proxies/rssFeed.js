@@ -10,7 +10,7 @@ px.sub = async (userId, feedUrl, feedTitle) => {
              WHERE url = ?`,
         [feedUrl]
     );
-    if (!!feed) {
+    if (feed) {
         const sql = `SELECT *
                      FROM subscribes
                      WHERE user_id = ?

@@ -1,6 +1,5 @@
 const axios = require('axios');
 const Parser = require('xml2js').Parser;
-const fs = require('fs');
 const logger = require('../utils/logger');
 const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
@@ -51,7 +50,7 @@ module.exports = async (ctx, next) => {
         ctx.replyWithHTML(text);
     } catch (e) {
         logger.error(e);
-        if (!!e.response) {
+        if (e.response) {
             throw new Error('NETWORK_ERROR');
         } else {
             throw new Error('OPML_PARSE_ERRO');

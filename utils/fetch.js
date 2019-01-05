@@ -106,22 +106,22 @@ const unit = config.fetch_gap.substring(config.fetch_gap.length - 1);
 const gapNum = parseInt(
     config.fetch_gap.substring(0, config.fetch_gap.length - 1)
 );
+const time_gaps = [];
 switch (unit) {
     case 'h':
-        const hours = [];
         for (let i = 0; i < 24; i = i + gapNum) {
-            hours.push(i);
+            time_gaps.push(i);
         }
-        rule.hour = hours;
+        rule.hour = time_gaps;
         logger.info('fetch every ' + gapNum + ' hour(s)');
         break;
     case 'm':
     default:
-        const minutes = [];
-        for (let i = 0; i < 60; i = i + gapNum) minutes.push(i);
-        rule.minute = minutes;
+        for (let i = 0; i < 60; i = i + gapNum) time_gaps.push(i);
+        rule.minute = time_gaps;
         logger.info('fetch every ' + gapNum + ' minutes');
         break;
 }
 
+// eslint-disable-next-line
 const j = schedule.scheduleJob(rule, run);
