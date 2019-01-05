@@ -15,11 +15,12 @@ module.exports = async (ctx, next) => {
                 if (!isAdmin) throw new Error('ADMIN_ONLY');
         }
     } else if (
+        ctx.message && // button respone without message
         ctx.message.text &&
-        ctx.message.text.search(/@[\w|\d|_]+/) !== -1
+        ctx.message.text.search(/@\w+/) !== -1
     ) {
         // for channel subscription in private chat
-        const channelId = ctx.message.text.match(/@[\w|\d|_]+/)[0];
+        const channelId = ctx.message.text.match(/@\w+/)[0];
         if (!!channelId) {
             ctx.message.text = ctx.message.text.replace(channelId, ' ');
             try {
