@@ -28,6 +28,7 @@ const fetch = async (feedUrl) => {
             })
         );
     } catch (e) {
+        e instanceof Error ? logger.error(e.stack) : logger.error(e);
         await failAttempt(feedUrl);
         getFeedByUrl(feedUrl).then((feed) => {
             const round_time = notify_error_count * 10;

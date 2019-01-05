@@ -13,7 +13,6 @@ module.exports = async (ctx, next) => {
                 ctx.state.processMesId
             );
             ctx.reply(i18n[e.message]);
-            logger.error(e.stack);
         } else throw e;
     }
 };
