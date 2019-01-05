@@ -40,7 +40,6 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "lint-staged": "^8.1.0",
     "pre-commit": "^1.2.2",
     "prettier": "^1.15.3",
     "prettier-check": "^2.0.0"
