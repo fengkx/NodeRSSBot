@@ -5,13 +5,19 @@ module.exports = async (ctx, next) => {
     const chat = ctx.state.chat;
     if (chat.type !== 'private') {
         const admins = await ctx.getChatAdministrators(chat.id);
+        let from = null;
+        if (ctx.message) {
+            from = ctx.message.from || ctx.callbackQuery.from;
+        } else {
+            from = ctx.callbackQuery.from;
+        }
         switch (chat.type) {
             case 'group':
             case 'supergroup':
             case 'channel':
                 // eslint-disable-next-line no-case-declarations
                 const isAdmin = admins.some(function(item) {
-                    return item.user.id === ctx.message.from.id;
+                    return item.user.id === from.id;
                 });
                 if (!isAdmin) throw new Error('ADMIN_ONLY');
         }

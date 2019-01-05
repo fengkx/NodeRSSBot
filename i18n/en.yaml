@@ -26,6 +26,7 @@ SEND_FILE_IMPORT: Send a opml file to import subscriptions
 RSS_USAGE: USAGE： /rss Output subscriptions list add "raw" to show links
 VIEW_ALL_USAGE: /viewall View all subscriptions and number of subscribers add raw to show links
 USB_ALL_USAGE: USAGE： /allunsub unsubscribe all feeds
+IMPORT_USAGE: USAGE: /import send opml directly in private chat or reply to this message
 WELCOME: Welcome to [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
 CONFIRM: Do you want to continue the operation
 PRIVATE_CHAT_ONLY: Can only be used in private chat

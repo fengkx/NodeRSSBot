@@ -38,6 +38,11 @@ bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username;
 });
 
+bot.command('import', async (ctx, next) => {
+    ctx.reply(i18n['IMPORT_USAGE']);
+    await next();
+});
+
 bot.on('document', sendError, isAdmin, getFileLink, importFromOpml);
 
 bot.command('start', async (ctx) => {
@@ -94,7 +99,7 @@ bot.action(
 bot.action('UNSUB_ALL_NO', async (ctx, next) => {
     const cb = ctx.callbackQuery;
     ctx.telegram.answerCbQuery(cb.id, i18n['CANCEL']);
-    await ctx.telegram.deleteMessage(cb.from.id, cb.message.message_id);
+    await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
     await next();
 });
 

@@ -20,12 +20,13 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 /allunsub  - unsubscribe all feeds
 /export    - export subscriptions to opml file
 /viewall   - view all subscriptions and number of subscribers need to enable in settings
+/import    - reply this message a opml file to import(in group)
 ```
 
 You can add channel id to subscribe a feed for a channel in private chat after add the bot as administrator  
 for example `/sub <channel id > <feed url>` (channel id is startwith @)
 
-You can send a opml file directly to import feed  
+You can send a opml file directly to import feed in private chat use `/import` in group
 viewall can only be uesed in private chat
 
 # Depolyment
@@ -111,6 +112,7 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 /allunsub  - 退订所有源
 /export    - 导出订阅到opml文件
 /viewall   - 查看所有订阅和订阅人数 需要在设置中打开
+/import    - 回复此消息 opml 文件导入订阅(群组)
 ```
 
 把 bot 设为频道管理员并正确配置权限后，可通过私聊在`/sub`后加上频道 id 来在频道中订阅 feed
