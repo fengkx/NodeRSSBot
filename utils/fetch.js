@@ -29,14 +29,7 @@ const fetch = async (feedUrl) => {
             })
         );
     } catch (e) {
-        if (e instanceof Error) {
-            logger.error(`${feedUrl} ${e.message}`);
-        } else {
-            logger.error({
-                feedUrl,
-                e
-            });
-        }
+        logger.error(`${feedUrl} ${e.message}`);
         await failAttempt(feedUrl);
         const feed = await getFeedByUrl(feedUrl);
         const round_time = notify_error_count * 10;
