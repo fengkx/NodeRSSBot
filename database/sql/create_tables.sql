@@ -14,6 +14,6 @@ create TABLE IF NOT EXISTS subscribes
 			primary key,
 	feed_id INTEGER not null
 		constraint subscribes_rss_feed_feed_id_fk
-			references rss_feed,
+			references rss_feed(feed_id),
 	user_id INTEGER not null
 );
