@@ -30,10 +30,7 @@ const fetch = async (feedUrl) => {
         );
     } catch (e) {
         if (e instanceof Error) {
-            logger.error({
-                feedUrl,
-                stack: e.stack
-            });
+            logger.error(`${feedUrl} ${e.message}`);
         } else {
             logger.error({
                 feedUrl,
@@ -51,6 +48,7 @@ const fetch = async (feedUrl) => {
             process.send({
                 success: false,
                 message: 'MAX_TIME',
+                err: e.message,
                 feed
             });
         }
