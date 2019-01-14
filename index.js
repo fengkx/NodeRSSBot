@@ -17,7 +17,8 @@ const {
     getUrlByTitle,
     isAdmin,
     confirmation,
-    onlyPrivateChat
+    onlyPrivateChat,
+    subMultiUrl
 } = require('./middlewares');
 
 (async () => {
@@ -37,6 +38,18 @@ bot.catch((err) => logger.error(err));
 bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username;
 });
+
+bot.hears(
+    /^http(s)?:\/\/\w+\.\w+.*(\w|\/)/gm,
+    sendError,
+    async (ctx, next) => {
+        ctx.state.chat = await ctx.getChat();
+        if (ctx.state.chat.type === 'private') {
+            await next();
+        }
+    },
+    subMultiUrl
+);
 
 bot.command('import', async (ctx, next) => {
     ctx.reply(i18n['IMPORT_USAGE']);
@@ -118,7 +131,7 @@ bot.command(
     RSS.viewAll
 );
 
-bot.startPolling();
+bot.launch();
 
 const chid = fork(`utils/fetch.js`);
 chid.on('message', function(message) {
