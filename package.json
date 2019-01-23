@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "pre-commit": "^1.2.2",
-    "prettier": "^1.16.0",
+    "prettier": "^1.16.1",
     "prettier-check": "^2.0.0"
   }
 }
