@@ -54,6 +54,8 @@ const fetch = async (feedUrl) => {
                 default:
                     throw new Error('FETCH_ERROR');
             }
+        } else {
+            throw new Error('FETCH_ERROR');
         }
     }
 };
@@ -62,12 +64,13 @@ const fetchAll = async () => {
     process.send && process.send('start fetching');
 
     const allFeeds = await getAllFeeds();
-    await Promise.all(
-        allFeeds.map(async (eachFeed) => {
-            const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-            const newItems = await fetch(eachFeed.url, eachFeed.feed_id);
+    allFeeds.map(async (eachFeed) => {
+        const oldHashList = JSON.parse(eachFeed.recent_hash_list);
+        let newItems, sendItems;
+        try {
+            newItems = await fetch(eachFeed.url, eachFeed.feed_id);
             if (!newItems) {
-                logger.debug(eachFeed.url, `Error`);
+                logger.debug(eachFeed.url, 'Error');
             } else {
                 const newHashList = await Promise.all(
                     newItems.map(async (item) => {
@@ -75,23 +78,26 @@ const fetchAll = async () => {
                     })
                 );
                 await updateHashList(eachFeed.feed_id, newHashList);
-                let sendItems = await Promise.all(
+                sendItems = await Promise.all(
                     newItems.map(async (item) => {
                         const hash = await hashFeed(item.link, item.title);
                         if (oldHashList.indexOf(hash) === -1) return item;
                     })
                 );
                 sendItems = sendItems.filter((i) => i);
-                process.send &&
-                    sendItems &&
-                    process.send({
-                        success: true,
-                        sendItems,
-                        eachFeed
-                    });
             }
-        })
-    );
+        } catch (e) {
+            logger.debug(e);
+        }
+        process.send &&
+            sendItems &&
+            process.send({
+                success: true,
+                sendItems,
+                eachFeed
+            });
+    });
+
     logger.info('fetch a round');
 };
 
