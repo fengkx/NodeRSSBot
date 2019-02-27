@@ -25,7 +25,7 @@ const fetch = async (feedUrl) => {
         await resetErrorCount(feedUrl);
         return await Promise.all(
             items.map(async (item) => {
-                return _pick(item, ['link', 'title', 'content']);
+                return _pick(item, ['link', 'title', 'content', 'guid', 'id']);
             })
         );
     } catch (e) {
@@ -74,16 +74,17 @@ const fetchAll = async () => {
             } else {
                 const newHashList = await Promise.all(
                     newItems.map(async (item) => {
-                        return await hashFeed(item.link, item.title);
+                        return await hashFeed(item);
                     })
                 );
                 await updateHashList(eachFeed.feed_id, newHashList);
                 sendItems = await Promise.all(
                     newItems.map(async (item) => {
-                        const hash = await hashFeed(item.link, item.title);
+                        const hash = await hashFeed(item);
                         if (oldHashList.indexOf(hash) === -1) return item;
                     })
                 );
+                logger.info(sendItems);
                 sendItems = sendItems.filter((i) => i);
             }
         } catch (e) {

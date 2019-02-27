@@ -13,5 +13,6 @@ module.exports = {
     view_all: !!process.env.RSSBOT_VIEW_ALL || false,
     UA:
         process.env.RSSBOT_UA ||
-        'Mozilla/5.0  NodeRSSBot(https://github.com/fengkx/NodeRSSBot)'
+        'Mozilla/5.0  NodeRSSBot(https://github.com/fengkx/NodeRSSBot)',
+    not_send: process.env.NOT_SEND || false
 };

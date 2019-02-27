@@ -5,7 +5,14 @@ const { fork } = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
 const i18n = require('./i18n');
-const { token, view_all, lang, item_num, db_path } = require('./config');
+const {
+    token,
+    view_all,
+    lang,
+    item_num,
+    db_path,
+    not_send
+} = require('./config');
 
 const {
     getUrl,
@@ -139,7 +146,7 @@ chid.on('message', function(message) {
     else if (message.success) {
         const feed = message.eachFeed;
         const { sendItems } = message;
-        if (sendItems.length > 0) send(bot, sendItems, feed);
+        if (sendItems.length > 0 && !not_send) send(bot, sendItems, feed);
     } else {
         if (message.message === 'MAX_TIME') {
             const { feed, err } = message;
