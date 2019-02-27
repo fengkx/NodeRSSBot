@@ -84,7 +84,6 @@ const fetchAll = async () => {
                         if (oldHashList.indexOf(hash) === -1) return item;
                     })
                 );
-                logger.info(sendItems);
                 sendItems = sendItems.filter((i) => i);
             }
         } catch (e) {
