@@ -10,7 +10,7 @@ if (!fs.existsSync(dbPathFromRust)) {
 const dbStr = fs.readFileSync(dbPathFromRust, 'utf8');
 
 (async () => {
-    await require('../database/initTables')();
+    await require('../database/init-tables')();
     const dataSrc = JSON.parse(dbStr);
     const db = await dbPromise;
     await Promise.all(

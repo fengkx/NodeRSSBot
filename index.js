@@ -1,5 +1,5 @@
 const Telegraf = require('telegraf');
-const initTable = require('./database/initTables');
+const initTable = require('./database/init-tables');
 const RSS = require('./controlers/rss');
 const { fork } = require('child_process');
 const send = require('./utils/send');
