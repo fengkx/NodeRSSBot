@@ -2,7 +2,11 @@ const path = require('path');
 
 module.exports = {
     token: process.env.RSSBOT_TOKEN || '',
-    socks_proxy: process.env.socks_proxy || undefined,
+    proxy: {
+        protocol: process.env.PROXY_PROTOCOL || null,
+        host: process.env.PROXY_HOST || null,
+        port: process.env.PROXY_PORT || null
+    },
     db_path:
         process.env.RSSBOT_DB_PATH ||
         path.join(__dirname, '../data/database.db'),

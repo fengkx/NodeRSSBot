@@ -35,7 +35,7 @@ const {
 const bot = new Telegraf(token, {
     telegram: {
         // Telegram options
-        // agent: agent,        // https.Agent instance, allows custom proxy, certificate, keep alive, etc.
+        agent: require('./utils/agent') // https.Agent instance, allows custom proxy, certificate, keep alive, etc.
     }
 });
 

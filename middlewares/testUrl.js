@@ -1,4 +1,4 @@
-const axios = require('../utils/axios');
+const got = require('../utils/got');
 const Parser = require('rss-parser');
 const RSS = require('../proxies/rssFeed');
 
@@ -11,17 +11,17 @@ module.exports = async (ctx, next) => {
         await next();
     } else {
         try {
-            const res = await axios.get(url);
+            const res = await got.get(url);
             const parser = new Parser();
-            let feed = await parser.parseString(res.data);
+            let feed = await parser.parseString(res.body);
             delete feed.items;
             ctx.state.feed = feed;
         } catch (e) {
-            if (e.respone) {
-                switch (e.respone.status) {
+            if (e.response) {
+                switch (e.response.status) {
                     case 404:
                     case 403:
-                        throw new Error(e.respone.status);
+                        throw new Error(e.response.status);
                     default:
                         throw new Error('FETCH_ERROR');
                 }

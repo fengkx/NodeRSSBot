@@ -1,4 +1,4 @@
-const axios = require('axios');
+const got = require('got');
 const Parser = require('xml2js').Parser;
 const logger = require('../utils/logger');
 const RSS = require('../proxies/rssFeed');
@@ -28,8 +28,8 @@ module.exports = async (ctx, next) => {
     const { fileLink } = ctx.state;
 
     try {
-        const res = await axios.get(fileLink);
-        const opmlStr = res.data;
+        const res = await got.get(fileLink);
+        const opmlStr = res.body;
         const outlines = await getOutlines(opmlStr);
         ctx.state.outlines = outlines;
         await Promise.all(

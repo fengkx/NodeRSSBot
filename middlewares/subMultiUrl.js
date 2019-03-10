@@ -1,4 +1,4 @@
-const axios = require('../utils/axios');
+const got = require('../utils/got');
 const Parser = require('rss-parser');
 const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
@@ -14,8 +14,8 @@ module.exports = async (ctx, next) => {
             } else {
                 try {
                     const parser = new Parser();
-                    const res = await axios.get(encodeURI(url));
-                    const rssFeed = await parser.parseString(res.data);
+                    const res = await got.get(encodeURI(url));
+                    const rssFeed = await parser.parseString(res.body);
                     return {
                         feed_title: rssFeed.title,
                         url

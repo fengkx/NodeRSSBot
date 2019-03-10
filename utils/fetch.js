@@ -1,4 +1,4 @@
-const axios = require('../utils/axios');
+const got = require('./got');
 const Parser = require('rss-parser');
 const config = require('../config');
 const hashFeed = require('../utils/hashFeed');
@@ -18,9 +18,9 @@ const { notify_error_count } = require('../config');
 const fetch = async (feedUrl) => {
     try {
         logger.debug(`fetching ${feedUrl}`);
-        const res = await axios.get(encodeURI(feedUrl));
+        const res = await got.get(encodeURI(feedUrl));
         const parser = new Parser();
-        const feed = await parser.parseString(res.data);
+        const feed = await parser.parseString(res.body);
         const items = feed.items.slice(0, config.item_num);
         await resetErrorCount(feedUrl);
         return await Promise.all(
@@ -45,12 +45,12 @@ const fetch = async (feedUrl) => {
                 feed
             });
         }
-        if (e instanceof Error && e.respone) {
-            logger.error(e.respone);
-            switch (e.respone.status) {
+        if (e instanceof Error && e.response) {
+            logger.error(e.response);
+            switch (e.response.statusCode) {
                 case 404:
                 case 403:
-                    throw new Error(e.respone.status);
+                    throw new Error(e.response.status);
                 default:
                     throw new Error('FETCH_ERROR');
             }

@@ -73,6 +73,9 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 | notify_error_count | NOTIFY_ERR_COUNT | 5                                                              | error count when it will notfiy                                              |
 | view_all           | RSSBOT_VIEW_ALL  | false                                                          | enable or not                                                                |
 | UA                 | RSSBOT_UA        | 'Mozilla/5.0 NodeRSSBot(https://github.com/fengkx/NodeRSSBot)' | user-agent of requrest                                                       |
+| proxy.protocol     | PROXY_PROTOCOL   | null                                                           | proxy protocol http/https/socks                                              |
+| proxy.host         | PROXY_HOST       | null                                                           | proxy host                                                                   |
+| proxy.port         | PROXY_PORT       | null                                                           | proxy port                                                                   |
 
 language can be setting in `zh-cn` or `en`
 
@@ -154,7 +157,7 @@ viewall 只能在私聊中使用
 # TODO
 
 -   [x] export 命令
--   代理
+-   [x] 代理
 -   unit test
 
 # 配置项
@@ -171,6 +174,9 @@ viewall 只能在私聊中使用
 | notify_error_count | NOTIFY_ERR_COUNT | 5                                                              | 发出通知的错误次数                                                           |
 | view_all           | RSSBOT_VIEW_ALL  | false                                                          | 是否开启                                                                     |
 | UA                 | RSSBOT_UA        | 'Mozilla/5.0 NodeRSSBot(https://github.com/fengkx/NodeRSSBot)' | 请求的 user-agent                                                            |
+| proxy.protocool    | PROXY_PROTOCOL   | null                                                           | 代理协议 http/https/socks                                                    |
+| proxy.host         | PROXY_HOST       | null                                                           | 代理地址                                                                     |
+| proxy.port         | PROXY_PORT       | null                                                           | 代理端口                                                                     |
 
 语言可以设置为 `zh-cn` or `en`
 时间间隔可设置为每多少分钟或多少小时。m 表示分钟， h 表示小时
