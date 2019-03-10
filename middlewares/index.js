@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const camelcase = require('camelcase');
 const middlewares = {};
 const files = fs.readdirSync(__dirname);
 const jsFiles = files.filter((f) => {
@@ -7,7 +7,7 @@ const jsFiles = files.filter((f) => {
 });
 jsFiles.forEach((file) => {
     const fileName = file.substring(0, file.length - 3);
-    middlewares[fileName] = require(__dirname + '/' + file);
+    middlewares[camelcase(fileName)] = require(__dirname + '/' + file);
 });
 
 module.exports = middlewares;
