@@ -39,7 +39,7 @@
     "socks-proxy-agent": "^4.0.2",
     "sqlite": "^3.0.3",
     "sqlite3": "^4.0.6",
-    "telegraf": "^3.27.1",
+    "telegraf": "^3.28.0",
     "winston": "^3.2.1",
     "xml2js": "^0.4.19"
   },
