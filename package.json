@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/fengkx/NodeRSSBot#readme",
   "dependencies": {
-    "camelcase": "^5.2.0",
+    "camelcase": "^5.3.0",
     "ejs": "^2.6.1",
     "got": "^9.6.0",
     "http-proxy-agent": "^2.1.0",
