@@ -1,0 +1,40 @@
+FEED_URL_NOT_PARSE: La url no ha podido ser parseada
+FETCH_ERROR: Error de recuperación
+404: Obtenido error HTTP404 No encontrado
+403: Obtenido error HTTP403 Prohibido
+ALREADY_SUB: Ya te has suscrito a este feed
+DB_ERROR: Error en la SQL
+DID_NOT_SUB: No te has suscrito todavía a este feed
+SUB_USAGE: USAGE: /sub <RSS URL>
+UNSUB_USAGE: USAGE: /unsub <RSS URL>
+ADMIN_ONLY: Solo disponible para administradores
+UNSUBTHIS_USAGE: USAGE:/unsubthis Responda directamente al mensaje del feed que desea cancelar la suscripción
+SAME_NAME: Hay un feed con el mismo nombre, por favor cancele la suscripción con /unsub
+PROCESSING: Pocesando, espere un momento
+SUB_SUCCESS: Suscripción exitosa
+UNSUB_SUCCESS: Cancelación exitosa
+NOT_SUB: No se ha suscrito a ningún feed
+SUB_LIST: Subscripciones
+ERROR_MANY_TIME: Varios intentos fallidos, es posible que desee anular la suscripción
+OPML_PARSE_ERRO: No se puede parsear el archivo OPML
+NETWORK_ERROR: Error de red
+IMPORT_SUCCESS: Importado con éxito
+FILESYSTEM_ERROR: Error del sistema de archivos
+UNSUB_ALL_SUCCESS: Cancelada la suscripción a todos los feeds con éxito
+EXPORT: USAGE: USAGE: /export Exportar suscripciones a formato OPML
+SEND_FILE_IMPORT: Envía un archivo OPML para importar suscripciones
+RSS_USAGE: USAGE: /rss Devuelve la lista de suscripciones; agregue "raw" para mostrar los enlaces
+VIEW_ALL_USAGE: /viewall Ver todas las suscripciones y el número de suscriptores que tienen agregue "raw" para mostrar los enlaces
+USB_ALL_USAGE: USAGE: /allunsub Cancelar la suscripción de todos los feeds
+IMPORT_USAGE: USAGE: /import Enviar el archivo OPML directamente a un chat privado o responder a este mensaje
+WELCOME: Bienvenido a [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: ¿Desea continuar con la operación?
+PRIVATE_CHAT_ONLY: Sólo se puede utilizar en un chat privado
+ALL_FEED: Todas las fuentes suscritas
+COMMAND_NOT_ENABLED: Comando no habilitado
+NUMBER_OF_SUBSCRIBER: Número de suscriptores
+CHANNEL_NOT_FOUND: Canal no encontrado
+CHANNEL_ADMIN_REQUIRE: Necesitas agregar este bot como administrador del canal y dar los derechos correctamente.
+YES: YES
+NO: NO
+CANCEL: Cancelar
