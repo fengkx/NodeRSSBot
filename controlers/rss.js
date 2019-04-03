@@ -11,7 +11,7 @@ ctrl.sub = async (ctx, next) => {
         const res = await RSS.sub(userId, feedUrl, feedTitle);
         if (res === 'ok') {
             await ctx.telegram.deleteMessage(
-                ctx.state.chat.id,
+                ctx.chat.id,
                 ctx.state.processMesId
             );
             ctx.state.processMesId = null;
@@ -36,7 +36,7 @@ ctrl.unsub = async (ctx, next) => {
         const res = await RSS.unsub(userId, feed.feed_id);
         if (res === 'ok') {
             await ctx.telegram.deleteMessage(
-                ctx.state.chat.id,
+                ctx.chat.id,
                 ctx.state.processMesId
             );
             ctx.state.processMesId = null;
