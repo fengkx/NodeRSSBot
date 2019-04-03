@@ -26,7 +26,6 @@ module.exports = async (ctx, next) => {
         ctx.message.text &&
         ctx.message.text.search(/@\w+/) !== -1
     ) {
-        const admins = await ctx.getChatAdministrators(chat.id);
         // for channel subscription in private chat
         const channelId = ctx.message.text.match(/@\w+/)[0];
         if (channelId) {
@@ -39,6 +38,9 @@ module.exports = async (ctx, next) => {
                     throw new Error('CHANNEL_NOT_FOUND');
             }
             const me = await ctx.telegram.getMe();
+            const admins = await ctx.telegram.getChatAdministrators(
+                ctx.state.chat.id
+            );
             const isAdmin = admins.some(function(item) {
                 return item.user.id === me.id;
             });

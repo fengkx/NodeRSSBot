@@ -59,7 +59,7 @@ ctrl.rss = async (ctx, next) => {
     const raw = hasRaw || ctx.state.showRaw;
     const rawStr = raw ? 'RAW_' : '';
 
-    const userId = ctx.chat.id;
+    const userId = ctx.state.chat.id;
     const count = await RSS.getSubscribedCountByUserId(userId);
     const kbs = [
         {

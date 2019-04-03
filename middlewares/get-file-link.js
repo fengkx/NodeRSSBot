@@ -1,5 +1,8 @@
 module.exports = async (ctx, next) => {
-    if(ctx.message.reply_to_message && ctx.message.reply_to_message.text.startsWith('/import')) {
+    if (
+        ctx.message.reply_to_message &&
+        ctx.message.reply_to_message.text.startsWith('/import')
+    ) {
         const channelId = ctx.message.reply_to_message.text.match(/@\w+/)[0];
         ctx.state.chat = await ctx.telegram.getChat(channelId);
     } else {
