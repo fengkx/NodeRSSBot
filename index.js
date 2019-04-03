@@ -23,10 +23,21 @@ const {
     testUrl,
     getUrlByTitle,
     isAdmin,
-    confirmation,
     onlyPrivateChat,
     subMultiUrl
 } = require('./middlewares');
+
+const twoKeyReply = require('./utils/two-key-reply');
+const confirmation = twoKeyReply(i18n['CONFIRM'], [
+    {
+        text: i18n['YES'],
+        callback_data: 'UNSUB_ALL_YES'
+    },
+    {
+        text: i18n['NO'],
+        callback_data: 'UNSUB_ALL_NO'
+    }
+]);
 
 (async () => {
     await initTable();
@@ -136,6 +147,40 @@ bot.command(
         else throw new Error('COMMAND_NOT_ENABLED');
     },
     RSS.viewAll
+);
+
+bot.action(
+    /^VIEWALL_(\d+)/,
+    sendError,
+    onlyPrivateChat,
+    async (ctx, next) => {
+        const cb = ctx.callbackQuery;
+        ctx.state.viewallPage = parseInt(cb.data.split('_')[1]);
+        await ctx.telegram.deleteMessage(
+            cb.message.chat.id,
+            cb.message.message_id
+        );
+        await next();
+    },
+    RSS.viewAll
+);
+
+bot.action(
+    /^RSS_(RAW_)*(\d+)/,
+    sendError,
+    onlyPrivateChat,
+    async (ctx, next) => {
+        const cb = ctx.callbackQuery;
+        const splitedStr = cb.data.split('_');
+        if (splitedStr[1] === 'RAW') ctx.state.showRaw = true;
+        ctx.state.rssPage = parseInt(splitedStr[splitedStr.length - 1]);
+        await ctx.telegram.deleteMessage(
+            cb.message.chat.id,
+            cb.message.message_id
+        );
+        await next();
+    },
+    RSS.rss
 );
 
 bot.launch();

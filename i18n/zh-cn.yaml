@@ -38,3 +38,5 @@ CHANNEL_ADMIN_REQUIRE: 需要将该Bot加入频道管理员并给予对应权限
 YES: 是
 NO: 否
 CANCEL: 取消操作
+PAGE_PRE: 上一页
+PAGE_NEXT: 下一页

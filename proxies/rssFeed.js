@@ -114,16 +114,34 @@ px.getFeedsByTitle = async (title) => {
     }
 };
 
-px.getSubscribedFeedsByUserId = async (userId) => {
+px.getSubscribedFeedsByUserId = async (userId, limit, page) => {
+    if (page < 1) {
+        page = 1;
+    }
     try {
         const db = await dbPomise;
         const sql = `
           SELECT rf.feed_id, rf.feed_title, rf.url
           FROM subscribes
                  LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
-          WHERE subscribes.user_id = ?
+          WHERE subscribes.user_id = ? LIMIT ? OFFSET ?
         `;
-        return await db.all(sql, userId);
+        return await db.all(sql, userId, limit, (page - 1) * limit);
+    } catch (e) {
+        throw new Error('DB_ERROR');
+    }
+};
+
+px.getSubscribedCountByUserId = async (userId) => {
+    try {
+        const db = await dbPomise;
+        const sql = `SELECT COUNT(rf.feed_id) count
+                     FROM subscribes
+                              LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
+                     WHERE subscribes.user_id = ?
+        `;
+        const result = await db.all(sql, userId);
+        return result[0].count;
     } catch (e) {
         throw new Error('DB_ERROR');
     }
@@ -171,14 +189,32 @@ px.unsubAll = async (userId) => {
     }
 };
 
-px.getAllFeedsWithCount = async () => {
+px.getAllFeedsWithCount = async (limit, page) => {
+    if (page < 1) page = 1;
     try {
         const db = await dbPomise;
-        return await db.all(`SELECT subscribes.feed_id, COUNT(rf.feed_id) AS sub_count, rf.feed_title, rf.url
-                             FROM subscribes
-                                    LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
-                             GROUP BY subscribes.feed_id
-                             ORDER BY sub_count DESC`);
+        return await db.all(
+            `SELECT subscribes.feed_id, COUNT(rf.feed_id) AS sub_count, rf.feed_title, rf.url
+                FROM subscribes
+                         LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
+                GROUP BY subscribes.feed_id
+                ORDER BY sub_count DESC LIMIT ? OFFSET ?`,
+            limit,
+            limit * (page - 1)
+        );
+    } catch (e) {
+        throw new Error('DB_ERROR');
+    }
+};
+
+px.getAllFeedsCount = async () => {
+    try {
+        const db = await dbPomise;
+        const result = await db.all(`
+        SELECT COUNT(DISTINCT rf.feed_id) as count
+            FROM subscribes
+            LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id`);
+        return result[0].count;
     } catch (e) {
         throw new Error('DB_ERROR');
     }

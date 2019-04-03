@@ -38,3 +38,5 @@ CHANNEL_ADMIN_REQUIRE: You need to add this bot to channel administrators and gi
 YES: YES
 NO: NO
 CANCEL: Canceled
+PAGE_PRE: Previous page
+PAGE_NEXT: Next page

@@ -8,10 +8,12 @@ module.exports = async (ctx, next) => {
         await next();
     } catch (e) {
         if (e instanceof Error) {
-            ctx.telegram.deleteMessage(
-                ctx.state.chat.id,
-                ctx.state.processMesId
-            );
+            if (ctx.state.processMesId) {
+                ctx.telegram.deleteMessage(
+                    ctx.state.chat.id,
+                    ctx.state.processMesId
+                );
+            }
             ctx.reply(i18n[e.message]);
         } else throw e;
     }

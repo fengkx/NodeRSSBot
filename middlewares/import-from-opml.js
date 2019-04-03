@@ -47,6 +47,7 @@ module.exports = async (ctx, next) => {
             text += `\n<a href="${outline.xmlUrl}">${outline.text}</a>`;
         });
         ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
+        ctx.state.processMesId = null;
         ctx.replyWithHTML(text);
     } catch (e) {
         logger.error(e);
