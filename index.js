@@ -136,7 +136,7 @@ bot.action('UNSUB_ALL_NO', async (ctx, next) => {
 
 bot.command('rss', sendError, isAdmin, RSS.rss);
 
-bot.command('export', sendError, exportToOpml);
+bot.command('export', sendError, isAdmin, exportToOpml);
 
 bot.command(
     'viewall',

@@ -36,7 +36,7 @@ function remove(path) {
 }
 
 module.exports = async (ctx, next) => {
-    const chat = await ctx.getChat();
+    const chat = ctx.state.chat;
     const feeds = await RSS.getSubscribedFeedsByUserId(chat.id);
     if (feeds.length === 0) {
         throw new Error('NOT_SUB');

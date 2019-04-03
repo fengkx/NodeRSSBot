@@ -114,7 +114,7 @@ px.getFeedsByTitle = async (title) => {
     }
 };
 
-px.getSubscribedFeedsByUserId = async (userId, limit, page) => {
+px.getSubscribedFeedsByUserId = async (userId, limit = 1000, page = 1) => {
     if (page < 1) {
         page = 1;
     }
