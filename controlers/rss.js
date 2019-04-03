@@ -72,7 +72,7 @@ ctrl.rss = async (ctx, next) => {
         }
     ];
     if (count < page * limit) kbs.pop();
-
+    if (page === 1) kbs.shift();
     const feeds = await RSS.getSubscribedFeedsByUserId(userId, limit, page);
     if (feeds.length === 0) {
         throw new Error('NOT_SUB');
@@ -126,9 +126,8 @@ ctrl.viewAll = async (ctx, next) => {
             callback_data: 'VIEWALL_' + (page + 1)
         }
     ];
-    if (count < page * limit) {
-        kbs.pop();
-    }
+    if (count < page * limit) kbs.pop();
+    if (page === 1) kbs.shift();
     const feeds = await RSS.getAllFeedsWithCount(limit, page);
     if (feeds.length === 0) {
         throw new Error('NOT_SUB');
