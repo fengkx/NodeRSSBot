@@ -4,7 +4,9 @@ const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
 
 module.exports = async (ctx, next) => {
-    const urls = ctx.message.text.match(/^http(s)?:\/\/\w+\.\w+.*(\w|\/)/gm);
+    const urls = ctx.message.text.match(
+        /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm
+    );
     const feedsReady = await Promise.all(
         urls.map(async (url) => {
             url = decodeURI(url);
