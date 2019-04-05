@@ -5,10 +5,10 @@ FETCH_ERROR: Fetch error
 ALREADY_SUB: You have already subscribe this feed
 DB_ERROR: SQL error
 DID_NOT_SUB: You haven't subscribed this feed
-SUB_USAGE: USAGE： /sub <RSS URL>
-UNSUB_USAGE: USAGE： /unsub <RSS URL>
+SUB_USAGE: 'USAGE： /sub <RSS URL>'
+UNSUB_USAGE: 'USAGE： /unsub <RSS URL>'
 ADMIN_ONLY: Only enable for admins
-UNSUBTHIS_USAGE: USAGE：/unsubthis Reply the message from the feed you want to unsubscribe directly
+UNSUBTHIS_USAGE: 'USAGE：/unsubthis Reply the message from the feed you want to unsubscribe directly'
 SAME_NAME: There is a feed has the same title，Please use /unsub
 PROCESSING: Processing, please wait for a while
 SUB_SUCCESS: Subscribe successfully
@@ -21,12 +21,12 @@ NETWORK_ERROR: Network error
 IMPORT_SUCCESS: Import successfully
 FILESYSTEM_ERROR: Filesystem error
 UNSUB_ALL_SUCCESS: Unubscribe all successfully
-EXPORT: USAGE: USAGE： /export Export subscriptions to opml format
+EXPORT: 'USAGE： /export Export subscriptions to opml format'
 SEND_FILE_IMPORT: Send a opml file to import subscriptions
-RSS_USAGE: USAGE： /rss Output subscriptions list add "raw" to show links
+RSS_USAGE: 'USAGE： /rss Output subscriptions list add "raw" to show links'
 VIEW_ALL_USAGE: /viewall View all subscriptions and number of subscribers add raw to show links
-USB_ALL_USAGE: USAGE： /allunsub unsubscribe all feeds
-IMPORT_USAGE: USAGE: /import send opml directly in private chat or reply to this message
+USB_ALL_USAGE: 'USAGE： /allunsub unsubscribe all feeds'
+IMPORT_USAGE: 'USAGE： /import send opml directly in private chat or reply to this message'
 WELCOME: Welcome to [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
 CONFIRM: Do you want to continue the operation
 PRIVATE_CHAT_ONLY: Can only be used in private chat
