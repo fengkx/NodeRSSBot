@@ -95,20 +95,15 @@ ctrl.rss = async (ctx, next) => {
         });
     }
     await twoKeyReply(builder.join('\n'), kbs)(ctx, next);
-    await next();
 };
 
 ctrl.unsubAll = async (ctx, next) => {
     const userId = ctx.state.chat.id;
     await RSS.unsubAll(userId);
-    await ctx.telegram.sendMessage(
-        ctx.state.chat.id,
-        i18n['UNSUB_ALL_SUCCESS'],
-        {
-            parse_mode: 'HTML',
-            disable_web_page_preview: true
-        }
-    );
+    await ctx.telegram.sendMessage(ctx.chat.id, i18n['UNSUB_ALL_SUCCESS'], {
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+    });
     await next();
 };
 
@@ -145,7 +140,6 @@ ctrl.viewAll = async (ctx, next) => {
     });
     ctx.state.replyText = builder.join('\n');
     await twoKeyReply(kbs)(ctx, next);
-    await next();
 };
 
 module.exports = ctrl;

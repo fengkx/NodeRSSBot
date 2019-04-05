@@ -5,13 +5,15 @@ module.exports = (text, kbs) => {
         text = null;
     }
     return async (ctx, next) => {
-        await ctx.telegram.deleteMessage(
-            ctx.state.chat.id,
-            ctx.state.processMesId
-        );
-        ctx.state.processMesId = null;
+        if (ctx.state.processMesId) {
+            await ctx.telegram.deleteMessage(
+                ctx.chat.id,
+                ctx.state.processMesId
+            );
+            ctx.state.processMesId = null;
+        }
         await ctx.telegram.sendMessage(
-            ctx.state.chat.id,
+            ctx.chat.id,
             text || ctx.state.replyText,
             {
                 parse_mode: 'HTML',

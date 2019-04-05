@@ -26,7 +26,11 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 You can add channel id to subscribe a feed for a channel in private chat after add the bot as administrator  
 for example `/sub <channel id > <feed url>` (channel id is startwith @)
 
-You can send a opml file directly to import feed in private chat use `/import` in group
+You can send a opml file directly to import feed in private chat
+use `/import` in group
+
+for channel import send a opml file name by channel id with a opml suffix name in private chat for example `@myChannel.opml`
+
 viewall can only be uesed in private chat
 
 # Depolyment
@@ -128,6 +132,7 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 例如 `/sub <频道 id > <feed url>` (频道 id 是@打头的)
 
 直接发送 opml 文件，可以导入 RSS 源  
+频道导入需要将文件名改成频道 id 并且以 opml 作为后缀在私聊中发送 例如 `@myChannel.opml`  
 viewall 只能在私聊中使用
 
 # 部署
