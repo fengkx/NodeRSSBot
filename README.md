@@ -77,8 +77,6 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 | proxy.host         | PROXY_HOST       | null                                                           | proxy host                                                                   |
 | proxy.port         | PROXY_PORT       | null                                                           | proxy port                                                                   |
 
-language can be setting in `zh-cn` or `en`
-
 fetch_gap can be setting in how many minutes or hours。m for minute， h for hour
 
 for example 5m means every 5 minutes， 1h means every 1 hour
@@ -86,6 +84,14 @@ for example 5m means every 5 minutes， 1h means every 1 hour
 # i18n
 
 translate the file in `i18n` in the another yaml and make a pull request (๑•̀ㅂ•́)و✧
+
+## support language
+
+set `lang` setting using one of the following language
+
+-   en English
+-   zh-cn Chinese
+-   es-es Spanish provided by @NPueyo
 
 ---
 
@@ -186,3 +192,11 @@ viewall 只能在私聊中使用
 # i18n
 
 在 `i18n`目录翻译 yaml 文件然后来个 ·pr· (๑•̀ㅂ•́)و✧
+
+## support language
+
+以下任意一个语言作为`lang`配置项
+
+-   en English
+-   zh-cn 中文
+-   es-es Spanish provided by @NPueyo

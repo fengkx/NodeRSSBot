@@ -38,3 +38,5 @@ CHANNEL_ADMIN_REQUIRE: Necesitas agregar este bot como administrador del canal y
 YES: YES
 NO: NO
 CANCEL: Cancelar
+PAGE_PRE: pagina anterior
+PAGE_NEXT: siguiente página
