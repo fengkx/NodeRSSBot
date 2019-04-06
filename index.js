@@ -57,25 +57,6 @@ bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username;
 });
 
-bot.hears(
-    /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
-    sendError,
-    async (ctx, next) => {
-        ctx.state.chat = await ctx.getChat();
-        if (ctx.state.chat.type === 'private') {
-            await next();
-        }
-    },
-    subMultiUrl
-);
-
-bot.command('import', async (ctx, next) => {
-    ctx.reply(i18n['IMPORT_USAGE']);
-    await next();
-});
-
-bot.on('document', sendError, isAdmin, getFileLink, importFromOpml);
-
 bot.command('start', async (ctx) => {
     let builder = [];
     builder.push(i18n['WELCOME']);
@@ -107,12 +88,51 @@ bot.command('unsub', sendError, isAdmin, getUrl, RSS.unsub);
 
 bot.command('unsubthis', sendError, isAdmin, getUrlByTitle, RSS.unsub);
 
+bot.command('rss', sendError, isAdmin, RSS.rss);
+
+bot.command('export', sendError, isAdmin, exportToOpml);
+
+bot.command('import', async (ctx, next) => {
+    ctx.reply(i18n['IMPORT_USAGE']);
+    await next();
+});
+
+bot.on('document', sendError, isAdmin, getFileLink, importFromOpml);
+
+bot.command(
+    'viewall',
+    sendError,
+    onlyPrivateChat,
+    async (ctx, next) => {
+        if (view_all) await next();
+        else throw new Error('COMMAND_NOT_ENABLED');
+    },
+    RSS.viewAll
+);
+
 bot.command(
     'allunsub',
     sendError,
     isAdmin,
     // RSS.unsubAll,
     confirmation
+);
+
+bot.hears(
+    /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
+    async (ctx, next) => {
+        if (!ctx.message.text.startsWith('/')) {
+            await next();
+        }
+    },
+    sendError,
+    async (ctx, next) => {
+        ctx.state.chat = await ctx.getChat();
+        if (ctx.state.chat.type === 'private') {
+            await next();
+        }
+    },
+    subMultiUrl
 );
 
 bot.action(
@@ -133,21 +153,6 @@ bot.action('UNSUB_ALL_NO', async (ctx, next) => {
     await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
     await next();
 });
-
-bot.command('rss', sendError, isAdmin, RSS.rss);
-
-bot.command('export', sendError, isAdmin, exportToOpml);
-
-bot.command(
-    'viewall',
-    sendError,
-    onlyPrivateChat,
-    async (ctx, next) => {
-        if (view_all) await next();
-        else throw new Error('COMMAND_NOT_ENABLED');
-    },
-    RSS.viewAll
-);
 
 bot.action(
     /^VIEWALL_(\d+)/,
