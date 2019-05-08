@@ -10,4 +10,9 @@ px.getSubscribersByFeedId = async (feedId) => {
     );
 };
 
+px.deleteSubscribersByUserId = async (userId) => {
+    const db = await dbPomise;
+    return await db.run('DELETE FROM "subscribes" WHERE user_id = ?', userId);
+};
+
 module.exports = px;
