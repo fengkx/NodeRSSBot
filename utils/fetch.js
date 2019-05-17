@@ -1,5 +1,6 @@
 const got = require('./got');
 const Parser = require('rss-parser');
+const pMap = require('p-map');
 const config = require('../config');
 const hashFeed = require('./hash-feed');
 const _pick = require('lodash.pick');
@@ -14,7 +15,6 @@ const {
 } = require('../proxies/rssFeed');
 const { notify_error_count } = require('../config');
 
-// eslint-disable-next-line  max-lines-per-function
 const fetch = async (feedUrl) => {
     try {
         logger.debug(`fetching ${feedUrl}`);
@@ -23,11 +23,9 @@ const fetch = async (feedUrl) => {
         const feed = await parser.parseString(res.body);
         const items = feed.items.slice(0, config.item_num);
         await resetErrorCount(feedUrl);
-        return await Promise.all(
-            items.map(async (item) => {
-                return _pick(item, ['link', 'title', 'content', 'guid', 'id']);
-            })
-        );
+        return items.map((item) => {
+            return _pick(item, ['link', 'title', 'content', 'guid', 'id']);
+        });
     } catch (e) {
         logger.error(`${feedUrl} ${e.message}`);
         await failAttempt(feedUrl);
@@ -65,39 +63,43 @@ const fetchAll = async () => {
     process.send && process.send('start fetching');
 
     const allFeeds = await getAllFeeds();
-    allFeeds.map(async (eachFeed) => {
-        const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-        let newItems, sendItems;
-        try {
-            newItems = await fetch(eachFeed.url, eachFeed.feed_id);
-            if (!newItems) {
-                logger.debug(eachFeed.url, 'Error');
-            } else {
-                const newHashList = await Promise.all(
-                    newItems.map(async (item) => {
-                        return await hashFeed(item);
-                    })
-                );
-                await updateHashList(eachFeed.feed_id, newHashList);
-                sendItems = await Promise.all(
-                    newItems.map(async (item) => {
-                        const hash = await hashFeed(item);
-                        if (oldHashList.indexOf(hash) === -1) return item;
-                    })
-                );
-                sendItems = sendItems.filter((i) => i);
+    await pMap(
+        allFeeds,
+        async (eachFeed) => {
+            const oldHashList = JSON.parse(eachFeed.recent_hash_list);
+            let newItems, sendItems;
+            try {
+                newItems = await fetch(eachFeed.url, eachFeed.feed_id);
+                if (!newItems) {
+                    logger.debug(eachFeed.url, 'Error');
+                } else {
+                    const newHashList = await Promise.all(
+                        newItems.map(async (item) => {
+                            return await hashFeed(item);
+                        })
+                    );
+                    await updateHashList(eachFeed.feed_id, newHashList);
+                    sendItems = await Promise.all(
+                        newItems.map(async (item) => {
+                            const hash = await hashFeed(item);
+                            if (oldHashList.indexOf(hash) === -1) return item;
+                        })
+                    );
+                    sendItems = sendItems.filter((i) => i);
+                }
+            } catch (e) {
+                logger.debug(e);
             }
-        } catch (e) {
-            logger.debug(e);
-        }
-        process.send &&
-            sendItems &&
-            process.send({
-                success: true,
-                sendItems,
-                eachFeed
-            });
-    });
+            process.send &&
+                sendItems &&
+                process.send({
+                    success: true,
+                    sendItems,
+                    eachFeed
+                });
+        },
+        { concurrency: 100 }
+    );
 
     logger.info('fetch a round');
 };
@@ -106,6 +108,7 @@ function run() {
     try {
         fetchAll();
     } catch (e) {
+        // may not work at all
         logger.error(e);
     }
 }

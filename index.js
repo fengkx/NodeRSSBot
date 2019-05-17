@@ -190,27 +190,44 @@ bot.action(
 
 bot.launch();
 
-const chid = fork(`utils/fetch.js`);
-chid.on('message', function(message) {
-    if (typeof message === 'string') logger.info(message);
-    else if (message.success) {
-        const feed = message.eachFeed;
-        const { sendItems } = message;
-        if (sendItems.length > 0 && !not_send) send(bot, sendItems, feed);
-    } else {
-        if (message.message === 'MAX_TIME') {
-            const { feed, err } = message;
-            send(
-                bot,
-                `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${
-                    i18n['ERROR_MANY_TIME']
-                } ${err}
-                `,
-                feed
-            );
-        }
+function startFetchProcess(restartTime) {
+    if (restartTime > 3) {
+        logger.error('fetch process exit to much');
+        process.exit(1);
     }
-});
+    const chid = fork(`utils/fetch.js`);
+    chid.on('message', function(message) {
+        if (typeof message === 'string') logger.info(message);
+        else if (message.success) {
+            const feed = message.eachFeed;
+            const { sendItems } = message;
+            if (sendItems.length > 0 && !not_send) send(bot, sendItems, feed);
+        } else {
+            if (message.message === 'MAX_TIME') {
+                const { feed, err } = message;
+                send(
+                    bot,
+                    `${feed.feed_title}: <a href="${feed.url}">${
+                        feed.url
+                    }</a> ${i18n['ERROR_MANY_TIME']} ${err}
+                `,
+                    feed
+                );
+            }
+        }
+    });
+
+    chid.on('exit', function(code, signal) {
+        logger.error(`child process exit`);
+        logger.error({
+            code,
+            signal
+        });
+        startFetchProcess(restartTime + 1);
+    });
+}
+
+startFetchProcess(0);
 
 logger.info(`Database file is in ${db_path}`);
 logger.info(`Using language is ${lang}`);
