@@ -1,7 +1,6 @@
 const got = require('./got');
 const Parser = require('rss-parser');
 const pMap = require('p-map');
-const config = require('../config');
 const hashFeed = require('./hash-feed');
 const _pick = require('lodash.pick');
 const schedule = require('node-schedule');
@@ -13,7 +12,12 @@ const {
     getFeedByUrl,
     resetErrorCount
 } = require('../proxies/rssFeed');
-const { notify_error_count } = require('../config');
+const {
+    notify_error_count,
+    item_num,
+    fetch_gap,
+    concurrency
+} = require('../config');
 
 const fetch = async (feedUrl) => {
     try {
@@ -21,7 +25,7 @@ const fetch = async (feedUrl) => {
         const res = await got.get(encodeURI(feedUrl));
         const parser = new Parser();
         const feed = await parser.parseString(res.body);
-        const items = feed.items.slice(0, config.item_num);
+        const items = feed.items.slice(0, item_num);
         await resetErrorCount(feedUrl);
         return items.map((item) => {
             return _pick(item, ['link', 'title', 'content', 'guid', 'id']);
@@ -98,7 +102,7 @@ const fetchAll = async () => {
                     eachFeed
                 });
         },
-        { concurrency: 100 }
+        { concurrency }
     );
 
     logger.info('fetch a round');
@@ -115,10 +119,8 @@ function run() {
 
 run();
 const rule = new schedule.RecurrenceRule();
-const unit = config.fetch_gap.substring(config.fetch_gap.length - 1);
-const gapNum = parseInt(
-    config.fetch_gap.substring(0, config.fetch_gap.length - 1)
-);
+const unit = fetch_gap.substring(fetch_gap.length - 1);
+const gapNum = parseInt(fetch_gap.substring(0, fetch_gap.length - 1));
 const time_gaps = [];
 switch (unit) {
     case 'h':
