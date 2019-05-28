@@ -1,4 +1,5 @@
 const path = require('path');
+const { version } = require('../package');
 
 module.exports = {
     token: process.env.RSSBOT_TOKEN || '',
@@ -17,7 +18,7 @@ module.exports = {
     view_all: !!process.env.RSSBOT_VIEW_ALL || false,
     UA:
         process.env.RSSBOT_UA ||
-        'Mozilla/5.0  NodeRSSBot(https://github.com/fengkx/NodeRSSBot)',
+        `Mozilla/5.0  NodeRSSBot v${version}(https://github.com/fengkx/NodeRSSBot)`,
     not_send: process.env.NOT_SEND || false, // just for debug use
     concurrency: process.env.RSSBOT_CONCURRENCY || 200
 };
