@@ -48,7 +48,6 @@ const fetch = async (feedUrl) => {
             });
         }
         if (e instanceof Error && e.response) {
-            logger.error(e.response.body.message);
             logger.debug(e.response);
             switch (e.response.statusCode) {
                 case 404:
