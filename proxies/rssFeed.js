@@ -220,4 +220,31 @@ px.getAllFeedsCount = async () => {
     }
 };
 
+px.handleRedirect = async (url, realUrl) => {
+    try {
+        const db = await dbPomise;
+        const oldFeed = await db.get(`SELECT * FROM rss_feed WHERE url=?`, url);
+        const realFeed = await db.get(
+            `SELECT * FROM rss_feed WHERE url=?`,
+            realUrl
+        );
+        if (realFeed) {
+            await db.run(
+                `UPDATE subscribes SET feed_id=? WHERE feed_id=?`,
+                realFeed.feed_id,
+                oldFeed.feed_id
+            );
+            await db.run(`DELETE FROM rss_feed WHERE url=?`, oldFeed.url);
+        } else {
+            await db.run(
+                `UPDATE rss_feed SET url=? WHERE url=?`,
+                realUrl,
+                oldFeed.url
+            );
+        }
+    } catch (e) {
+        throw new Error('DB_ERROR');
+    }
+};
+
 module.exports = px;

@@ -78,6 +78,7 @@ ctrl.rss = async (ctx, next) => {
         throw new Error('NOT_SUB');
     }
     let builder = [];
+
     builder.push(`<strong>${i18n['SUB_LIST']}</strong>`);
     if (raw) {
         feeds.forEach((feed) => {

@@ -10,7 +10,8 @@ const {
     updateHashList,
     failAttempt,
     getFeedByUrl,
-    resetErrorCount
+    resetErrorCount,
+    handleRedirect
 } = require('../proxies/rssFeed');
 const {
     notify_error_count,
@@ -23,6 +24,10 @@ const fetch = async (feedUrl) => {
     try {
         logger.debug(`fetching ${feedUrl}`);
         const res = await got.get(encodeURI(feedUrl));
+        // handle redirect
+        if (encodeURI(feedUrl) !== res.url) {
+            await handleRedirect(feedUrl, decodeURI(res.url));
+        }
         const parser = new Parser();
         const feed = await parser.parseString(res.body);
         const items = feed.items.slice(0, item_num);

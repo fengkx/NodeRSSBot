@@ -12,6 +12,8 @@ module.exports = async (ctx, next) => {
     } else {
         try {
             const res = await got.get(url);
+            // handle redirect
+            ctx.state.feedUrl = decodeURI(res.url);
             const parser = new Parser();
             let feed = await parser.parseString(res.body);
             delete feed.items;
