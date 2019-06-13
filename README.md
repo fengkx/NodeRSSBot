@@ -2,7 +2,7 @@
 
 Another telegram RSSBot in Node.js
 
-A RSSBot in telegram similar to [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/). But this time in Node.js.
+An RSSBot in telegram similar to [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/). But this time in Node.js.
 
 # Support version
 
@@ -23,15 +23,15 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 /import    - reply this message a opml file to import(in group)
 ```
 
-You can add channel id to subscribe a feed for a channel in private chat after add the bot as administrator  
-for example `/sub <channel id > <feed url>` (channel id is startwith @)
+You can add channel id to subscribe a feed for a channel in private chat after adding the bot as administrator  
+for example `/sub <channel id > <feed url>` (channel id is start with @)
 
 You can send a opml file directly to import feed in private chat
-use `/import` in group
+use `/import` in the group
 
-for channel import send a opml file name by channel id with a opml suffix name in private chat for example `@myChannel.opml`
+for channel, import send a opml file name by channel id with a opml suffix name in private chat for example `@myChannel.opml`
 
-viewall can only be uesed in private chat
+viewall can only be used in private chat
 
 # Depolyment
 
@@ -82,17 +82,17 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 | proxy.host         | PROXY_HOST         | null                                                           | proxy host                                                                   |
 | proxy.port         | PROXY_PORT         | null                                                           | proxy port                                                                   |
 
-fetch_gap can be setting in how many minutes or hours。m for minute， h for hour
+fetch_gap can be set in how many minutes or hours。m for minute， h for hour
 
-for example 5m means every 5 minutes， 1h means every 1 hour
+for example, 5m means every 5 minutes， 1h means every 1 hour
 
 # i18n
 
-translate the file in `i18n` in the another yaml and make a pull request (๑•̀ㅂ•́)و✧
+translate the file in `i18n` in another yaml and make a pull request (๑•̀ㅂ•́)و✧
 
 ## support language
 
-set `lang` setting using one of the following language
+set `lang` setting using one of the following languages
 
 -   en English
 -   zh-cn Chinese
