@@ -10,11 +10,9 @@ RSS is parsered using [rss-parser](https://www.npmjs.com/package/rss-parser)
 
 # Usage
 
-The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
-
 ```
 /rss       - show subscriptions，add raw to show links
-/sub       - subscribe a RSS: /sub http://example.com/feed.xml
+/sub       - subscribe a RSS: /sub http://example.com/feed.xml automatically detecting RSS feed is supported
 /unsub     - unsubscribe a RSS: /unsub http://example.com/feed.xml
 /unsubthis - reply a message from a RSS feed to unsubscribe it
 /allunsub  - unsubscribe all feeds
@@ -22,6 +20,10 @@ The same as [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)
 /viewall   - view all subscriptions and number of subscribers need to enable in settings
 /import    - reply this message a opml file to import(in group)
 ```
+
+Automatically detecting RSS feed ，you can use `/sub https://www.fengkx.top` rather than `/sub https://www.fengkx.top/atom.xml
+
+You can send multi feeds directly to subscribe in private chat(split by line)
 
 You can add channel id to subscribe a feed for a channel in private chat after adding the bot as administrator  
 for example `/sub <channel id > <feed url>` (channel id is start with @)
@@ -116,11 +118,9 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 
 # Usage
 
-基本与 [https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/)一致
-
 ```
 /rss       - 显示订阅列表，加 `raw`显示链接
-/sub       - 订阅 RSS: /sub http://example.com/feed.xml
+/sub       - 订阅 RSS: /sub http://example.com/feed.xml 支持自动检测 RSS feed
 /unsub     - 退订 RSS: /unsub http://example.com/feed.xml
 /unsubthis - 回复一个 RSS 发来的消息退订该 RSS
 /allunsub  - 退订所有源
@@ -128,6 +128,10 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 /viewall   - 查看所有订阅和订阅人数 需要在设置中打开
 /import    - 回复此消息 opml 文件导入订阅(群组)
 ```
+
+自动检测 RSS feed，可以直接 `/sub https://www.fengkx.top` 而不用 `/sub https://www.fengkx.top/atom.xml`
+
+私聊可以直接发送 feed 地址订阅，支持同时发送多个地址按行分割
 
 把 bot 设为频道管理员并正确配置权限后，可通过私聊在`/sub`后加上频道 id 来在频道中订阅 feed
 例如 `/sub <频道 id > <feed url>` (频道 id 是@打头的)

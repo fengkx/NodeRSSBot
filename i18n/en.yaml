@@ -5,7 +5,7 @@ FETCH_ERROR: Fetch error
 ALREADY_SUB: You have already subscribe this feed
 DB_ERROR: SQL error
 DID_NOT_SUB: You haven't subscribed this feed
-SUB_USAGE: 'USAGE： /sub <RSS URL>'
+SUB_USAGE: 'USAGE： /sub <RSS URL> automatically detecting RSS feed is supported'
 UNSUB_USAGE: 'USAGE： /unsub <RSS URL>'
 ADMIN_ONLY: Only enable for admins
 UNSUBTHIS_USAGE: 'USAGE：/unsubthis Reply the message from the feed you want to unsubscribe directly'
