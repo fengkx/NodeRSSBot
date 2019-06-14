@@ -247,4 +247,15 @@ px.handleRedirect = async (url, realUrl) => {
     }
 };
 
+px.updateFeedUrl = async (oldUrl, newUrl) => {
+    try {
+        const db = await dbPomise;
+        const sql = `UPDATE rss_feed
+                 SET url=?
+                 WHERE url = ?`;
+        await db.run(sql, newUrl, oldUrl);
+    } catch (e) {
+        throw new Error('DB_ERROR');
+    }
+};
 module.exports = px;

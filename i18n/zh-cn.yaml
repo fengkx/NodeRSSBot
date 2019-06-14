@@ -41,3 +41,5 @@ CANCEL: 取消操作
 PAGE_PRE: 上一页
 PAGE_NEXT: 下一页
 FOUND_FEED_MORE_THAN_ONE: 找到不止一个订阅地址
+FOUND_FEEDS: 找到的订阅地址
+FEED_CHANGE_TO: 订阅源地址变为

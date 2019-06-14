@@ -5,13 +5,15 @@ const hashFeed = require('./hash-feed');
 const _pick = require('lodash.pick');
 const schedule = require('node-schedule');
 const logger = require('./logger');
+const feedUtil = require('./feed');
 const {
     getAllFeeds,
     updateHashList,
     failAttempt,
     getFeedByUrl,
     resetErrorCount,
-    handleRedirect
+    handleRedirect,
+    updateFeedUrl
 } = require('../proxies/rssFeed');
 const {
     notify_error_count,
@@ -19,6 +21,29 @@ const {
     fetch_gap,
     concurrency
 } = require('../config');
+
+async function handleErr(e, feed) {
+    logger.info(feed, 'ERROR_MANY_TIME');
+    process.send({
+        success: false,
+        message: 'MAX_TIME',
+        err: e.message,
+        feed
+    });
+    const originUrl = new URL(feed.url).origin;
+    const res = await got(originUrl);
+    const newUrl = await feedUtil.findFeed(res.body, originUrl);
+    if (newUrl.length > 0) {
+        updateFeedUrl(feed.url, newUrl[0]);
+        process.send({
+            success: false,
+            message: 'CHANGE',
+            err: e.message,
+            new_feed: newUrl,
+            feed
+        });
+    }
+}
 
 const fetch = async (feedUrl) => {
     try {
@@ -44,13 +69,7 @@ const fetch = async (feedUrl) => {
             feed.error_count % round_time === 0 &&
             feed.error_count > round_time;
         if (feed.error_count === notify_error_count || round_happen) {
-            logger.info(feed, 'ERROR_MANY_TIME');
-            process.send({
-                success: false,
-                message: 'MAX_TIME',
-                err: e.message,
-                feed
-            });
+            handleErr(e, feed);
         }
         if (e instanceof Error && e.response) {
             logger.debug(e.response);

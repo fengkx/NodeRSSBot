@@ -195,8 +195,12 @@ function startFetchProcess(restartTime) {
         logger.error('fetch process exit to much');
         process.exit(1);
     }
-    const chid = fork(`utils/fetch.js`);
-    chid.on('message', function(message) {
+    let child = process.env.NODE_PRODUTION
+        ? fork(`utils/fetch.js`)
+        : fork(`utils/fetch.js`, [], {
+              execArgv: ['--inspect-brk=46209']
+          });
+    child.on('message', function(message) {
         if (typeof message === 'string') logger.info(message);
         else if (message.success) {
             const feed = message.eachFeed;
@@ -209,15 +213,27 @@ function startFetchProcess(restartTime) {
                     bot,
                     `${feed.feed_title}: <a href="${feed.url}">${
                         feed.url
-                    }</a> ${i18n['ERROR_MANY_TIME']} ${err}
-                `,
+                    }</a> ${i18n['ERROR_MANY_TIME']} ${err}`,
                     feed
                 );
+            }
+            if (message.message === 'CHANGE') {
+                const { feed, new_feed } = message;
+                const builder = [];
+                builder.push(
+                    `${feed.feed_title}: <a href="${feed.url}"></a> ${
+                        i18n['ERROR_MANY_TIME']
+                    }`
+                );
+                builder.push(`<b>${i18n['FOUND_FEEDS']}</b>:`);
+                builder.push(...new_feed);
+                builder.push(`${i18n['FEED_CHANGE_TO']} ${new_feed[0]}`);
+                send(bot, builder.join('\n'), feed);
             }
         }
     });
 
-    chid.on('exit', function(code, signal) {
+    child.on('exit', function(code, signal) {
         logger.error(`child process exit`);
         logger.error({
             code,
