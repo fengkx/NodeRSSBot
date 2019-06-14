@@ -4,7 +4,6 @@ const Parser = require('rss-parser');
 const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
 
-// eslint-disable-next-line max-lines-per-function
 module.exports = async (ctx, next) => {
     const url = encodeURI(ctx.state.feedUrl);
     let feed = await RSS.getFeedByUrl(url);
