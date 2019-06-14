@@ -1,21 +1,32 @@
 const cheerio = require('cheerio');
 const RSSParser = require('rss-parser');
-exports.isFeedValid = async function (feedStr) {
+
+exports.isFeedValid = async function(feedStr) {
     const parser = new RSSParser();
+    let feed;
     try {
-        await parser.parseString(feedStr)
+        feed = await parser.parseString(feedStr);
     } catch (e) {
         return false;
     }
-    return true;
-}
+    return feed;
+};
 
-exports.findFedd = async function (html) {
+exports.findFeed = async function(html, reqUrl) {
+    reqUrl = new URL(reqUrl);
     const $ = cheerio.load(html);
-    return $('[rel=alternate]')
+    const urls = $('head')
+        .find('[rel=alternate]')
         .get()
         .map((i) => {
             i = $(i);
-            return i.attr('href');
+            const url = i.attr('href');
+            try {
+                return new URL(url).toString();
+            } catch (e) {
+                reqUrl.pathname = url;
+                return reqUrl.toString();
+            }
         });
-}
+    return urls;
+};
