@@ -8,6 +8,7 @@ module.exports = async (ctx, next) => {
     const urls = ctx.message.text.match(
         /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm
     );
+    const { lang } = ctx.state;
     const feedsReady = await Promise.all(
         urls.map(async (url) => {
             url = decodeURI(url);
@@ -24,13 +25,13 @@ module.exports = async (ctx, next) => {
                         url
                     };
                 } catch (e) {
-                    ctx.reply(`${url} ${i18n['FETCH_ERROR']}`);
+                    ctx.reply(`${url} ${i18n[lang]['FETCH_ERROR']}`);
                 }
             }
         })
     );
 
-    let builder = [i18n['SUB_SUCCESS']];
+    let builder = [i18n[lang]['SUB_SUCCESS']];
     feedsReady
         .filter((i) => i)
         .forEach(function(feed) {

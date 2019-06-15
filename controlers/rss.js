@@ -5,7 +5,7 @@ const twoKeyReply = require('../utils/two-key-reply');
 const errors = require('../utils/errors');
 
 ctrl.sub = async (ctx, next) => {
-    const { feedUrl, chat } = ctx.state;
+    const { feedUrl, chat, lang } = ctx.state;
     const feedTitle = ctx.state.feed.title;
     const userId = chat.id;
     try {
@@ -17,7 +17,7 @@ ctrl.sub = async (ctx, next) => {
             );
             ctx.state.processMesId = null;
             ctx.replyWithMarkdown(`
-            ${i18n['SUB_SUCCESS']}[${ctx.state.feed.title}](${
+            ${i18n[lang]['SUB_SUCCESS']}[${ctx.state.feed.title}](${
                 ctx.state.feedUrl
             })`);
         }
@@ -29,7 +29,7 @@ ctrl.sub = async (ctx, next) => {
 };
 
 ctrl.unsub = async (ctx, next) => {
-    const { feedUrl, chat } = ctx.state;
+    const { feedUrl, chat, lang } = ctx.state;
     const userId = chat.id;
     try {
         const feed = await RSS.getFeedByUrl(feedUrl);
@@ -42,7 +42,7 @@ ctrl.unsub = async (ctx, next) => {
             );
             ctx.state.processMesId = null;
             ctx.replyWithMarkdown(`
-        ${i18n['UNSUB_SUCCESS']}[${feed.feed_title}](${encodeURI(
+        ${i18n[lang]['UNSUB_SUCCESS']}[${feed.feed_title}](${encodeURI(
                 ctx.state.feedUrl
             )})`);
         }
@@ -62,13 +62,14 @@ ctrl.rss = async (ctx, next) => {
 
     const userId = ctx.state.chat.id;
     const count = await RSS.getSubscribedCountByUserId(userId);
+    const { lang } = ctx.state;
     const kbs = [
         {
-            text: i18n['PAGE_PRE'],
+            text: i18n[lang]['PAGE_PRE'],
             callback_data: 'RSS_' + rawStr + (page - 1)
         },
         {
-            text: i18n['PAGE_NEXT'],
+            text: i18n[lang]['PAGE_NEXT'],
             callback_data: 'RSS_' + rawStr + (page + 1)
         }
     ];
@@ -80,7 +81,7 @@ ctrl.rss = async (ctx, next) => {
     }
     let builder = [];
 
-    builder.push(`<strong>${i18n['SUB_LIST']}</strong>`);
+    builder.push(`<strong>${i18n[lang]['SUB_LIST']}</strong>`);
     if (raw) {
         feeds.forEach((feed) => {
             builder.push(
@@ -101,11 +102,16 @@ ctrl.rss = async (ctx, next) => {
 
 ctrl.unsubAll = async (ctx, next) => {
     const userId = ctx.state.chat.id;
+    const lang = ctx.state.lang;
     await RSS.unsubAll(userId);
-    await ctx.telegram.sendMessage(ctx.chat.id, i18n['UNSUB_ALL_SUCCESS'], {
-        parse_mode: 'HTML',
-        disable_web_page_preview: true
-    });
+    await ctx.telegram.sendMessage(
+        ctx.chat.id,
+        i18n[lang]['UNSUB_ALL_SUCCESS'],
+        {
+            parse_mode: 'HTML',
+            disable_web_page_preview: true
+        }
+    );
     await next();
 };
 
@@ -113,13 +119,14 @@ ctrl.viewAll = async (ctx, next) => {
     const limit = 50;
     const page = ctx.state.viewallPage || 1;
     const count = await RSS.getAllFeedsCount();
+    const { lang } = ctx.state;
     const kbs = [
         {
-            text: i18n['PAGE_PRE'],
+            text: i18n[lang]['PAGE_PRE'],
             callback_data: 'VIEWALL_' + (page - 1)
         },
         {
-            text: i18n['PAGE_NEXT'],
+            text: i18n[lang]['PAGE_NEXT'],
             callback_data: 'VIEWALL_' + (page + 1)
         }
     ];
@@ -130,14 +137,14 @@ ctrl.viewAll = async (ctx, next) => {
         throw errors.newCtrlErr('NOT_SUB');
     }
     let builder = [];
-    builder.push(`<strong>${i18n['ALL_FEED']}</strong>`);
+    builder.push(`<strong>${i18n[lang]['ALL_FEED']}</strong>`);
     feeds.forEach((feed) => {
         const url = feed.url.trim();
         const title = feed.feed_title.trim();
         builder.push(
-            `<a href="${url}">${title}</a>  ${i18n['NUMBER_OF_SUBSCRIBER']}: ${
-                feed.sub_count
-            }`
+            `<a href="${url}">${title}</a>  ${
+                i18n[lang]['NUMBER_OF_SUBSCRIBER']
+            }: ${feed.sub_count}`
         );
     });
     ctx.state.replyText = builder.join('\n');

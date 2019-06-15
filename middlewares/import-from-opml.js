@@ -25,7 +25,7 @@ const getOutlines = function(data) {
 };
 
 module.exports = async (ctx, next) => {
-    const { fileLink } = ctx.state;
+    const { fileLink, lang } = ctx.state;
 
     try {
         const res = await got.get(fileLink);
@@ -47,7 +47,7 @@ module.exports = async (ctx, next) => {
                 }
             })
         );
-        let text = `<strong>${i18n['IMPORT_SUCCESS']}</strong>`;
+        let text = `<strong>${i18n[lang]['IMPORT_SUCCESS']}</strong>`;
         outlines.forEach((outline) => {
             text += `\n<a href="${outline.xmlUrl}">${outline.text}</a>`;
         });

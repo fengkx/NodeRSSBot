@@ -1,16 +1,19 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
-const config = require('../config');
-const yamlPath = path.join(__dirname, `${config.lang}.yaml`);
 
-let base = fs.readFileSync(path.join(__dirname, 'en.yaml'), {
-    encoding: 'utf-8'
-});
-base = yaml.safeLoad(base);
+const i18n = {};
+const baseStr = fs.readFileSync(path.join(__dirname, `en.yaml`));
 
-const yamlStr = fs.readFileSync(yamlPath, {
-    encoding: 'utf-8'
-});
+fs.readdirSync(__dirname)
+    .filter((i) => i.endsWith('.yaml'))
+    .map((i) => {
+        const code = i.substr(0, i.length - 5);
+        i18n[code] = Object.assign(
+            yaml.safeLoad(baseStr),
+            yaml.safeLoad(fs.readFileSync(path.join(__dirname, `${code}.yaml`)))
+        );
+        return code;
+    });
 
-module.exports = Object.assign(base, yaml.safeLoad(yamlStr));
+module.exports = i18n;

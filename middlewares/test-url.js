@@ -37,7 +37,9 @@ module.exports = async (ctx, next) => {
                         // eslint-disable-next-line no-case-declarations
                         const builder = [];
                         builder.push(
-                            `**${i18n['FOUND_FEED_MORE_THAN_ONE']}:**`
+                            `**${
+                                i18n[ctx.state.lang]['FOUND_FEED_MORE_THAN_ONE']
+                            }:**`
                         );
                         builder.push(...ctx.state.feedUrl);
                         ctx.replyWithMarkdown(builder.join('\n'));
