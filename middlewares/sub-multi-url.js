@@ -42,6 +42,9 @@ module.exports = async (ctx, next) => {
             }
             builder.push(`<a href="${feed.url}">${feed.feed_title}</a>`);
         });
-    ctx.replyWithHTML(builder.join('\n'));
+    if (builder.length > 1) {
+        // some feed did sub successfully
+        ctx.replyWithHTML(builder.join('\n'));
+    }
     await next();
 };
