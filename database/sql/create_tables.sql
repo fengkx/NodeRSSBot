@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS "rss_feed"(
 	recent_hash_list TEXT default '[]',
     error_count INTEGER default 0 not null
 );
-create TABLE IF NOT EXISTS subscribes
+CREATE TABLE IF NOT EXISTS subscribes
 (
 	subscribe_id INTEGER
 		constraint subscribes_pk
@@ -16,4 +16,11 @@ create TABLE IF NOT EXISTS subscribes
 		constraint subscribes_rss_feed_feed_id_fk
 			references rss_feed(feed_id),
 	user_id INTEGER not null
+);
+CREATE TABLE IF NOT EXISTS users
+(
+	user_id INTEGER
+		constraint users_pk
+			primary key,
+	lang TEXT not null
 );

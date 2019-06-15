@@ -1,8 +1,16 @@
 const errors = require('../utils/errors');
+const USERS = require('../proxies/users');
+const config = require('../config');
 
 module.exports = async (ctx, next) => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
+    let user = await USERS.getUserById(chat.id);
+    if (!user) {
+        user = await USERS.newUser(chat.id, config.lang);
+    }
+    ctx.state.lang = user.lang;
+
     if (chat.type !== 'private') {
         const admins = await ctx.getChatAdministrators(chat.id);
         let from = null;
@@ -32,6 +40,12 @@ module.exports = async (ctx, next) => {
             ctx.message.text = ctx.message.text.replace(channelId, ' ');
             try {
                 ctx.state.chat = await ctx.telegram.getChat(channelId);
+                // set lang
+                let user = await USERS.getUserById(chat.id);
+                if (!user) {
+                    user = await USERS.newUser(chat.id, config.lang);
+                }
+                ctx.state.lang = user.lang;
             } catch (e) {
                 if (e.message === '400: Bad Request: chat not found')
                     throw errors.newCtrlErr('CHANNEL_NOT_FOUND', e);

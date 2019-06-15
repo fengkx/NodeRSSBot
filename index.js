@@ -6,6 +6,7 @@ const send = require('./utils/send');
 const logger = require('./utils/logger');
 const errors = require('./utils/errors');
 const i18n = require('./i18n');
+const USERS = require('./proxies/users');
 const {
     token,
     view_all,
@@ -29,16 +30,6 @@ const {
 } = require('./middlewares');
 
 const twoKeyReply = require('./utils/two-key-reply');
-const confirmation = twoKeyReply(i18n['CONFIRM'], [
-    {
-        text: i18n['YES'],
-        callback_data: 'UNSUB_ALL_YES'
-    },
-    {
-        text: i18n['NO'],
-        callback_data: 'UNSUB_ALL_NO'
-    }
-]);
 
 (async () => {
     await initTable();
@@ -60,26 +51,27 @@ bot.telegram.getMe().then((botInfo) => {
 
 bot.command('start', async (ctx) => {
     let builder = [];
-    builder.push(i18n['WELCOME']);
-    builder.push(i18n['SUB_USAGE']);
-    builder.push(i18n['UNSUB_USAGE']);
-    builder.push(i18n['RSS_USAGE']);
-    builder.push(i18n['SEND_FILE_IMPORT']);
-    builder.push(i18n['EXPORT']);
-    builder.push(i18n['USB_ALL_USAGE']);
-    if (view_all) builder.push(i18n['VIEW_ALL_USAGE']);
+    const { lang } = ctx.state;
+    builder.push(i18n[lang]['WELCOME']);
+    builder.push(i18n[lang]['SUB_USAGE']);
+    builder.push(i18n[lang]['UNSUB_USAGE']);
+    builder.push(i18n[lang]['RSS_USAGE']);
+    builder.push(i18n[lang]['SEND_FILE_IMPORT']);
+    builder.push(i18n[lang]['EXPORT']);
+    builder.push(i18n[lang]['USB_ALL_USAGE']);
+    if (view_all) builder.push(i18n[lang]['VIEW_ALL_USAGE']);
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
 
 bot.command('help', async (ctx) => {
     let builder = [];
-    builder.push(i18n['SUB_USAGE']);
-    builder.push(i18n['UNSUB_USAGE']);
-    builder.push(i18n['RSS_USAGE']);
-    builder.push(i18n['SEND_FILE_IMPORT']);
-    builder.push(i18n['EXPORT']);
-    builder.push(i18n['USB_ALL_USAGE']);
-    if (view_all) builder.push(i18n['VIEW_ALL_USAGE']);
+    builder.push(i18n[lang]['SUB_USAGE']);
+    builder.push(i18n[lang]['UNSUB_USAGE']);
+    builder.push(i18n[lang]['RSS_USAGE']);
+    builder.push(i18n[lang]['SEND_FILE_IMPORT']);
+    builder.push(i18n[lang]['EXPORT']);
+    builder.push(i18n[lang]['USB_ALL_USAGE']);
+    if (view_all) builder.push(i18n[lang]['VIEW_ALL_USAGE']);
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
 
@@ -94,7 +86,7 @@ bot.command('rss', sendError, isAdmin, RSS.rss);
 bot.command('export', sendError, isAdmin, exportToOpml);
 
 bot.command('import', async (ctx, next) => {
-    ctx.reply(i18n['IMPORT_USAGE']);
+    ctx.reply(i18n[lang]['IMPORT_USAGE']);
     await next();
 });
 
@@ -116,8 +108,52 @@ bot.command(
     sendError,
     isAdmin,
     // RSS.unsubAll,
-    confirmation
+    async (ctx, next) => {
+        const { lang } = ctx.state;
+        await twoKeyReply(i18n[lang]['CONFIRM'], [
+            {
+                text: i18n[lang]['YES'],
+                callback_data: 'UNSUB_ALL_YES'
+            },
+            {
+                text: i18n[lang]['NO'],
+                callback_data: 'UNSUB_ALL_NO'
+            }
+        ])(ctx, next);
+    }
 );
+
+bot.command('lang', sendError, isAdmin, async (ctx, next) => {
+    const kbs = Object.keys(i18n).map((i) => {
+        return {
+            text: i,
+            callback_data: `CHANGE_LANG_${i}_${ctx.state.chat.id}`
+        };
+    });
+    await ctx.telegram.sendMessage(
+        ctx.chat.id,
+        i18n[ctx.state.lang]['CHOOSE_LANG'],
+        {
+            parse_mode: 'HTML',
+            disable_web_page_preview: true,
+            reply_markup: {
+                inline_keyboard: [[...kbs]]
+            }
+        }
+    );
+    await next();
+});
+
+bot.action(/^CHANGE_LANG[\w_]+/, async (ctx, next) => {
+    const cb = ctx.callbackQuery;
+    const data = cb.data.split('_');
+    const lang = data[data.length - 2];
+    const id = data[data.length - 1];
+    await USERS.setLangById(id, lang);
+    ctx.telegram.answerCbQuery(cb.id, i18n[lang]['SET_LANG_TO'] + ' ' + lang);
+    await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
+    await next();
+});
 
 bot.hears(
     /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
@@ -150,7 +186,7 @@ bot.action(
 
 bot.action('UNSUB_ALL_NO', async (ctx, next) => {
     const cb = ctx.callbackQuery;
-    ctx.telegram.answerCbQuery(cb.id, i18n['CANCEL']);
+    ctx.telegram.answerCbQuery(cb.id, i18n[lang]['CANCEL']);
     await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
     await next();
 });
@@ -214,7 +250,7 @@ function startFetchProcess(restartTime) {
                     bot,
                     `${feed.feed_title}: <a href="${feed.url}">${
                         feed.url
-                    }</a> ${i18n['ERROR_MANY_TIME']} ${err}`,
+                    }</a> ${i18n[lang]['ERROR_MANY_TIME']} ${err}`,
                     feed
                 );
             }
@@ -223,12 +259,12 @@ function startFetchProcess(restartTime) {
                 const builder = [];
                 builder.push(
                     `${feed.feed_title}: <a href="${feed.url}"></a> ${
-                        i18n['ERROR_MANY_TIME']
+                        i18n[lang]['ERROR_MANY_TIME']
                     }`
                 );
-                builder.push(`<b>${i18n['FOUND_FEEDS']}</b>:`);
+                builder.push(`<b>${i18n[lang]['FOUND_FEEDS']}</b>:`);
                 builder.push(...new_feed);
-                builder.push(`${i18n['FEED_CHANGE_TO']} ${new_feed[0]}`);
+                builder.push(`${i18n[lang]['FEED_CHANGE_TO']} ${new_feed[0]}`);
                 send(bot, builder.join('\n'), feed);
             }
         }
