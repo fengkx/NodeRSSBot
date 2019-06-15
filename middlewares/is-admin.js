@@ -1,4 +1,4 @@
-const logger = require('../utils/logger');
+const errors = require('../utils/errors');
 
 module.exports = async (ctx, next) => {
     ctx.state.chat = await ctx.getChat();
@@ -19,7 +19,7 @@ module.exports = async (ctx, next) => {
                 const isAdmin = admins.some(function(item) {
                     return item.user.id === from.id;
                 });
-                if (!isAdmin) throw new Error('ADMIN_ONLY');
+                if (!isAdmin) throw errors.newCtrlErr('ADMIN_ONLY');
         }
     } else if (
         ctx.message && // button respone without message
@@ -33,9 +33,8 @@ module.exports = async (ctx, next) => {
             try {
                 ctx.state.chat = await ctx.telegram.getChat(channelId);
             } catch (e) {
-                logger.error(e);
                 if (e.message === '400: Bad Request: chat not found')
-                    throw new Error('CHANNEL_NOT_FOUND');
+                    throw errors.newCtrlErr('CHANNEL_NOT_FOUND', e);
             }
             const me = await ctx.telegram.getMe();
             const admins = await ctx.telegram.getChatAdministrators(
@@ -44,7 +43,7 @@ module.exports = async (ctx, next) => {
             const isAdmin = admins.some(function(item) {
                 return item.user.id === me.id;
             });
-            if (!isAdmin) throw new Error('CHANNEL_ADMIN_REQUIRE');
+            if (!isAdmin) throw errors.newCtrlErr('CHANNEL_ADMIN_REQUIRE');
         }
     }
     await next();

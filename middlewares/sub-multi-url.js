@@ -1,3 +1,4 @@
+const errors = require('../utils/errors');
 const got = require('../utils/got');
 const Parser = require('rss-parser');
 const RSS = require('../proxies/rssFeed');
@@ -36,7 +37,8 @@ module.exports = async (ctx, next) => {
             try {
                 RSS.sub(ctx.state.chat.id, feed.url, feed.feed_title);
             } catch (e) {
-                if (e.message !== 'ALREADY_SUB') throw new Error('DB_ERROR');
+                if (e.message !== 'ALREADY_SUB')
+                    throw errors.newCtrlErr('DB_ERROR');
             }
             builder.push(`<a href="${feed.url}">${feed.feed_title}</a>`);
         });

@@ -1,6 +1,6 @@
 const got = require('got');
 const Parser = require('xml2js').Parser;
-const logger = require('../utils/logger');
+const errors = require('../utils/errors');
 const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
 
@@ -42,7 +42,8 @@ module.exports = async (ctx, next) => {
                     );
                 } catch (e) {
                     if (e.message !== 'ALREADY_SUB')
-                        throw new Error('DB_ERROR');
+                        // ignore feed already sub
+                        throw errors.newCtrlErr('DB_ERROR', e);
                 }
             })
         );
@@ -54,11 +55,10 @@ module.exports = async (ctx, next) => {
         ctx.state.processMesId = null;
         ctx.replyWithHTML(text);
     } catch (e) {
-        logger.error(e);
         if (e.response) {
-            throw new Error('NETWORK_ERROR');
+            throw errors.newCtrlErr('NETWORK_ERROR', e);
         } else {
-            throw new Error('OPML_PARSE_ERRO');
+            throw errors.newCtrlErr('OPML_PARSE_ERRO', e);
         }
     }
     await next();

@@ -1,5 +1,6 @@
 const got = require('../utils/got');
 const feedUtil = require('../utils/feed');
+const errors = require('../utils/errors');
 const Parser = require('rss-parser');
 const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
@@ -23,7 +24,7 @@ module.exports = async (ctx, next) => {
                 const parser = new Parser();
                 switch (ctx.state.feedUrl.length) {
                     case 0:
-                        throw new Error('FETCH_ERROR');
+                        throw errors.newCtrlErr('FETCH_ERROR');
                     case 1:
                         // eslint-disable-next-line no-case-declarations
                         const res = await got(encodeURI(ctx.state.feedUrl[0]));
@@ -48,18 +49,8 @@ module.exports = async (ctx, next) => {
                 await next();
             }
         } catch (e) {
-            if (e instanceof Error) throw e;
-            if (e.response) {
-                switch (e.response.status) {
-                    case 404:
-                    case 403:
-                        throw new Error(e.response.status);
-                    default:
-                        throw new Error('FETCH_ERROR');
-                }
-            } else {
-                throw new Error('FETCH_ERROR');
-            }
+            if (e instanceof errors.ControllableError) throw e;
+            throw errors.newCtrlErr('FETCH_ERROR', e);
         }
     }
 };

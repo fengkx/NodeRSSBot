@@ -1,11 +1,12 @@
 const config = require('../config');
 const fs = require('fs');
 const logger = require('../utils/logger');
+const errors = require('../utils/errors');
 
 const dbPromise = require('./index');
 const initTables = async () => {
     if (!fs.existsSync(__dirname + '/sql/create_tables.sql')) {
-        throw new Error('CAN_INIT_DB');
+        throw errors.newCtrlErr('CAN_INIT_DB');
     }
     const sql = fs.readFileSync(__dirname + '/sql/create_tables.sql', {
         encoding: 'utf-8'

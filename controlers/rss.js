@@ -2,6 +2,7 @@ const ctrl = {};
 const RSS = require('../proxies/rssFeed');
 const i18n = require('../i18n');
 const twoKeyReply = require('../utils/two-key-reply');
+const errors = require('../utils/errors');
 
 ctrl.sub = async (ctx, next) => {
     const { feedUrl, chat } = ctx.state;
@@ -21,8 +22,8 @@ ctrl.sub = async (ctx, next) => {
             })`);
         }
     } catch (e) {
-        if (e instanceof Error) throw e;
-        throw new Error('DB_ERROR');
+        if (e instanceof errors.ControllableError) throw e;
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
     await next();
 };
@@ -32,7 +33,7 @@ ctrl.unsub = async (ctx, next) => {
     const userId = chat.id;
     try {
         const feed = await RSS.getFeedByUrl(feedUrl);
-        if (!feed) throw new Error('DID_NOT_SUB');
+        if (!feed) throw errors.newCtrlErr('DID_NOT_SUB');
         const res = await RSS.unsub(userId, feed.feed_id);
         if (res === 'ok') {
             await ctx.telegram.deleteMessage(
@@ -47,7 +48,7 @@ ctrl.unsub = async (ctx, next) => {
         }
     } catch (e) {
         if (e instanceof Error) throw e;
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
     await next();
 };
@@ -75,7 +76,7 @@ ctrl.rss = async (ctx, next) => {
     if (page === 1) kbs.shift();
     const feeds = await RSS.getSubscribedFeedsByUserId(userId, limit, page);
     if (feeds.length === 0) {
-        throw new Error('NOT_SUB');
+        throw errors.newCtrlErr('NOT_SUB');
     }
     let builder = [];
 
@@ -126,7 +127,7 @@ ctrl.viewAll = async (ctx, next) => {
     if (page === 1) kbs.shift();
     const feeds = await RSS.getAllFeedsWithCount(limit, page);
     if (feeds.length === 0) {
-        throw new Error('NOT_SUB');
+        throw errors.newCtrlErr('NOT_SUB');
     }
     let builder = [];
     builder.push(`<strong>${i18n['ALL_FEED']}</strong>`);

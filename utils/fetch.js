@@ -6,6 +6,7 @@ const _pick = require('lodash.pick');
 const schedule = require('node-schedule');
 const logger = require('./logger');
 const feedUtil = require('./feed');
+const errors = require('./errors');
 const {
     getAllFeeds,
     updateHashList,
@@ -15,6 +16,7 @@ const {
     handleRedirect,
     updateFeedUrl
 } = require('../proxies/rssFeed');
+
 const {
     notify_error_count,
     item_num,
@@ -71,18 +73,7 @@ const fetch = async (feedUrl) => {
         if (feed.error_count === notify_error_count || round_happen) {
             handleErr(e, feed);
         }
-        if (e instanceof Error && e.response) {
-            logger.debug(e.response);
-            switch (e.response.statusCode) {
-                case 404:
-                case 403:
-                    throw new Error(e.response.status);
-                default:
-                    throw new Error('FETCH_ERROR');
-            }
-        } else {
-            throw new Error('FETCH_ERROR');
-        }
+        throw errors.newCtrlErr('FETCH_ERROR', e);
     }
 };
 

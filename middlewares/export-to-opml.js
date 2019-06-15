@@ -1,4 +1,5 @@
 const RSS = require('../proxies/rssFeed');
+const errors = require('../utils/errors');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
@@ -39,7 +40,7 @@ module.exports = async (ctx, next) => {
     const chat = ctx.state.chat;
     const feeds = await RSS.getSubscribedFeedsByUserId(chat.id);
     if (feeds.length === 0) {
-        throw new Error('NOT_SUB');
+        throw errors.newCtrlErr('NOT_SUB');
     }
     const opml = await render(feeds);
     try {
@@ -51,7 +52,7 @@ module.exports = async (ctx, next) => {
         });
         await remove(filePath);
     } catch (e) {
-        throw new Error('FILESYSTEM_ERROR');
+        throw errors.newCtrlErr('FILESYSTEM_ERROR', e);
     }
     await next();
 };

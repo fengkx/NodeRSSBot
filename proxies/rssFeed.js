@@ -1,5 +1,6 @@
 const px = {};
 const dbPomise = require('../database');
+const errors = require('../utils/errors');
 
 px.sub = async (userId, feedUrl, feedTitle) => {
     feedUrl = decodeURI(feedUrl);
@@ -23,7 +24,7 @@ px.sub = async (userId, feedUrl, feedTitle) => {
             );
             return 'ok';
         } else {
-            throw new Error('ALREADY_SUB');
+            throw errors.newCtrlErr('ALREADY_SUB');
         }
     } else {
         await db.run(
@@ -56,7 +57,7 @@ px.getFeedByUrl = async (feedUrl) => {
             [feedUrl]
         );
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -69,7 +70,7 @@ px.unsub = async (userId, feedId) => {
         ]);
         return 'ok';
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -81,7 +82,7 @@ px.getAllFeeds = async () => {
                                     LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
                              GROUP BY rf.feed_id`);
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -96,7 +97,7 @@ px.updateHashList = async (feedId, hashList) => {
             feedId
         );
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -110,7 +111,7 @@ px.getFeedsByTitle = async (title) => {
             title
         );
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -128,7 +129,7 @@ px.getSubscribedFeedsByUserId = async (userId, limit = 1000, page = 1) => {
         `;
         return await db.all(sql, userId, limit, (page - 1) * limit);
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -143,7 +144,7 @@ px.getSubscribedCountByUserId = async (userId) => {
         const result = await db.all(sql, userId);
         return result[0].count;
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -157,7 +158,7 @@ px.resetErrorCount = async (feedUrl) => {
             feedUrl
         );
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -170,7 +171,7 @@ px.failAttempt = async (feedUrl) => {
         await db.run(sql, feedUrl);
         return 'ok';
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -185,7 +186,7 @@ px.unsubAll = async (userId) => {
         );
         return 'ok';
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -203,7 +204,7 @@ px.getAllFeedsWithCount = async (limit, page) => {
             limit * (page - 1)
         );
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -216,7 +217,7 @@ px.getAllFeedsCount = async () => {
             LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id`);
         return result[0].count;
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -243,7 +244,7 @@ px.handleRedirect = async (url, realUrl) => {
             );
         }
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 
@@ -255,7 +256,7 @@ px.updateFeedUrl = async (oldUrl, newUrl) => {
                  WHERE url = ?`;
         await db.run(sql, newUrl, oldUrl);
     } catch (e) {
-        throw new Error('DB_ERROR');
+        throw errors.newCtrlErr('DB_ERROR', e);
     }
 };
 module.exports = px;

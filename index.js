@@ -4,6 +4,7 @@ const RSS = require('./controlers/rss');
 const { fork } = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
+const errors = require('./utils/errors');
 const i18n = require('./i18n');
 const {
     token,
@@ -105,7 +106,7 @@ bot.command(
     onlyPrivateChat,
     async (ctx, next) => {
         if (view_all) await next();
-        else throw new Error('COMMAND_NOT_ENABLED');
+        else throw errors.newCtrlErr('COMMAND_NOT_ENABLED');
     },
     RSS.viewAll
 );
