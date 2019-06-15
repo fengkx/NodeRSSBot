@@ -9,14 +9,14 @@ class ControllableError extends Error {
         }
     }
 
-    toString() {
-        return i18n[this.code];
+    toString(lang) {
+        return i18n[lang][this.code];
     }
 }
 
 exports.newCtrlErr = function(code, e) {
     const err = new ControllableError(e);
-    if (e.response) {
+    if (e && e.response) {
         switch (e.response.statusCode) {
             case 404:
             case 403:

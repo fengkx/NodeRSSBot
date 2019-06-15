@@ -19,7 +19,7 @@ module.exports = async (ctx, next) => {
                     ctx.state.processMesId
                 );
             }
-            ctx.reply(e.toString());
+            ctx.reply(e.toString(lang));
         } else throw e;
     }
 };

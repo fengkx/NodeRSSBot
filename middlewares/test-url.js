@@ -14,7 +14,7 @@ module.exports = async (ctx, next) => {
         await next();
     } else {
         try {
-            const res = await got.get(url);
+            const res = await got(url);
             ctx.state.feedUrl = decodeURI(res.url); // handle redirect
             feed = await feedUtil.isFeedValid(res.body);
             if (!feed) {
@@ -31,6 +31,7 @@ module.exports = async (ctx, next) => {
                         feed = await parser.parseString(res.body);
                         delete feed.items;
                         ctx.state.feed = feed;
+                        ctx.state.feedUrl = ctx.state.feedUrl[0];
                         await next(); // next
                         break;
                     default:
