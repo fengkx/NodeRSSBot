@@ -45,3 +45,4 @@ FOUND_FEEDS: Found feeds
 FEED_CHANGE_TO: Feed Change to
 CHOOSE_LANG: Choose languages
 SET_LANG_TO: Set language to
+LANG_USAGE: 'USAGE: /lang change language'

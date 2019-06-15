@@ -19,6 +19,7 @@ RSS is parsered using [rss-parser](https://www.npmjs.com/package/rss-parser)
 /export    - export subscriptions to opml file
 /viewall   - view all subscriptions and number of subscribers need to enable in settings
 /import    - reply this message a opml file to import(in group)
+/lang      - change language
 ```
 
 Automatically detecting RSS feed ，you can use `/sub https://www.fengkx.top` rather than `/sub https://www.fengkx.top/atom.xml
@@ -127,6 +128,7 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 /export    - 导出订阅到opml文件
 /viewall   - 查看所有订阅和订阅人数 需要在设置中打开
 /import    - 回复此消息 opml 文件导入订阅(群组)
+/lang      - 更改语言
 ```
 
 自动检测 RSS feed，可以直接 `/sub https://www.fengkx.top` 而不用 `/sub https://www.fengkx.top/atom.xml`

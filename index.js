@@ -59,6 +59,7 @@ bot.command('start', async (ctx) => {
     builder.push(i18n[lang]['SEND_FILE_IMPORT']);
     builder.push(i18n[lang]['EXPORT']);
     builder.push(i18n[lang]['USB_ALL_USAGE']);
+    builder.push(i18n[lang]['LANG_USAGE']);
     if (view_all) builder.push(i18n[lang]['VIEW_ALL_USAGE']);
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
@@ -71,7 +72,11 @@ bot.command('help', async (ctx) => {
     builder.push(i18n[lang]['SEND_FILE_IMPORT']);
     builder.push(i18n[lang]['EXPORT']);
     builder.push(i18n[lang]['USB_ALL_USAGE']);
+    builder.push(i18n[lang]['LANG_USAGE']);
     if (view_all) builder.push(i18n[lang]['VIEW_ALL_USAGE']);
+    builder.push(
+        `[https://github.com/fengkx/NodeRSSBot/blob/master/README.md](https://github.com/fengkx/NodeRSSBot/blob/master/README.md)`
+    );
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
 
