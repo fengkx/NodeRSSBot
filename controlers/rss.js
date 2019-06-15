@@ -47,7 +47,7 @@ ctrl.unsub = async (ctx, next) => {
             )})`);
         }
     } catch (e) {
-        if (e instanceof Error) throw e;
+        if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
     }
     await next();
