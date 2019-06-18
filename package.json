@@ -32,6 +32,7 @@
     "cheerio": "^1.0.0-rc.3",
     "ejs": "^2.6.1",
     "got": "^9.6.0",
+    "heapdump": "^0.3.14",
     "http-proxy-agent": "^2.1.0",
     "https-proxy-agent": "^2.2.1",
     "iconv-lite": "^0.4.24",
