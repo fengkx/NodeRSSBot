@@ -64,7 +64,9 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 1. clone this repository `git clone https://github.com/fengkx/NodeRSSBot.git`
 1. Set the `RSSBOT_TOKEN` environment variable or set it in config/index.js
 1. Install dependencies run `npm i` in the root directory of the repository
-1. Run `pm2 start index.js`
+1. Run `pm2 start npm --name node_rssbot -- start` (recommend) or `npm start`
+
+**Note that NODE_PRODUTION environment should be set in prodution mode**
 
 # Setting
 
@@ -170,7 +172,9 @@ viewall 只能在私聊中使用
 1. 克隆仓库 `git clone https://github.com/fengkx/NodeRSSBot.git`
 1. 设置 `RSSBOT_TOKEN` 环境变量，或者直接在 `config/index.js` 中修改
 1. 安装依赖 在仓库根目录运行`npm i`
-1. 推荐用 `pm2` 守护进程 `pm2 start index.js` 如果没有安装`pm2` 就先安装 `npm i -g pm2`
+1. 推荐用 `pm2` 守护进程 `pm2 start npm --name node_rssbot -- start` 如果没有安装`pm2` 就先安装 `npm i -g pm2` 或者直接 `npm start`
+
+**注意生产环境下要设置 NODE_PRODUTION 环境变量**
 
 # TODO
 
