@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-const heapdump = require('heapdump');
 const got = require('./got');
 const Parser = require('rss-parser');
 const pMap = require('p-map');
