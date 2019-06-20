@@ -9,18 +9,13 @@ ctrl.sub = async (ctx, next) => {
     const feedTitle = ctx.state.feed.title;
     const userId = chat.id;
     try {
-        const res = await RSS.sub(userId, feedUrl, feedTitle);
-        if (res === 'ok') {
-            await ctx.telegram.deleteMessage(
-                ctx.chat.id,
-                ctx.state.processMesId
-            );
-            ctx.state.processMesId = null;
-            ctx.replyWithMarkdown(`
-            ${i18n[lang]['SUB_SUCCESS']}[${ctx.state.feed.title}](${
-                ctx.state.feedUrl
-            })`);
-        }
+        await RSS.sub(userId, feedUrl, feedTitle);
+        await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMesId);
+        ctx.state.processMesId = null;
+        ctx.replyWithMarkdown(`
+        ${i18n[lang]['SUB_SUCCESS']}[${ctx.state.feed.title}](${
+            ctx.state.feedUrl
+        })`);
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
@@ -34,18 +29,14 @@ ctrl.unsub = async (ctx, next) => {
     try {
         const feed = await RSS.getFeedByUrl(feedUrl);
         if (!feed) throw errors.newCtrlErr('DID_NOT_SUB');
-        const res = await RSS.unsub(userId, feed.feed_id);
-        if (res === 'ok') {
-            await ctx.telegram.deleteMessage(
-                ctx.chat.id,
-                ctx.state.processMesId
-            );
-            ctx.state.processMesId = null;
-            ctx.replyWithMarkdown(`
+        await RSS.unsub(userId, feed.feed_id);
+
+        await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMesId);
+        ctx.state.processMesId = null;
+        ctx.replyWithMarkdown(`
         ${i18n[lang]['UNSUB_SUCCESS']}[${feed.feed_title}](${encodeURI(
-                ctx.state.feedUrl
-            )})`);
-        }
+            ctx.state.feedUrl
+        )})`);
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);

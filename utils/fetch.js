@@ -87,7 +87,7 @@ const fetchAll = async () => {
             const oldHashList = JSON.parse(eachFeed.recent_hash_list);
             let newItems, sendItems;
             try {
-                newItems = await fetch(eachFeed.url, eachFeed.feed_id);
+                newItems = await fetch(eachFeed.url);
                 if (!newItems) {
                     logger.debug(eachFeed.url, 'Error');
                 } else {
