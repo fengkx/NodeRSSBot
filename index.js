@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-const heapdump = require('heapdump');
 const Telegraf = require('telegraf');
 const initTable = require('./database/init-tables');
 const RSS = require('./controlers/rss');
