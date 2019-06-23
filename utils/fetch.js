@@ -144,6 +144,13 @@ switch (unit) {
         rule.hour = time_gaps;
         logger.info('fetch every ' + gapNum + ' hour(s)');
         break;
+    case 's':
+        for (let i = 0; i < 60; i = i + gapNum) {
+            time_gaps.push(i);
+        }
+        rule.second = time_gaps;
+        logger.info('fetch every ' + gapNum + ' seconds');
+        break;
     case 'm':
     default:
         for (let i = 0; i < 60; i = i + gapNum) time_gaps.push(i);
