@@ -100,7 +100,8 @@ translate the file in `i18n` in another yaml and make a pull request (๑•̀�
 set `lang` setting using one of the following languages
 
 -   en English
--   zh-cn Chinese
+-   zh-cn Simplified Chinese
+-   zh-tw Tranditional Chinese
 -   es-es Spanish provided by @NPueyo
 
 ---
@@ -215,5 +216,6 @@ viewall 只能在私聊中使用
 以下任意一个语言作为`lang`配置项
 
 -   en English
--   zh-cn 中文
+-   zh-cn 简体中文
+-   zh-tw 繁體中文
 -   es-es Spanish provided by @NPueyo
