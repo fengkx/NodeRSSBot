@@ -33,7 +33,7 @@
     "ejs": "^2.6.2",
     "got": "^9.6.0",
     "http-proxy-agent": "^2.1.0",
-    "https-proxy-agent": "^2.2.1",
+    "https-proxy-agent": "^2.2.2",
     "iconv-lite": "^0.4.24",
     "js-yaml": "^3.13.1",
     "jschardet": "^2.1.0",
