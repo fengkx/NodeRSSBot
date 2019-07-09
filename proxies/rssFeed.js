@@ -61,6 +61,20 @@ px.getFeedByUrl = async (feedUrl) => {
     }
 };
 
+px.getFeedById = async (id) => {
+    try {
+        const db = await dbPomise;
+        return await db.get(
+            `SELECT *
+                 FROM rss_feed
+                 WHERE feed_id = ?`,
+            [id]
+        );
+    } catch (e) {
+        throw errors.newCtrlErr('DB_ERROR', e);
+    }
+};
+
 px.unsub = async (userId, feedId) => {
     try {
         const db = await dbPomise;

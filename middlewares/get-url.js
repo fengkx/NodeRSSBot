@@ -1,6 +1,9 @@
 const errors = require('../utils/errors');
+const RSS = require('../proxies/rssFeed');
+const i18n = require('../i18n');
 
 module.exports = async (ctx, next) => {
+    const { lang } = ctx.state;
     const { text } = ctx.message;
     const [command, url] = text.split(/\s+/);
     if (!url) {
@@ -8,9 +11,23 @@ module.exports = async (ctx, next) => {
             case '/sub':
                 throw errors.newCtrlErr('SUB_USAGE');
             case '/uns':
-                if (command.substr(0, 8) === '/unsubthis')
-                    throw errors.newCtrlErr('UNSUBTHIS_USAGE');
-                else throw errors.newCtrlErr('UNSUB_USAGE');
+                if (command.substr(0, 8) === '/unsubthis') {
+                    throw errors.newCtrlErr('UNSUB_USAGE');
+                } else {
+                    const feeds = await RSS.getSubscribedFeedsByUserId(
+                        ctx.state.chat.id
+                    );
+                    ctx.reply(i18n[lang]['CHOOSE_UNSUB'], {
+                        reply_markup: {
+                            keyboard: [
+                                feeds.map(
+                                    (i) => `[${i.feed_id}] ${i.feed_title}`
+                                )
+                            ]
+                        }
+                    });
+                }
+                break;
             case '/exp':
                 throw errors.newCtrlErr('EXPORT');
             case '/all':
@@ -18,8 +35,7 @@ module.exports = async (ctx, next) => {
             case '/vie':
                 throw errors.newCtrlErr('VIEW_ALL_USAGE');
         }
-    }
-    if (!url.startsWith('http') && !url.startsWith('https')) {
+    } else if (!url.startsWith('http') && !url.startsWith('https')) {
         throw errors.newCtrlErr('FEED_URL_NOT_PARSE');
     }
     ctx.state.feedUrl = decodeURI(url);

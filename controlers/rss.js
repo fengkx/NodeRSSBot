@@ -13,7 +13,7 @@ ctrl.sub = async (ctx, next) => {
         await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMesId);
         ctx.state.processMesId = null;
         ctx.replyWithMarkdown(`
-        ${i18n[lang]['SUB_SUCCESS']}[${ctx.state.feed.title}](${
+        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.title}](${
             ctx.state.feedUrl
         })`);
     } catch (e) {
@@ -34,7 +34,7 @@ ctrl.unsub = async (ctx, next) => {
         await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMesId);
         ctx.state.processMesId = null;
         ctx.replyWithMarkdown(`
-        ${i18n[lang]['UNSUB_SUCCESS']}[${feed.feed_title}](${encodeURI(
+        ${i18n[lang]['UNSUB_SUCCESS']} [${feed.feed_title}](${encodeURI(
             ctx.state.feedUrl
         )})`);
     } catch (e) {
@@ -140,6 +140,14 @@ ctrl.viewAll = async (ctx, next) => {
     });
     ctx.state.replyText = builder.join('\n');
     await twoKeyReply(kbs)(ctx, next);
+};
+
+ctrl.getUrlById = async (ctx, next) => {
+    const { text } = ctx.message;
+    const feed_id = text.match(/^\[(\d+)] (.+)/)[1];
+    const feed = await RSS.getFeedById(feed_id);
+    ctx.state.feedUrl = decodeURI(feed.url);
+    await next();
 };
 
 module.exports = ctrl;

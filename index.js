@@ -6,7 +6,7 @@ const send = require('./utils/send');
 const logger = require('./utils/logger');
 const errors = require('./utils/errors');
 const i18n = require('./i18n');
-const USERS = require('./proxies/users');
+const LANG = require('./proxies/users');
 const {
     token,
     view_all,
@@ -128,37 +128,9 @@ bot.command(
     }
 );
 
-bot.command('lang', sendError, isAdmin, async (ctx, next) => {
-    const kbs = Object.keys(i18n).map((i) => {
-        return {
-            text: i,
-            callback_data: `CHANGE_LANG_${i}_${ctx.state.chat.id}`
-        };
-    });
-    await ctx.telegram.sendMessage(
-        ctx.chat.id,
-        i18n[ctx.state.lang]['CHOOSE_LANG'],
-        {
-            parse_mode: 'HTML',
-            disable_web_page_preview: true,
-            reply_markup: {
-                inline_keyboard: [[...kbs]]
-            }
-        }
-    );
-    await next();
-});
+bot.command('lang', sendError, isAdmin, LANG.replyKeyboard);
 
-bot.action(/^CHANGE_LANG[\w_]+/, async (ctx, next) => {
-    const cb = ctx.callbackQuery;
-    const data = cb.data.split('_');
-    const lang = data[data.length - 2];
-    const id = data[data.length - 1];
-    await USERS.setLangById(id, lang);
-    ctx.telegram.answerCbQuery(cb.id, i18n[lang]['SET_LANG_TO'] + ' ' + lang);
-    await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
-    await next();
-});
+bot.action(/^CHANGE_LANG[\w_]+/, LANG.changeLangCallback);
 
 bot.hears(
     /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
@@ -176,6 +148,8 @@ bot.hears(
     },
     subMultiUrl
 );
+
+bot.hears(/^\[(\d+)] (.+)/, sendError, isAdmin, RSS.getUrlById, RSS.unsub);
 
 bot.action(
     'UNSUB_ALL_YES',
