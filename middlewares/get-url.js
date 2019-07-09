@@ -19,11 +19,9 @@ module.exports = async (ctx, next) => {
                     );
                     ctx.reply(i18n[lang]['CHOOSE_UNSUB'], {
                         reply_markup: {
-                            keyboard: [
-                                feeds.map(
-                                    (i) => `[${i.feed_id}] ${i.feed_title}`
-                                )
-                            ]
+                            keyboard: feeds.map((i) => {
+                                return [`[${i.feed_id}] ${i.feed_title}`];
+                            })
                         }
                     });
                 }
