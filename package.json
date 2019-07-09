@@ -1,11 +1,11 @@
 {
   "name": "noderssbot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Another Telegram RSSBot in Node.js",
   "main": "index.js",
   "scripts": {
-    "start": "node -e 'process.env.NODE_PRODUTION = process.env.NODE_PRODUTION || \"production\"; require(\"./index.js\");'",
-    "dev": "proxychains -q node $NODE_DEBUG_OPTION  index",
+    "start": "node --heapsnapshot-signal=SIGUSR2 -e 'process.env.NODE_PRODUTION = process.env.NODE_PRODUTION || \"production\"; require(\"./index.js\");'",
+    "dev": "proxychains -q node index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
     "lint": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\""
