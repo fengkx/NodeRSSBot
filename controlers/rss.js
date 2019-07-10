@@ -33,10 +33,17 @@ ctrl.unsub = async (ctx, next) => {
 
         await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMesId);
         ctx.state.processMesId = null;
-        ctx.replyWithMarkdown(`
+        ctx.replyWithMarkdown(
+            `
         ${i18n[lang]['UNSUB_SUCCESS']} [${feed.feed_title}](${encodeURI(
-            ctx.state.feedUrl
-        )})`);
+                ctx.state.feedUrl
+            )})`,
+            {
+                reply_markup: {
+                    remove_keyboard: true
+                }
+            }
+        );
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
