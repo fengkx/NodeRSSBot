@@ -17,15 +17,17 @@ module.exports = async (ctx, next) => {
                     const feeds = await RSS.getSubscribedFeedsByUserId(
                         ctx.state.chat.id
                     );
-                    ctx.reply(i18n[lang]['CHOOSE_UNSUB'], {
+                    await ctx.reply(i18n[lang]['CHOOSE_UNSUB'], {
                         reply_markup: {
+                            force_reply: true,
                             keyboard: feeds.map((i) => {
                                 return [`[${i.feed_id}] ${i.feed_title}`];
-                            })
+                            }),
+                            one_time_keyboard: true
                         }
                     });
                 }
-                break;
+                return; // this ctx end wait for another message from keyboard
             case '/exp':
                 throw errors.newCtrlErr('EXPORT');
             case '/all':
