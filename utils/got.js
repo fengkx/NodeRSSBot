@@ -4,9 +4,13 @@ const charset = require('charset');
 const charDet = require('jschardet');
 const iconv = require('iconv-lite');
 
+const AcceptHeader =
+    'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 ';
+
 module.exports = got.extend({
     headers: {
-        'user-agent': config.UA
+        'user-agent': config.UA,
+        accept: AcceptHeader
     },
     hooks: {
         afterResponse: [
