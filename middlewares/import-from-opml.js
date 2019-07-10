@@ -41,7 +41,7 @@ module.exports = async (ctx, next) => {
                         outline.text
                     );
                 } catch (e) {
-                    if (e.message !== 'ALREADY_SUB')
+                    if (e.code !== 'ALREADY_SUB')
                         // ignore feed already sub
                         throw errors.newCtrlErr('DB_ERROR', e);
                 }
@@ -57,6 +57,8 @@ module.exports = async (ctx, next) => {
     } catch (e) {
         if (e.response) {
             throw errors.newCtrlErr('NETWORK_ERROR', e);
+        } else if (e instanceof errors.ControllableError) {
+            throw e;
         } else {
             throw errors.newCtrlErr('OPML_PARSE_ERRO', e);
         }
