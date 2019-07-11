@@ -6,7 +6,7 @@ const send = require('./utils/send');
 const logger = require('./utils/logger');
 const errors = require('./utils/errors');
 const i18n = require('./i18n');
-const LANG = require('./proxies/users');
+const LANG = require('./controlers/language');
 const {
     token,
     view_all,

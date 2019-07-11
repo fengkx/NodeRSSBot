@@ -1,5 +1,5 @@
-const USERS = require('./proxies/users');
-const i18n = require('./i18n');
+const USERS = require('../proxies/users');
+const i18n = require('../i18n');
 
 exports.replyKeyboard = async (ctx, next) => {
     const kbs = Object.keys(i18n).map((i) => {
