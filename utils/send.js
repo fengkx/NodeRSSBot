@@ -1,4 +1,5 @@
 const SUBSCRIBES = require('../proxies/subscribes');
+const { htmlEscape } = require('escape-goat');
 const logger = require('./logger');
 
 module.exports = async (bot, toSend, feed) => {
@@ -23,9 +24,11 @@ module.exports = async (bot, toSend, feed) => {
     } else if (Array.isArray(toSend)) {
         subscribers.map(async (subscribe) => {
             const userId = subscribe.user_id;
-            let text = `<b>${feed.feed_title.trim()}</b>`;
+            let text = `<b>${htmlEscape(feed.feed_title.trim())}</b>`;
             toSend.forEach(function(item) {
-                text += `\n<a href="${item.link.trim()}">${item.title.trim()}</a>`;
+                text += `\n<a href="${item.link.trim()}">${htmlEscape(
+                    item.title.trim()
+                )}</a>`;
             });
             try {
                 await bot.telegram.sendMessage(userId, text, {
