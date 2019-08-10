@@ -49,7 +49,7 @@ bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username;
 });
 
-bot.command('start', async (ctx) => {
+bot.command('start', sendError, async (ctx) => {
     let builder = [];
     const { lang } = ctx.state;
     builder.push(i18n[lang]['WELCOME']);
@@ -64,7 +64,7 @@ bot.command('start', async (ctx) => {
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
 
-bot.command('help', async (ctx) => {
+bot.command('help', sendError, async (ctx) => {
     let builder = [];
     builder.push(i18n[lang]['SUB_USAGE']);
     builder.push(i18n[lang]['UNSUB_USAGE']);
@@ -262,6 +262,6 @@ function startFetchProcess(restartTime) {
 startFetchProcess(0);
 
 logger.info(`Database file is in ${db_path}`);
-logger.info(`Using language is ${lang}`);
+logger.info(`Using Default language is ${lang}`);
 logger.info(`send the latest ${item_num} items for each feed`);
 logger.info('NodeRSSBot is ready');
