@@ -22,7 +22,7 @@ RSS is parsered using [rss-parser](https://www.npmjs.com/package/rss-parser)
 /lang      - change language
 ```
 
-Automatically detecting RSS feed ，you can use `/sub https://www.fengkx.top` rather than `/sub https://www.fengkx.top/atom.xml
+Automatically detecting RSS feed ，you can use `/sub https://www.fengkx.top` rather than `/sub https://www.fengkx.top/atom.xml`
 
 You can send multi feeds directly to subscribe in private chat(split by line)
 
