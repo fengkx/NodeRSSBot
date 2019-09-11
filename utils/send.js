@@ -1,6 +1,6 @@
 const SUBSCRIBES = require('../proxies/subscribes');
-const { htmlEscape } = require('escape-goat');
 const logger = require('./logger');
+const sanitize = require('./sanitize');
 
 module.exports = async (bot, toSend, feed) => {
     const subscribers = await SUBSCRIBES.getSubscribersByFeedId(feed.feed_id);
@@ -8,7 +8,7 @@ module.exports = async (bot, toSend, feed) => {
         subscribers.map(async (subscribe) => {
             const userId = subscribe.user_id;
             try {
-                await bot.telegram.sendMessage(userId, toSend, {
+                await bot.telegram.sendMessage(userId, sanitize(toSend), {
                     parse_mode: 'HTML',
                     disable_web_page_preview: true
                 });
@@ -17,17 +17,17 @@ module.exports = async (bot, toSend, feed) => {
                 const re = new RegExp('chat not found');
                 if (re.test(e.description)) {
                     logger.error(`delete all subscribes for user ${userId}`);
-                    // SUBSCRIBES.deleteSubscribersByUserId(userId);
+                    await SUBSCRIBES.deleteSubscribersByUserId(userId);
                 }
             }
         });
     } else if (Array.isArray(toSend)) {
         subscribers.map(async (subscribe) => {
             const userId = subscribe.user_id;
-            let text = `<b>${htmlEscape(feed.feed_title.trim())}</b>`;
+            let text = `<b>${sanitize(feed.feed_title)}</b>`;
             toSend.forEach(function(item) {
-                text += `\n<a href="${item.link.trim()}">${htmlEscape(
-                    item.title.trim()
+                text += `\n<a href="${item.link.trim()}">${sanitize(
+                    item.title
                 )}</a>`;
             });
             try {
