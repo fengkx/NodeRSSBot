@@ -8,7 +8,7 @@ module.exports = async (bot, toSend, feed) => {
         subscribers.map(async (subscribe) => {
             const userId = subscribe.user_id;
             try {
-                await bot.telegram.sendMessage(userId, sanitize(toSend), {
+                await bot.telegram.sendMessage(userId, toSend, {
                     parse_mode: 'HTML',
                     disable_web_page_preview: true
                 });
