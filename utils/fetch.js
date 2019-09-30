@@ -126,8 +126,10 @@ function run() {
     try {
         fetchAll();
     } catch (e) {
-        // may not work at all
-        logger.error(e);
+        logger.error(
+            `[Catch in all ${e.name}] ${e.url} ${e.statusCode} ${e.statusMessage}`
+        );
+        logger.debug(e);
     }
 }
 
