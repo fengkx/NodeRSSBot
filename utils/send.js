@@ -1,6 +1,7 @@
 const SUBSCRIBES = require('../proxies/subscribes');
 const logger = require('./logger');
 const sanitize = require('./sanitize');
+const config = require('../config');
 
 module.exports = async (bot, toSend, feed) => {
     const subscribers = await SUBSCRIBES.getSubscribersByFeedId(feed.feed_id);
@@ -36,11 +37,14 @@ module.exports = async (bot, toSend, feed) => {
                     disable_web_page_preview: true
                 });
             } catch (e) {
+                // bot was blocked or chat is deleted
                 logger.error(e.description);
-                const re = new RegExp('chat not found');
-                if (re.test(e.description)) {
+                const re = new RegExp(
+                    'chat not found|bot was blocked by the user'
+                );
+                if (config.delete_on_err_send && re.test(e.description)) {
                     logger.error(`delete all subscribes for user ${userId}`);
-                    // SUBSCRIBES.deleteSubscribersByUserId(userId);
+                    SUBSCRIBES.deleteSubscribersByUserId(userId);
                 }
             }
         });
