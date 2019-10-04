@@ -96,7 +96,6 @@ const fetchAll = async () => {
                             return await hashFeed(item);
                         })
                     );
-                    await updateHashList(eachFeed.feed_id, newHashList);
                     sendItems = await Promise.all(
                         newItems.map(async (item) => {
                             const hash = await hashFeed(item);
@@ -104,6 +103,9 @@ const fetchAll = async () => {
                         })
                     );
                     sendItems = sendItems.filter((i) => i);
+                    if (sendItems.length > 0) {
+                        await updateHashList(eachFeed.feed_id, newHashList);
+                    }
                 }
             } catch (e) {
                 logger.debug(e);
