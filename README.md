@@ -101,9 +101,10 @@ set `lang` setting using one of the following languages
 
 -   en English
 -   zh-cn Simplified Chinese
--   zh-tw Tranditional Chinese
+-   zh-tw Tranditional Chinese provided by @partment
 -   es-es Spanish provided by @NPueyo
 -   pt-br Portuguese provided by @dubaid
+-   lt Lithuanian provided by @wait-what
 
 ---
 
@@ -218,7 +219,7 @@ viewall 只能在私聊中使用
 
 -   en English
 -   zh-cn 简体中文
--   zh-tw 繁體中文
+-   zh-tw 繁體中文 by @partment
 -   es-es Spanish provided by @NPueyo
 -   pt-br Portuguese provided by @dubaid
-
+-   lt Lithuanian provided by @wait-what
