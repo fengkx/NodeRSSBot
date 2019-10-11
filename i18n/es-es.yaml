@@ -21,12 +21,12 @@ NETWORK_ERROR: Error de red
 IMPORT_SUCCESS: Importado con éxito
 FILESYSTEM_ERROR: Error del sistema de archivos
 UNSUB_ALL_SUCCESS: Cancelada la suscripción a todos los feeds con éxito
-EXPORT: 'UTILIZACIÓN /export Exportar suscripciones a formato OPML'
+EXPORT: 'UTILIZACIÓN: /export Exportar suscripciones a formato OPML'
 SEND_FILE_IMPORT: Envía un archivo OPML para importar suscripciones
 RSS_USAGE: 'UTILIZACIÓN: /rss Devuelve la lista de suscripciones; agregue "raw" para mostrar los enlaces'
 VIEW_ALL_USAGE: /viewall Ver todas las suscripciones y el número de suscriptores que tienen agregue "raw" para mostrar los enlaces
-USB_ALL_USAGE: 'UTILIZACIÓN /allunsub Cancelar la suscripción a todos los feeds'
-IMPORT_USAGE: 'UTILIZACIÓN /import Enviar el archivo OPML directamente a un chat privado o responder a este mensaje'
+USB_ALL_USAGE: 'UTILIZACIÓN: /allunsub Cancelar la suscripción a todos los feeds'
+IMPORT_USAGE: 'UTILIZACIÓN: /import Enviar el archivo OPML directamente a un chat privado o responder a este mensaje'
 WELCOME: Bienvenido a [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
 CONFIRM: ¿Desea continuar con la operación?
 PRIVATE_CHAT_ONLY: Sólo se puede utilizar en un chat privado
