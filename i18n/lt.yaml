@@ -1,0 +1,49 @@
+FEED_URL_NOT_PARSE: Nepavyko perskaityti nuorodos
+FETCH_ERROR: Parsisiuntimo klaida
+404: Fetch error HTTP404 Nerasta
+403: Fetch error HTTP403 Uždrausta
+ALREADY_SUB: Jūs jau užsiprenumeravote šį kanalą
+DB_ERROR: SQL klaida
+DID_NOT_SUB: Jūs dar neužsiprenumeravote šio kanalo
+SUB_USAGE: 'NAUDOJIMAS： /sub <RSS URL> automatiškai nustatoma, ar tinklapis palaiko RSS'
+UNSUB_USAGE: 'NAUDOJIMAS： /unsub <RSS URL>'
+ADMIN_ONLY: Įjungti tik administratoriams
+UNSUBTHIS_USAGE: 'NAUDOJIMAS：/unsubthis Atsakykite į žinutę kanale, kurio pernumeratą norite atšaukti'
+SAME_NAME: Jau yra kanalas, kuris turi tokį patį pavadinimą, naudokite /unsub
+PROCESSING: Apdorojama, prašome palaukti
+SUB_SUCCESS: Sėkmingai įvykdyta prenumerata
+UNSUB_SUCCESS: Sėkmingai įvykdytas prenumeratos atšaukimas
+NOT_SUB: Nėra prenumeratų
+SUB_LIST: Prenumeratos
+ERROR_MANY_TIME: Daug kartų nepavyko parsisiųsti duomenų, siūlome atšaukti prenumeratą
+OPML_PARSE_ERRO: Nepavyko apdoroti opml
+NETWORK_ERROR: Tinklo klaida
+IMPORT_SUCCESS: Sėkmingai įkelta
+FILESYSTEM_ERROR: Failų sistemos klaida
+UNSUB_ALL_SUCCESS: Sėkmingai atšaukos visos prenumeratos
+EXPORT: 'NAUDOJIMAS： /export Eksportuoti prenumeratas opml formatu'
+SEND_FILE_IMPORT: Atsiųskite opml failą tam, kad įkeltumėte prenumeratas
+RSS_USAGE: 'NAUDOJIMAS： /rss Parodyti prenumeratų sąrašą. Pridėkite raw tam, kad matytumėte nuorodas'
+VIEW_ALL_USAGE: /viewall Parodyti visas prenumeratas ir prenumeratorių skaičių. Pridėkite raw tam, kad matytumėte nuorodas
+USB_ALL_USAGE: 'NAUDOJIMAS： /allunsub atšaukti visas prenumeratas'
+IMPORT_USAGE: 'NAUDOJIMAS： /import nusiųskite opml šiame kanale arba privačia žinute'
+WELCOME: Sveiki atvykę į [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: Ar norite tęsti šį veiksmą?
+PRIVATE_CHAT_ONLY: Galima naudoti tik privačiuose kanaluose
+ALL_FEED: Visos prenumeratos
+COMMAND_NOT_ENABLED: Komanda išjungta
+NUMBER_OF_SUBSCRIBER: Prenumeratorių skaičius
+CHANNEL_NOT_FOUND: Kanalas nerastas
+CHANNEL_ADMIN_REQUIRE: Jus turite suteikti botui administratoriaus teises šiame kanale
+YES: TAIP
+NO: NE
+CANCEL: Atšaukta
+PAGE_PRE: Praeitas puslapis
+PAGE_NEXT: Sekantis puslapis
+FOUND_FEED_MORE_THAN_ONE: Buvo rastas daugiau nei 1 RSS kanalas
+FOUND_FEEDS: Rasti kanalai
+FEED_CHANGE_TO: Keisti kanalą į
+CHOOSE_LANG: Pasirinkti kalbą
+SET_LANG_TO: Nustatyti kalbą
+LANG_USAGE: 'NAUDOJIMAS: /lang keisti kalbą'
+CHOOSE_UNSUB: Pasirinkite kanalą, kurio prenumeratą norite atšaukti
