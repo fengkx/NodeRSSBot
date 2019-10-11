@@ -1,0 +1,49 @@
+FEED_URL_NOT_PARSE: Não foi possível analisar a URL
+FETCH_ERROR: Erro ao buscar
+404: Erro ao buscar HTTP404 Não encontrado
+403: Erro ao buscar HTTP403 Acesso proibido
+ALREADY_SUB: Você já está inscrito nesse feed
+DB_ERROR: Erro no banco
+DID_NOT_SUB: Você não se inscreveu nesses feed
+SUB_USAGE: 'USO： /sub <RSS URL> detecção automática de feed RSS é suportada'
+UNSUB_USAGE: 'USO： /unsub <RSS URL>'
+ADMIN_ONLY: Habilitado somente para administradores
+UNSUBTHIS_USAGE: 'USO：/unsubthis Responda a message a partir do feed que você deseja remover sua inscrição'
+SAME_NAME: Já tem um feed qud possue o mesmo título，por favor utilize /unsub
+PROCESSING: Processando, por favor aguarde
+SUB_SUCCESS: Inscrição feita com sucesso
+UNSUB_SUCCESS: Inscrição removida com sucesso
+NOT_SUB: Não está inscrito em nenhum feed
+SUB_LIST: Inscrições
+ERROR_MANY_TIME: Não foi possível buscar por diversas vezes, você talvez deseje remover a inscrição
+OPML_PARSE_ERRO: Erro ao analisar o opml
+NETWORK_ERROR: Erro de rede
+IMPORT_SUCCESS: Importado com sucesso
+FILESYSTEM_ERROR: Erro no filesystem
+UNSUB_ALL_SUCCESS: Inscrição removida com sucesso
+EXPORT: 'USAGE： /export Exporta as inscrições no format opml'
+SEND_FILE_IMPORT: Envie um arquivo opml para importar as inscrições
+RSS_USAGE: 'USO： /rss Mostra a lista de inscrições. Adicione "raw" para mostrar os links'
+VIEW_ALL_USAGE: /viewall Mostra todas as inscrições e número de inscritos. Adicione "raw" para mostrar os links'
+USB_ALL_USAGE: 'USO： /allunsub Remove a inscrição de todos os feeds'
+IMPORT_USAGE: 'USO： /import envia um arquivo opml diretamente em uma conversa privada ou responsa essa mensagem'
+WELCOME: Bem vindo ao [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: Vocês deseja continuar com a operação
+PRIVATE_CHAT_ONLY: Só pode ser utilizado em uma conversa privada
+ALL_FEED: Inscrito em todos os feeds
+COMMAND_NOT_ENABLED: Comando não habilitado
+NUMBER_OF_SUBSCRIBER: Número de inscritos
+CHANNEL_NOT_FOUND: Canal não encontrado
+CHANNEL_ADMIN_REQUIRE: Você precisa adicionar esse robo ao grupo de administradores do canal e adicionar as permissões necessárias
+YES: SIM
+NO: NÃO
+CANCEL: Cancelado
+PAGE_PRE: Página anterior
+PAGE_NEXT: Próxima página
+FOUND_FEED_MORE_THAN_ONE: Encontrado mais de um feed
+FOUND_FEEDS: Feeds encontrados
+FEED_CHANGE_TO: Alterar feed para
+CHOOSE_LANG: Escolha a língua
+SET_LANG_TO: Configurar língua para
+LANG_USAGE: 'USO: /lang alterar língua'
+CHOOSE_UNSUB: Escolha a inscrição que vocês deseja remover
