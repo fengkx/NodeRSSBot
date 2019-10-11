@@ -103,6 +103,7 @@ set `lang` setting using one of the following languages
 -   zh-cn Simplified Chinese
 -   zh-tw Tranditional Chinese
 -   es-es Spanish provided by @NPueyo
+-   pt-br Portuguese provided by @dubaid
 
 ---
 
@@ -219,3 +220,5 @@ viewall 只能在私聊中使用
 -   zh-cn 简体中文
 -   zh-tw 繁體中文
 -   es-es Spanish provided by @NPueyo
+-   pt-br Portuguese provided by @dubaid
+
