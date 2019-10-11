@@ -40,3 +40,10 @@ NO: NO
 CANCEL: Cancelar
 PAGE_PRE: página anterior
 PAGE_NEXT: siguiente página
+FOUND_FEED_MORE_THAN_ONE: Más de 1 feed encontrado
+FOUND_FEEDS: Feeds encontrados
+FEED_CHANGE_TO: Cambiar feed a
+CHOOSE_LANG: Seleccione idiomas
+SET_LANG_TO: Cambiar idioma a
+LANG_USAGE: 'UTILIZACIÓN: /lang cambiar idioma'
+CHOOSE_UNSUB: Elija la suscripción que desee eliminar
