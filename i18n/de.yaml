@@ -1,0 +1,49 @@
+FEED_URL_NOT_PARSE: Die URL konnte nicht verarbeitet werden
+FETCH_ERROR: Fehler beim Abrufen
+404: Fehler beim Abrufen HTTP404 Nicht gefunden
+403: Fehler beim Abrufen HTTP403 Verboten
+ALREADY_SUB: Du hast diesen Feed bereits abonniert
+DB_ERROR: SQL Fehler
+DID_NOT_SUB: Du hast diesen Feed nicht abonniert
+SUB_USAGE: 'Verwendung： /sub <RSS URL> automatische Erkennung von RSS-Feeds wird unterstützt'
+UNSUB_USAGE: 'Verwendung： /unsub <RSS URL>'
+ADMIN_ONLY: Nur für Admins freigeschaltet
+UNSUBTHIS_USAGE: 'Verwendung：/unsubthis Antworte auf die Nachricht aus dem Feed, die du direkt abbestellen möchtest'
+SAME_NAME: Es gibt einen Feed mit dem gleichen Titel，Bitte nutze /unsub
+PROCESSING: Verarbeiten, bitte warte eine Weile
+SUB_SUCCESS: Erfolgreich abonniert
+UNSUB_SUCCESS: Erfolgreich abbestellt
+NOT_SUB: Es ist kein Feed abonniert
+SUB_LIST: Abonnements
+ERROR_MANY_TIME: Konnte oft nicht abgerufen werden, vielleicht möchtest du es abbestellen
+OPML_PARSE_ERRO: Die OPML-Datei konnte nicht verarbeitet werden
+NETWORK_ERROR: Netzwerkfehler
+IMPORT_SUCCESS: Import erfolgreich
+FILESYSTEM_ERROR: Dateisystemfehler
+UNSUB_ALL_SUCCESS: Alle erfolgreich abbestellt
+EXPORT: 'Verwendung： /export Export der Abonnements im OPML-Format'
+SEND_FILE_IMPORT: Sende eine OPML-Datei um Abonnements zu Importieren
+RSS_USAGE: 'Verwendung： /rss Liefert die Liste der Abonnements. Füge "raw" hinzu, um Links anzuzeigen'
+VIEW_ALL_USAGE: /viewall Zeigt alle Abonnements und die Anzahl der Abonnenten. Füge raw hinzu, um Links anzuzeigen
+USB_ALL_USAGE: 'Verwendung： /allunsub alle Feeds abbestellen'
+IMPORT_USAGE: 'Verwendung： /import OPML direkt im privaten Chat senden oder auf diese Nachricht antworten'
+WELCOME: Willkommen beim [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: Möchtest du den Vorgang fortsetzten
+PRIVATE_CHAT_ONLY: Kann nur im privaten Chat verwendet werden
+ALL_FEED: Alle Feeds abonniert
+COMMAND_NOT_ENABLED: Befehl nicht aktiv
+NUMBER_OF_SUBSCRIBER: Anzahl der Abonnenten
+CHANNEL_NOT_FOUND: Kanal nicht gefunden
+CHANNEL_ADMIN_REQUIRE: Du must diesen Bot zu den Admins dieses Kanals hinzufügen und die Rechte korrekt vergeben
+YES: Ja
+NO: Nein
+CANCEL: Abgebrochen
+PAGE_PRE: Vorherige Seite
+PAGE_NEXT: Nächste Seite
+FOUND_FEED_MORE_THAN_ONE: Es wurde mehr als 1 RSS-Feed gefunden
+FOUND_FEEDS: Feeds gefunden
+FEED_CHANGE_TO: Feed wechsel zu
+CHOOSE_LANG: Sprache auswählen
+SET_LANG_TO: Sprache einstellen auf
+LANG_USAGE: 'Verwendung: /lang Sprache ändern'
+CHOOSE_UNSUB: Wähle das Abonnement, das du abbestellen möchtest
