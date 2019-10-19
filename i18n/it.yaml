@@ -1,0 +1,49 @@
+FEED_URL_NOT_PARSE: Non è stato possibile elaborare l'URL
+FETCH_ERROR: Errore di recupero
+404: Errore di recupero HTTP404 Non Trovato
+403: Errore di recupero HTTP403 Proibito
+ALREADY_SUB: Sei già iscritto a questo feed
+DB_ERROR: Errore SQL
+DID_NOT_SUB: Non sei ancora iscritto a questo feed
+SUB_USAGE: 'UTILIZZO： /sub <RSS URL> il rilevamento automatico del feed RSS è supportato'
+UNSUB_USAGE: 'UTILIZZO： /unsub <RSS URL>'
+ADMIN_ONLY: Abilita solo per gli amministratori
+UNSUBTHIS_USAGE: 'UTILIZZO：/unsubthis Rispondi al messaggio dal feed che desideri annullare direttamente'
+SAME_NAME: C'è un feed con lo stesso titolo，Si prega di utilizzare /unsub
+PROCESSING: Elaborando, attendere qualche istante
+SUB_SUCCESS: Iscrizione avvenuta con successo
+UNSUB_SUCCESS: Annullamento dell'iscrizione riuscito
+NOT_SUB: Non sei iscritto ad alcun feed
+SUB_LIST: Iscrizioni
+ERROR_MANY_TIME: Diversi tentativi falliti, è consigliabile annullare l'iscrizione
+OPML_PARSE_ERRO: Non è stato possibile elaborare l'opml
+NETWORK_ERROR: Errore di rete
+IMPORT_SUCCESS: Importazione riuscita
+FILESYSTEM_ERROR: Errore del filesystem
+UNSUB_ALL_SUCCESS: Annullamento di tutte le iscrizioni riuscito
+EXPORT: 'UTILIZZO： /export Esporta le iscrizioni in formato opml'
+SEND_FILE_IMPORT: Invia un file opml per importare le iscrizioni
+RSS_USAGE: 'UTILIZZO： /rss Mostra tutte le iscrizioni. Aggiungere "raw" per mostrare i links'
+VIEW_ALL_USAGE: /viewall Visualizza tutte le iscrizioni e il numero di iscritti. Aggiungere "raw" per mostrare i link
+USB_ALL_USAGE: 'UTILIZZO： /allunsub annulla tutte le iscrizioni'
+IMPORT_USAGE: 'UTILIZZO： /import invia l'opml direttamente nella chat privata o rispondi a questo messaggio'
+WELCOME: Benvenuto a [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: Vuoi continuare questa operazione?
+PRIVATE_CHAT_ONLY: Può essere utilizzato solo nella chat privata
+ALL_FEED: Iscritto a tutti i feed
+COMMAND_NOT_ENABLED: Comando non abilitato
+NUMBER_OF_SUBSCRIBER: Numero di iscritti
+CHANNEL_NOT_FOUND: Canale non trovato
+CHANNEL_ADMIN_REQUIRE: È necessario aggiungere questo bot come amministratore del canale e fornire i diritti necessari
+YES: SÌ
+NO: NO
+CANCEL: Annulla
+PAGE_PRE: Pagina precedente
+PAGE_NEXT: Pagina successiva
+FOUND_FEED_MORE_THAN_ONE: Trovato più di 1 feed
+FOUND_FEEDS: Feed trovati
+FEED_CHANGE_TO: Cambia feed in
+CHOOSE_LANG: Scegli la lingua
+SET_LANG_TO: Cambia lingua in
+LANG_USAGE: 'UTILIZZO: /lang cambia lingua'
+CHOOSE_UNSUB: Scegli l'iscrizione che desideri annullare
