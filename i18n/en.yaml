@@ -20,7 +20,7 @@ OPML_PARSE_ERRO: Unable to parse the opml
 NETWORK_ERROR: Network error
 IMPORT_SUCCESS: Import successfully
 FILESYSTEM_ERROR: Filesystem error
-UNSUB_ALL_SUCCESS: Unubscribe all successfully
+UNSUB_ALL_SUCCESS: Unsubscribe all successfully
 EXPORT: 'USAGE： /export Export subscriptions to opml format'
 SEND_FILE_IMPORT: Send a opml file to import subscriptions
 RSS_USAGE: 'USAGE： /rss Output subscriptions list add "raw" to show links'
