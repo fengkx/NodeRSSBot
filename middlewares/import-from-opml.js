@@ -24,7 +24,8 @@ const getOutlines = function(data) {
     });
 };
 
-module.exports = async (ctx, next) => {
+exports._getOutlines = getOutlines;
+exports.default = async (ctx, next) => {
     const { fileLink, lang } = ctx.state;
 
     try {

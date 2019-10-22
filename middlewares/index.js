@@ -7,7 +7,10 @@ const jsFiles = files.filter((f) => {
 });
 jsFiles.forEach((file) => {
     const fileName = file.substring(0, file.length - 3);
-    middlewares[camelcase(fileName)] = require(__dirname + '/' + file);
+    const m = require(__dirname + '/' + file);
+    // simulate es exports in commonjs for test
+    if (m.default) middlewares[camelcase(fileName)] = m.default;
+    else middlewares[camelcase(fileName)] = m;
 });
 
 module.exports = middlewares;

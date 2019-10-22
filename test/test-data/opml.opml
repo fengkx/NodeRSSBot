@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+    <head>
+        <title>Exported from NodeRSSBot</title>
+        <dateCreated>Tue, 22 Oct 2019 07:05:57 GMT</dateCreated>
+        <docs>http://www.opml.org/spec2</docs>
+    </head>
+    <body>
+
+        <outline text="test-group">
+          <outline type="rss" text="Yahoo!ニュース 的 Twitter" xmlUrl="https://rsshub.app/twitter/user/YahooNewsTopics"/>
+          <outline type="rss" text="Trending Rust repositories on GitHub today · GitHub" xmlUrl="https://rsshub.app/github/trending/daily/rust"/>
+        </outline>
+
+
+
+        <outline type="rss" text="Trending JavaScript repositories on GitHub today · GitHub" xmlUrl="https://rsshub.app/github/trending/daily/javascript"/>
+
+        <outline type="rss" text="V2EX - 技术" xmlUrl="https://www.v2ex.com/feed/tab/tech.xml"/>
+
+    </body>
+</opml>
