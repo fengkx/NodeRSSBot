@@ -2,6 +2,13 @@
 const getUrl = require('../middlewares/get-url');
 const ErrClass = require('../utils/errors').ControllableError;
 
+jest.mock('../proxies/rssFeed', () => ({
+    // eslint-disable-next-line no-unused-vars
+    getSubscribedFeedsByUserId: async (id) => {
+        return require('./test-data/feeds');
+    }
+}));
+
 test('get-url@only_sub', async () => {
     const ctx = require('./test-data/ctx/get-url-ctx')('/sub');
     await expect(getUrl(ctx, () => {})).rejects.toThrow(ErrClass);
