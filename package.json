@@ -7,7 +7,7 @@
     "start": "node -e 'process.env.NODE_PRODUTION = process.env.NODE_PRODUTION || \"production\"; require(\"./index.js\");'",
     "start-withsnapshot": "node --heapsnapshot-signal=SIGUSR2 -e 'process.env.NODE_PRODUTION = process.env.NODE_PRODUTION || \"production\"; require(\"./index.js\");'",
     "dev": "proxychains -q node index",
-    "test": "npx jest",
+    "test": "npx jest --verbose",
     "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
     "lint": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\""
   },
