@@ -26,7 +26,7 @@ SEND_FILE_IMPORT: Invia un file opml per importare le iscrizioni
 RSS_USAGE: 'UTILIZZO： /rss Mostra tutte le iscrizioni. Aggiungere "raw" per mostrare i links'
 VIEW_ALL_USAGE: /viewall Visualizza tutte le iscrizioni e il numero di iscritti. Aggiungere "raw" per mostrare i link
 USB_ALL_USAGE: 'UTILIZZO： /allunsub annulla tutte le iscrizioni'
-IMPORT_USAGE: 'UTILIZZO： /import invia l'opml direttamente nella chat privata o rispondi a questo messaggio'
+IMPORT_USAGE: "UTILIZZO： /import invia l'opml direttamente nella chat privata o rispondi a questo messaggio"
 WELCOME: Benvenuto a [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
 CONFIRM: Vuoi continuare questa operazione?
 PRIVATE_CHAT_ONLY: Può essere utilizzato solo nella chat privata
