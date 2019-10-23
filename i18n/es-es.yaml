@@ -35,7 +35,7 @@ COMMAND_NOT_ENABLED: Comando no habilitado
 NUMBER_OF_SUBSCRIBER: Número de suscriptores
 CHANNEL_NOT_FOUND: Canal no encontrado
 CHANNEL_ADMIN_REQUIRE: Necesitas agregar este bot como administrador del canal y dar los derechos correctamente.
-YES: YES
+YES: SI
 NO: NO
 CANCEL: Cancelar
 PAGE_PRE: página anterior
