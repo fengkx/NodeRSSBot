@@ -3,6 +3,17 @@ const isAdmin = require('../middlewares/is-admin');
 const { pass, noAdmin } = require('./test-data/ctx/is-admin-ctx');
 const ErrClass = require('../utils/errors').ControllableError;
 
+jest.mock('../proxies/users', () => ({
+    getUserById: (id) => {
+        const testUser = {
+            user_id: 233233233,
+            lang: 'en'
+        };
+        testUser.user_id = id;
+        return testUser;
+    }
+}));
+
 test('sub channel with @', async () => {
     const channelId = 666;
     const ctx = pass('/sub @testChannel http://test.test', 666);
