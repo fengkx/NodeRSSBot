@@ -32,10 +32,10 @@ module.exports = async (ctx, next) => {
     } else if (
         ctx.message && // button respone without message
         ctx.message.text &&
-        ctx.message.text.search(/@\w+/) !== -1
+        ctx.message.text.search(/(@\w+)|(-\d+)/) !== -1
     ) {
         // for channel subscription in private chat
-        const channelId = ctx.message.text.match(/@\w+/)[0];
+        const channelId = ctx.message.text.match(/(@\w+)|(-\d+)/)[0];
         if (channelId) {
             ctx.message.text = ctx.message.text.replace(channelId, ' ');
             try {
