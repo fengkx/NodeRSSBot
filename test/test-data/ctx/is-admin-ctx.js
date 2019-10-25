@@ -33,7 +33,7 @@ exports.pass = (text, channelId) => ({
         getMe: jest.fn().mockResolvedValue({
             id: 233
         }),
-        getChatAdministrators: jest.fn.mockResolvedValue([
+        getChatAdministrators: jest.fn().mockResolvedValue([
             {
                 user: {
                     id: chat.id

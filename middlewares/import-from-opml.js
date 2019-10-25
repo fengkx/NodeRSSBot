@@ -1,4 +1,4 @@
-const got = require('got');
+const got = require('../utils/got');
 const Parser = require('xml2js').Parser;
 const errors = require('../utils/errors');
 const RSS = require('../proxies/rss-feed');
