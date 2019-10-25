@@ -1,6 +1,14 @@
 const USERS = require('../proxies/users');
 const i18n = require('../i18n');
 
+const chunk = (input, size) => {
+    return input.reduce((arr, item, idx) => {
+        return idx % size === 0
+            ? [...arr, [item]]
+            : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];
+    }, []);
+};
+
 exports.replyKeyboard = async (ctx, next) => {
     const kbs = Object.keys(i18n).map((i) => {
         return {
@@ -15,7 +23,7 @@ exports.replyKeyboard = async (ctx, next) => {
             parse_mode: 'HTML',
             disable_web_page_preview: true,
             reply_markup: {
-                inline_keyboard: [[...kbs]]
+                inline_keyboard: chunk(kbs, 5)
             }
         }
     );
