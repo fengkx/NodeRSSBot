@@ -29,8 +29,7 @@ exports.messageCtx = {
             }
         ]
     },
-    reply: async () => {
-        return {
+    reply: jest.fn().mockReturnValue({
             message_id: 233,
             from: {
                 id: 591928513,
@@ -47,6 +46,5 @@ exports.messageCtx = {
             },
             date: 1571721954,
             text: 'Processing, please wait for a while'
-        };
-    }
+    })
 };

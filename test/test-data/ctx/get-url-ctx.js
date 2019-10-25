@@ -6,7 +6,7 @@ module.exports = (text) => ({
         }
     }, // wait for data
     // eslint-disable-next-line no-empty-function
-    reply: () => {},
+    reply: jest.fn(),
     message: {
         message_id: 14891,
         from: {

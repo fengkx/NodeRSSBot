@@ -30,26 +30,21 @@ exports.pass = (text, channelId) => ({
                       type: 'private'
                   };
         },
-        getMe: () => {
-            return {
-                id: 233
-            };
-        },
-        getChatAdministrators: () => {
-            const chatId = chat.id;
-            return [
-                {
-                    user: {
-                        id: chatId
-                    }
-                },
-                {
-                    user: {
-                        id: 233 // bot id
-                    }
+        getMe: jest.fn().mockResolvedValue({
+            id: 233
+        }),
+        getChatAdministrators: jest.fn.mockResolvedValue([
+            {
+                user: {
+                    id: chat.id
                 }
-            ];
-        }
+            },
+            {
+                user: {
+                    id: 233 // bot id
+                }
+            }
+        ])
     },
     message: {
         text,
@@ -60,14 +55,8 @@ exports.pass = (text, channelId) => ({
 exports.noAdmin = (text, channelId) => {
     const pass = exports.pass(text, channelId);
     const chatId = pass.state.chat.id;
-    pass.telegram.getChatAdministrators = () => {
-        return [
-            {
-                user: {
-                    id: chatId
-                }
-            }
-        ];
-    };
+    pass.telegram.getChatAdministrators = jest
+        .fn()
+        .mockReturnValue([{ user: { id: chatId } }]);
     return pass;
 };
