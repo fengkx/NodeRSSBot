@@ -1,7 +1,7 @@
 const errors = require('../utils/errors');
 const got = require('../utils/got');
 const Parser = require('rss-parser');
-const RSS = require('../proxies/rssFeed');
+const RSS = require('../proxies/rss-feed');
 const i18n = require('../i18n');
 
 module.exports = async (ctx, next) => {

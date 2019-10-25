@@ -15,7 +15,7 @@ const {
     resetErrorCount,
     handleRedirect,
     updateFeedUrl
-} = require('../proxies/rssFeed');
+} = require('../proxies/rss-feed');
 
 const {
     notify_error_count,

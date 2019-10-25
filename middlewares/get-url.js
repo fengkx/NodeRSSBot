@@ -1,5 +1,5 @@
 const errors = require('../utils/errors');
-const RSS = require('../proxies/rssFeed');
+const RSS = require('../proxies/rss-feed');
 const i18n = require('../i18n');
 
 module.exports = async (ctx, next) => {

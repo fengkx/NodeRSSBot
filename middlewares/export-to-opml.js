@@ -1,4 +1,4 @@
-const RSS = require('../proxies/rssFeed');
+const RSS = require('../proxies/rss-feed');
 const errors = require('../utils/errors');
 const path = require('path');
 const ejs = require('ejs');

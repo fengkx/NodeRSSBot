@@ -2,7 +2,7 @@
 const getUrl = require('../middlewares/get-url');
 const ErrClass = require('../utils/errors').ControllableError;
 
-jest.mock('../proxies/rssFeed', () => ({
+jest.mock('../proxies/rss-feed', () => ({
     // eslint-disable-next-line no-unused-vars
     getSubscribedFeedsByUserId: async (id) => {
         return require('./test-data/feeds');

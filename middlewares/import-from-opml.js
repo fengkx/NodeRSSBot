@@ -1,7 +1,7 @@
 const got = require('got');
 const Parser = require('xml2js').Parser;
 const errors = require('../utils/errors');
-const RSS = require('../proxies/rssFeed');
+const RSS = require('../proxies/rss-feed');
 const i18n = require('../i18n');
 
 function parseOutlines(outlines, lst) {

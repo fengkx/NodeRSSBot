@@ -1,4 +1,4 @@
-const { getFeedsByTitle } = require('../proxies/rssFeed');
+const { getFeedsByTitle } = require('../proxies/rss-feed');
 const errors = require('../utils/errors');
 
 module.exports = async (ctx, next) => {

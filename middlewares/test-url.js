@@ -2,7 +2,7 @@ const got = require('../utils/got');
 const feedUtil = require('../utils/feed');
 const errors = require('../utils/errors');
 const Parser = require('rss-parser');
-const RSS = require('../proxies/rssFeed');
+const RSS = require('../proxies/rss-feed');
 const i18n = require('../i18n');
 
 module.exports = async (ctx, next) => {

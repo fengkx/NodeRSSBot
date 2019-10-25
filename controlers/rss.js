@@ -1,5 +1,5 @@
 const ctrl = {};
-const RSS = require('../proxies/rssFeed');
+const RSS = require('../proxies/rss-feed');
 const i18n = require('../i18n');
 const twoKeyReply = require('../utils/two-key-reply');
 const errors = require('../utils/errors');
