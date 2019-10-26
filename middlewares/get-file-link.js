@@ -3,8 +3,8 @@ const errors = require('../utils/errors');
 module.exports = async (ctx, next) => {
     const fileId = ctx.message.document.file_id;
     const fileName = ctx.message.document.file_name;
-    if (fileName.startsWith('@')) {
-        const channelId = fileName.match(/(@.+)\.opml$/)[1];
+    if (fileName.search(/(@\w+)|(-\d+)/) !== -1) {
+        const channelId = fileName.match(/(@\w+)|(-\d+)/)[0];
         try {
             ctx.state.chat = await ctx.telegram.getChat(channelId);
         } catch (e) {
