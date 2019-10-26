@@ -1,12 +1,15 @@
 const Telegraf = require('telegraf');
 const initTable = require('./database/init-tables');
-const RSS = require('./controlers/rss');
 const { fork } = require('child_process');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
 const errors = require('./utils/errors');
 const i18n = require('./i18n');
+
 const LANG = require('./controlers/language');
+const RSS = require('./controlers/rss');
+const importReply = require('./controlers/import-reply');
+
 const {
     token,
     view_all,
@@ -90,10 +93,7 @@ bot.command('rss', sendError, isAdmin, RSS.rss);
 
 bot.command('export', sendError, isAdmin, exportToOpml);
 
-bot.command('import', async (ctx, next) => {
-    ctx.reply(i18n[lang]['IMPORT_USAGE']);
-    await next();
-});
+bot.command('import', importReply);
 
 bot.on('document', sendError, isAdmin, getFileLink, importFromOpml);
 
