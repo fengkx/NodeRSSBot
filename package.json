@@ -7,7 +7,7 @@
     "start": "node -e 'process.env.NODE_PRODUTION = process.env.NODE_PRODUTION || \"production\"; require(\"./index.js\");'",
     "start-withsnapshot": "node --heapsnapshot-signal=SIGUSR2 -e 'process.env.NODE_PRODUTION = process.env.NODE_PRODUTION || \"production\"; require(\"./index.js\");'",
     "dev": "proxychains -q node index",
-    "test": "npx jest --verbose",
+    "test": "RSSBOT_DB_PATH=./test/test-data/test.db npx jest --verbose",
     "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
     "lint": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\""
   },
@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/fengkx/NodeRSSBot#readme",
   "dependencies": {
+    "better-sqlite-pool": "^0.2.2",
     "camelcase": "^5.3.1",
     "charset": "^1.0.1",
     "cheerio": "^1.0.0-rc.3",
@@ -44,7 +45,6 @@
     "p-map": "^3.0.0",
     "rss-parser": "^3.7.3",
     "socks-proxy-agent": "^4.0.2",
-    "sqlite": "^3.0.3",
     "sqlite3": "^4.1.0",
     "telegraf": "^3.33.0",
     "winston": "^3.2.1",
