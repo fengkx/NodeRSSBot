@@ -45,7 +45,6 @@
     "p-map": "^3.0.0",
     "rss-parser": "^3.7.3",
     "socks-proxy-agent": "^4.0.2",
-    "sqlite3": "^4.1.0",
     "telegraf": "^3.33.0",
     "winston": "^3.2.1",
     "xml2js": "^0.4.22"
