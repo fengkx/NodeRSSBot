@@ -1,37 +1,48 @@
 const errors = require('../utils/errors');
-const dbPromise = require('../database');
+const dbPool = require('../database');
 
+// eslint-disable-next-line no-empty-function
+const placeHolder = { release() {} };
 const px = {};
 
 px.getUserById = async (id) => {
+    let db = placeHolder;
     try {
-        const db = await dbPromise;
-        return await db.get(`SELECT * FROM users WHERE user_id=?`, id);
+        db = await dbPool.acquire();
+        return db.prepare(`SELECT * FROM users WHERE user_id=?`).get(id);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
+    } finally {
+        db.release();
     }
 };
 
 px.setLangById = async (id, lang) => {
+    let db = placeHolder;
     try {
-        const db = await dbPromise;
+        db = await dbPool.acquire();
         const sql = `UPDATE users
                      SET lang=?
                      WHERE user_id = ?`;
-        await db.run(sql, lang, id);
+        db.prepare(sql).run(lang, id);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
+    } finally {
+        db.release();
     }
 };
 
 px.newUser = async (id, lang) => {
+    let db = placeHolder;
     try {
-        const db = await dbPromise;
+        db = await dbPool.acquire();
         const sql = `INSERT INTO users (user_id, lang) VALUES(?, ?)`;
-        await db.run(sql, id, lang);
-        return db.get(`SELECT * FROM users WHERE user_id=?`, id);
+        db.prepare(sql).run(id, lang);
+        return db.prepare(`SELECT * FROM users WHERE user_id=?`).get(id);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
+    } finally {
+        db.release();
     }
 };
 

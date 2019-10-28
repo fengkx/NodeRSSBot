@@ -1,6 +1,5 @@
 const config = require('../config');
-const sqlite = require('sqlite');
+const { Pool } = require('better-sqlite-pool');
 
-// eslint-disable-next-line object-property-newline
-const dbPromise = sqlite.open(config.db_path, { Promise, cached: true });
-module.exports = dbPromise;
+const dbPool = new Pool(config.db_path);
+module.exports = dbPool;
