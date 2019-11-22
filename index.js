@@ -227,9 +227,7 @@ function startFetchProcess(restartTime) {
                 const { feed, err } = message;
                 send(
                     bot,
-                    `${feed.feed_title}: <a href="${feed.url}">${
-                        feed.url
-                    }</a> ${i18n[lang]['ERROR_MANY_TIME']} ${err}`,
+                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n[lang]['ERROR_MANY_TIME']} ${err}`,
                     feed
                 );
             }
@@ -237,9 +235,7 @@ function startFetchProcess(restartTime) {
                 const { feed, new_feed } = message;
                 const builder = [];
                 builder.push(
-                    `${feed.feed_title}: <a href="${feed.url}"></a> ${
-                        i18n[lang]['ERROR_MANY_TIME']
-                    }`
+                    `${feed.feed_title}: <a href="${feed.url}"></a> ${i18n[lang]['ERROR_MANY_TIME']}`
                 );
                 builder.push(`<b>${i18n[lang]['FOUND_FEEDS']}</b>:`);
                 builder.push(...new_feed);

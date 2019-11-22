@@ -13,9 +13,7 @@ ctrl.sub = async (ctx, next) => {
         await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMesId);
         ctx.state.processMesId = null;
         ctx.replyWithMarkdown(`
-        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.title}](${
-            ctx.state.feedUrl
-        })`);
+        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.title}](${ctx.state.feedUrl})`);
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
@@ -140,9 +138,7 @@ ctrl.viewAll = async (ctx, next) => {
         const url = feed.url.trim();
         const title = feed.feed_title.trim();
         builder.push(
-            `<a href="${url}">${title}</a>  ${
-                i18n[lang]['NUMBER_OF_SUBSCRIBER']
-            }: ${feed.sub_count}`
+            `<a href="${url}">${title}</a>  ${i18n[lang]['NUMBER_OF_SUBSCRIBER']}: ${feed.sub_count}`
         );
     });
     ctx.state.replyText = builder.join('\n');
