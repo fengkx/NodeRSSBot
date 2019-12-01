@@ -24,7 +24,7 @@ const logger = winston.createLogger({
 
         new winston.transports.DailyRotateFile({
             filename: 'logs/combined-%DATE%.log',
-            datePattern: 'YYYY-MM-DD-HH',
+            datePattern: 'YYYY-MM-DD',
             zippedArchive: true,
             maxFiles: '14d'
         })
