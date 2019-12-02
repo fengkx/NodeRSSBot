@@ -69,6 +69,7 @@ bot.command('start', sendError, async (ctx) => {
 
 bot.command('help', sendError, async (ctx) => {
     let builder = [];
+    const { lang } = ctx.state;
     builder.push(i18n[lang]['SUB_USAGE']);
     builder.push(i18n[lang]['UNSUB_USAGE']);
     builder.push(i18n[lang]['RSS_USAGE']);
