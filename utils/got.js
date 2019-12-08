@@ -12,6 +12,7 @@ module.exports = got.extend({
         'user-agent': config.UA,
         accept: AcceptHeader
     },
+    timeout: config.req_timeout * 1000,
     hooks: {
         afterResponse: [
             async (res) => {

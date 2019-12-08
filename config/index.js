@@ -21,5 +21,6 @@ module.exports = {
         `Mozilla/5.0  NodeRSSBot v${version}(https://github.com/fengkx/NodeRSSBot)`,
     not_send: process.env.NOT_SEND || false, // just for debug use
     concurrency: process.env.RSSBOT_CONCURRENCY || 200,
-    delete_on_err_send: process.env.DELETE_ON_ERR_SEND || true // block and chat not found
+    delete_on_err_send: process.env.DELETE_ON_ERR_SEND || true, // block and chat not found
+    req_timeout: process.env.REQ_TIMEOUT || 40
 };

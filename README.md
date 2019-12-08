@@ -26,7 +26,7 @@ Automatically detecting RSS feed ，you can use `/sub https://www.fengkx.top` ra
 
 You can send multi feeds directly to subscribe in private chat(split by line)
 
-You can add channel id to subscribe a feed for a channel in private chat after adding the bot as administrator  
+You can add channel id to subscribe a feed for a channel in private chat after adding the bot as administrator
 for example `/sub <channel id > <feed url>` (channel id is start with @)
 
 You can send a opml file directly to import feed in private chat
@@ -86,6 +86,7 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 | proxy.protocol     | PROXY_PROTOCOL     | null                                                           | proxy protocol http/https/socks                                              |
 | proxy.host         | PROXY_HOST         | null                                                           | proxy host                                                                   |
 | proxy.port         | PROXY_PORT         | null                                                           | proxy port                                                                   |
+| req_timeout        | REQ_TIMEOUT        | 40(s)                                                          | proxy port                                                                   |
 
 fetch_gap can be set in how many minutes or hours。m for minute， h for hour
 
@@ -114,8 +115,8 @@ set `lang` setting using one of the following languages
 
 又是一个 telegram RSS Bot 不过这次用的是 Node.js
 
-模仿[https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/) 做的一个 RSSBot，用[telegraf](https://www.npmjs.com/package/telegraf)  
-首先感谢 iovxw 的 RSSBot 一直用的很好  
+模仿[https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/) 做的一个 RSSBot，用[telegraf](https://www.npmjs.com/package/telegraf)
+首先感谢 iovxw 的 RSSBot 一直用的很好
 做这个东西只是为了，配置起来更方便一些不用安装 Rust 的工具链和编译
 
 # 支持的版本
@@ -143,8 +144,8 @@ RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 把 bot 设为频道管理员并正确配置权限后，可通过私聊在`/sub`后加上频道 id 来在频道中订阅 feed
 例如 `/sub <频道 id > <feed url>` (频道 id 是@打头的)
 
-直接发送 opml 文件，可以导入 RSS 源  
-频道导入需要将文件名改成频道 id 并且以 opml 作为后缀在私聊中发送 例如 `@myChannel.opml`  
+直接发送 opml 文件，可以导入 RSS 源
+频道导入需要将文件名改成频道 id 并且以 opml 作为后缀在私聊中发送 例如 `@myChannel.opml`
 viewall 只能在私聊中使用
 
 # 部署
@@ -203,6 +204,7 @@ viewall 只能在私聊中使用
 | proxy.protocool    | PROXY_PROTOCOL     | null                                                           | 代理协议 http/https/socks                                                    |
 | proxy.host         | PROXY_HOST         | null                                                           | 代理地址                                                                     |
 | proxy.port         | PROXY_PORT         | null                                                           | 代理端口                                                                     |
+| req_timeout        | REQ_TIMEOUT        | 40(s)                                                          | proxy port                                                                   |
 
 语言可以设置为 `zh-cn` or `en`
 时间间隔可设置为每多少分钟或多少小时。m 表示分钟， h 表示小时
