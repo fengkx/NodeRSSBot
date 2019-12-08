@@ -72,21 +72,21 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 
 **All setting can be set by either environment variable or in `config/index.js`**
 
-| setting            | env                | default/require                                                | description                                                                  |
-| ------------------ | ------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| token              | RSSBOT_TOKEN       | **require**                                                    | [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) |
-| db_path            | RSSBOT_DB_PATH     | data/database.db                                               | path to store database file                                                  |
-| lang               | RSSBOT_LANG        | zh-cn                                                          | language                                                                     |
-| item_num           | RSSBOT_ITEM_NUM    | 10                                                             | send the laset number of item                                                |
-| fetch_gap          | RSSBOT_FETCH_GAP   | 5m                                                             | fetch gap                                                                    |
-| notify_error_count | NOTIFY_ERR_COUNT   | 5                                                              | error count when it will notfiy                                              |
-| view_all           | RSSBOT_VIEW_ALL    | false                                                          | enable or not                                                                |
-| UA                 | RSSBOT_UA          | 'Mozilla/5.0 NodeRSSBot(https://github.com/fengkx/NodeRSSBot)' | user-agent of requrest                                                       |
-| cocurrency         | RSSBOT_CONCURRENCY | 200                                                            |
-| proxy.protocol     | PROXY_PROTOCOL     | null                                                           | proxy protocol http/https/socks                                              |
-| proxy.host         | PROXY_HOST         | null                                                           | proxy host                                                                   |
-| proxy.port         | PROXY_PORT         | null                                                           | proxy port                                                                   |
-| req_timeout        | REQ_TIMEOUT        | 40(s)                                                          | proxy port                                                                   |
+| setting            | env                 | default/require                                                | description                                                                  |
+| ------------------ | ------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| token              | RSSBOT_TOKEN        | **require**                                                    | [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) |
+| db_path            | RSSBOT_DB_PATH      | data/database.db                                               | path to store database file                                                  |
+| lang               | RSSBOT_LANG         | zh-cn                                                          | language                                                                     |
+| item_num           | RSSBOT_ITEM_NUM     | 10                                                             | send the laset number of item                                                |
+| fetch_gap          | RSSBOT_FETCH_GAP    | 5m                                                             | fetch gap                                                                    |
+| notify_error_count | NOTIFY_ERR_COUNT    | 5                                                              | error count when it will notfiy                                              |
+| view_all           | RSSBOT_VIEW_ALL     | false                                                          | enable or not                                                                |
+| UA                 | RSSBOT_UA           | 'Mozilla/5.0 NodeRSSBot(https://github.com/fengkx/NodeRSSBot)' | user-agent of requrest                                                       |
+| cocurrency         | RSSBOT_CONCURRENCY  | 200                                                            |
+| proxy.protocol     | PROXY_PROTOCOL      | null                                                           | proxy protocol http/https/socks                                              |
+| proxy.host         | PROXY_HOST          | null                                                           | proxy host                                                                   |
+| proxy.port         | PROXY_PORT          | null                                                           | proxy port                                                                   |
+| resptimeout        | RSSBOT_RESP_TIMEOUT | 40(s)                                                          | proxy port                                                                   |
 
 fetch_gap can be set in how many minutes or hours。m for minute， h for hour
 
@@ -190,21 +190,21 @@ viewall 只能在私聊中使用
 
 **所有配置项都可以用环境变量或者直接在 `config/index.js`中修改**
 
-| 设置项             | 环境变量           | 默认/必填                                                      | 描述                                                                         |
-| ------------------ | ------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| token              | RSSBOT_TOKEN       | **require**                                                    | [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) |
-| db_path            | RSSBOT_DB_PATH     | data/database.db                                               | 数据库文件路径                                                               |
-| lang               | RSSBOT_LANG        | zh-cn                                                          | 语言                                                                         |
-| item_num           | RSSBOT_ITEM_NUM    | 10                                                             | 发送最新几条信息                                                             |
-| fetch_gap          | RSSBOT_FETCH_GAP   | 5m                                                             | 抓取间隔                                                                     |
-| notify_error_count | NOTIFY_ERR_COUNT   | 5                                                              | 发出通知的错误次数                                                           |
-| view_all           | RSSBOT_VIEW_ALL    | false                                                          | 是否开启                                                                     |
-| UA                 | RSSBOT_UA          | 'Mozilla/5.0 NodeRSSBot(https://github.com/fengkx/NodeRSSBot)' | 请求的 user-agent                                                            |
-| cocurrency         | RSSBOT_CONCURRENCY | 200                                                            |
-| proxy.protocool    | PROXY_PROTOCOL     | null                                                           | 代理协议 http/https/socks                                                    |
-| proxy.host         | PROXY_HOST         | null                                                           | 代理地址                                                                     |
-| proxy.port         | PROXY_PORT         | null                                                           | 代理端口                                                                     |
-| req_timeout        | REQ_TIMEOUT        | 40(s)                                                          | proxy port                                                                   |
+| 设置项             | 环境变量            | 默认/必填                                                      | 描述                                                                         |
+| ------------------ | ------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| token              | RSSBOT_TOKEN        | **require**                                                    | [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) |
+| db_path            | RSSBOT_DB_PATH      | data/database.db                                               | 数据库文件路径                                                               |
+| lang               | RSSBOT_LANG         | zh-cn                                                          | 语言                                                                         |
+| item_num           | RSSBOT_ITEM_NUM     | 10                                                             | 发送最新几条信息                                                             |
+| fetch_gap          | RSSBOT_FETCH_GAP    | 5m                                                             | 抓取间隔                                                                     |
+| notify_error_count | NOTIFY_ERR_COUNT    | 5                                                              | 发出通知的错误次数                                                           |
+| view_all           | RSSBOT_VIEW_ALL     | false                                                          | 是否开启                                                                     |
+| UA                 | RSSBOT_UA           | 'Mozilla/5.0 NodeRSSBot(https://github.com/fengkx/NodeRSSBot)' | 请求的 user-agent                                                            |
+| cocurrency         | RSSBOT_CONCURRENCY  | 200                                                            |
+| proxy.protocool    | PROXY_PROTOCOL      | null                                                           | 代理协议 http/https/socks                                                    |
+| proxy.host         | PROXY_HOST          | null                                                           | 代理地址                                                                     |
+| proxy.port         | PROXY_PORT          | null                                                           | 代理端口                                                                     |
+| resptimeout        | RSSBOT_RESP_TIMEOUT | 40(s)                                                          | proxy port                                                                   |
 
 语言可以设置为 `zh-cn` or `en`
 时间间隔可设置为每多少分钟或多少小时。m 表示分钟， h 表示小时
