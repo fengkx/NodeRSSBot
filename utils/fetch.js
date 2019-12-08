@@ -6,7 +6,7 @@ const _pick = require('lodash.pick');
 const schedule = require('node-schedule');
 const logger = require('./logger');
 const feedUtil = require('./feed');
-const errors = require('./errors');
+
 const {
     getAllFeeds,
     updateHashList,
@@ -73,7 +73,6 @@ const fetch = async (feedUrl) => {
         if (feed.error_count === notify_error_count || round_happen) {
             handleErr(e, feed);
         }
-        throw errors.newCtrlErr('FETCH_ERROR', e);
     }
 };
 
