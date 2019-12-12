@@ -30,8 +30,10 @@ module.exports = got.extend({
                         encoding: 'buffer'
                     });
                     if (!fromHeader)
-                        enc = charDet.detect(res.body).encoding.toLowerCase();
-                    res.body = iconv.decode(res.body, enc);
+                        enc = charDet
+                            .detect(res.body.body)
+                            .encoding.toLowerCase();
+                    res.body = iconv.decode(res.body.body, enc);
                 }
 
                 return res;
