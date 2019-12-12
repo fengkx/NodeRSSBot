@@ -28,10 +28,8 @@ module.exports = got.extend({
                 if (enc !== 'utf8') {
                     res.body = await got(res.url).buffer();
                     if (!fromHeader)
-                        enc = charDet
-                            .detect(res.body.body)
-                            .encoding.toLowerCase();
-                    res.body = iconv.decode(res.body.body, enc);
+                        enc = charDet.detect(res.body).encoding.toLowerCase();
+                    res.body = iconv.decode(res.body, enc);
                 }
 
                 return res;
