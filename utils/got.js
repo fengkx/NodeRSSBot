@@ -26,9 +26,7 @@ module.exports = got.extend({
                     enc = charDet.detect(res.body);
                 }
                 if (enc !== 'utf8') {
-                    res.body = await got(res.url, {
-                        encoding: 'buffer'
-                    });
+                    res.body = await got(res.url).buffer();
                     if (!fromHeader)
                         enc = charDet
                             .detect(res.body.body)
