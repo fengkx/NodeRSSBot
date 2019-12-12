@@ -26,7 +26,9 @@ module.exports = got.extend({
                     enc = charDet.detect(res.body);
                 }
                 if (enc !== 'utf8') {
-                    res.body = await got(res.url).buffer();
+                    res.body = await got(res.url, {
+                        encoding: 'buffer'
+                    });
                     if (!fromHeader)
                         enc = charDet.detect(res.body).encoding.toLowerCase();
                     res.body = iconv.decode(res.body, enc);
