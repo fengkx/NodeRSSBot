@@ -1,4 +1,4 @@
-FROM node:12.6-alpine
+FROM node:13-alpine
 WORKDIR /app
 COPY . /app
 ENV NODE_PRODUTION true
