@@ -9,7 +9,8 @@
     "dev": "proxychains -q node index",
     "test": "RSSBOT_DB_PATH=./test/test-data/test.db npx jest --verbose",
     "format": "eslint \"**/*.js\" --fix && prettier \"**/*.{js,json,md}\" --write",
-    "lint": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\""
+    "lint": "eslint \"**/*.js\" && prettier-check \"**/*.{js,json,md}\" && npm run lint-lockfile",
+    "lint-lockfile": "npx lockfile-lint --path package-lock.json --allowed-hosts npm yarn --validate-https"
   },
   "pre-commit": [
     "lint"
@@ -34,7 +35,7 @@
     "cheerio": "^1.0.0-rc.3",
     "ejs": "^3.0.1",
     "escape-goat": "^2.1.1",
-    "got": "9.6.0",
+    "got": "^10.2.0",
     "http-proxy-agent": "^3.0.0",
     "https-proxy-agent": "^4.0.0",
     "iconv-lite": "^0.5.0",
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "jest": "^24.9.0",
+    "lockfile-lint": "^3.0.5",
     "pre-commit": "^1.2.2",
     "prettier": "^1.19.1",
     "prettier-check": "^2.0.0"
