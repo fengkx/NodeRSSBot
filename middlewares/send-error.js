@@ -14,7 +14,8 @@ module.exports = async (ctx, next) => {
     }
     const user = await USERS.getUserById(id);
     if (user) ctx.state.lang = user.lang;
-    const lang = ctx.state.lang || require('../config').lang;
+    else ctx.state.lang = require('../config').lang;
+    const lang = ctx.state.lang;
     const m = await ctx.reply(i18n[lang]['PROCESSING']);
     ctx.state.processMesId = m.message_id;
     logger.debug(ctx.message);
