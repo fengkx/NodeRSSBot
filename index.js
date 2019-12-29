@@ -45,7 +45,7 @@ const bot = new Telegraf(token, {
     }
 });
 
-bot.catch((err) => logger.error(err));
+bot.catch((err) => logger.error(err.toString()));
 
 // for handling command form group
 bot.telegram.getMe().then((botInfo) => {
