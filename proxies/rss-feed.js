@@ -307,8 +307,9 @@ px.handleRedirect = async (url, realUrl) => {
             });
             handleFeedRedirect(oldFeed, realFeed);
         } else {
-            db.prepare(`UPDATE rss_feed SET url=? WHERE url=?`, realUrl).run(
-                oldFeed.url
+            db.prepare(`UPDATE rss_feed SET url=? WHERE url=?`).run(
+                oldFeed.url,
+                realUrl
             );
         }
     } catch (e) {
