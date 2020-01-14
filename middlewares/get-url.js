@@ -12,8 +12,8 @@ module.exports = async (ctx, next) => {
                 throw errors.newCtrlErr('SUB_USAGE');
             case '/uns':
                 if (command.substr(0, 8) === '/unsubthis') {
-                    throw errors.newCtrlErr('UNSUB_USAGE');
-                } else {
+                    throw errors.newCtrlErr('UNSUBTHIS_USAGE');
+                } else if (ctx.state.chat.type === 'private') {
                     const feeds = await RSS.getSubscribedFeedsByUserId(
                         ctx.state.chat.id
                     );
@@ -25,6 +25,8 @@ module.exports = async (ctx, next) => {
                             one_time_keyboard: true
                         }
                     });
+                } else {
+                    throw errors.newCtrlErr('UNSUB_USAGE');
                 }
                 return; // this ctx end wait for another message from keyboard
             case '/exp':
