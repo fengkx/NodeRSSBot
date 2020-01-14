@@ -2,7 +2,8 @@ module.exports = (text) => ({
     state: {
         lang: 'en',
         chat: {
-            id: 233233233
+            id: 233233233,
+            type: 'private'
         }
     }, // wait for data
     // eslint-disable-next-line no-empty-function
