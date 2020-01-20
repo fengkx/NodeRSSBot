@@ -39,7 +39,7 @@
     "got": "^10.2.2",
     "http-proxy-agent": "^3.0.0",
     "https-proxy-agent": "^4.0.0",
-    "iconv-lite": "^0.5.0",
+    "iconv-lite": "^0.5.1",
     "js-yaml": "^3.13.1",
     "jschardet": "^2.1.1",
     "lodash.pick": "^4.4.0",
