@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "jest": "^25.1.0",
-    "lockfile-lint": "^3.0.8",
+    "lockfile-lint": "^3.0.9",
     "pre-commit": "^1.2.2",
     "prettier": "^1.19.1",
     "prettier-check": "^2.0.0"
