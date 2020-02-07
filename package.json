@@ -36,7 +36,7 @@
     "cheerio": "^1.0.0-rc.3",
     "ejs": "^3.0.1",
     "escape-goat": "^3.0.0",
-    "got": "^10.4.0",
+    "got": "^10.5.2",
     "http-proxy-agent": "^4.0.0",
     "https-proxy-agent": "^4.0.0",
     "iconv-lite": "^0.5.1",
