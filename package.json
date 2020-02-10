@@ -37,7 +37,7 @@
     "ejs": "^3.0.1",
     "escape-goat": "^3.0.0",
     "got": "^10.5.2",
-    "http-proxy-agent": "^4.0.0",
+    "http-proxy-agent": "^4.0.1",
     "https-proxy-agent": "^5.0.0",
     "iconv-lite": "^0.5.1",
     "js-yaml": "^3.13.1",
