@@ -7,14 +7,17 @@ const iconv = require('iconv-lite');
 const AcceptHeader =
     'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 ';
 
-module.exports = got.extend({
+const custom = got.extend({
     headers: {
         'user-agent': config.UA,
         accept: AcceptHeader
     },
     timeout: {
         response: config.resp_timeout * 1000
-    },
+    }
+});
+
+module.exports = custom.extend({
     hooks: {
         afterResponse: [
             async (res) => {
@@ -26,9 +29,11 @@ module.exports = got.extend({
                     enc = charDet.detect(res.body);
                 }
                 if (enc !== 'utf8') {
-                    res.body = await got(res.url).buffer();
-                    if (!fromHeader)
-                        enc = charDet.detect(res.body).encoding.toLowerCase();
+                    res.body = await custom(res.url).buffer();
+                    if (!fromHeader) {
+                        enc = charDet.detect(res.body).encoding || 'utf8';
+                        enc = enc.toLowerCase();
+                    }
                     res.body = iconv.decode(res.body, enc);
                 }
 
