@@ -1,2 +1,10 @@
 .github/
 test/
+.git/
+node_modules
+logs/*
+
+.idea
+.eslint*
+.prettier*
+*.md
