@@ -6,8 +6,8 @@
         <docs>http://www.opml.org/spec2</docs>
     </head>
     <body>
-    <% outlines.forEach(function (outline) { %>
-        <outline type="rss" text="<%- outline.feed_title %>" xmlUrl="<%- outline.url %>"/>
+    <% feeds.forEach(function (feed) { %>
+        <outline type="rss" text="<%- feed.feed_title %>" xmlUrl="<%- feed.url %>"/>
     <% }) %>
     </body>
 </opml>
