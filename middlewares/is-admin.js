@@ -2,6 +2,19 @@ const errors = require('../utils/errors');
 const USERS = require('../proxies/users');
 const config = require('../config');
 
+/**
+ * Check if using for channel
+ * @param {string} text message recived
+ * @return {boolean} whether contain channel id (can be start with @ or a number start with -)
+ */
+function checkChannelId(text) {
+    const textPart = text.split(/\s+/);
+    if (textPart.length > 1 && textPart[1].match(/^(@\w+)|(-\d+)$/)) {
+        return true;
+    }
+    return false;
+}
+
 module.exports = async (ctx, next) => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
@@ -32,7 +45,7 @@ module.exports = async (ctx, next) => {
     } else if (
         ctx.message && // button respone without message
         ctx.message.text &&
-        ctx.message.text.search(/(@\w+)|(-\d+)/) !== -1
+        checkChannelId(ctx.message.text)
     ) {
         // for channel subscription in private chat
         const channelId = ctx.message.text.match(/(@\w+)|(-\d+)/)[0];
