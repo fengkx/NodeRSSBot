@@ -1,5 +1,5 @@
-const config = require('../config');
-const fs = require('fs');
+import {config} from "../config";
+import * as fs from 'fs';
 const logger = require('../utils/logger');
 const errors = require('../utils/errors');
 
@@ -17,4 +17,4 @@ const initTables = async () => {
     logger.info(`init tables in ${config.db_path}`);
 };
 
-module.exports = initTables;
+export default initTables;

@@ -62,7 +62,7 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 
 1. Node.js and npm installed
 1. clone this repository `git clone https://github.com/fengkx/NodeRSSBot.git`
-1. Set the `RSSBOT_TOKEN` environment variable or set it in config/index.js
+1. Set the `RSSBOT_TOKEN` environment variable or set it in config/index.ts
 1. Install dependencies run `npm i` in the root directory of the repository
 1. Run `pm2 start npm --name node_rssbot -- start` (recommend) or `npm start`
 
@@ -70,7 +70,7 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 
 # Setting
 
-**All setting can be set by either environment variable or in `config/index.js`**
+**All setting can be set by either environment variable or in `config/index.ts`**
 
 | setting            | env                 | default/require                                                | description                                                                  |
 | ------------------ | ------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
@@ -174,7 +174,7 @@ viewall 只能在私聊中使用
 
 1. 首先要有 Node.js 和 npm 或 yarn
 1. 克隆仓库 `git clone https://github.com/fengkx/NodeRSSBot.git`
-1. 设置 `RSSBOT_TOKEN` 环境变量，或者直接在 `config/index.js` 中修改
+1. 设置 `RSSBOT_TOKEN` 环境变量，或者直接在 `config/index.ts` 中修改
 1. 安装依赖 在仓库根目录运行`npm i`
 1. 推荐用 `pm2` 守护进程 `pm2 start npm --name node_rssbot -- start` 如果没有安装`pm2` 就先安装 `npm i -g pm2` 或者直接 `npm start`
 
@@ -188,7 +188,7 @@ viewall 只能在私聊中使用
 
 # 配置项
 
-**所有配置项都可以用环境变量或者直接在 `config/index.js`中修改**
+**所有配置项都可以用环境变量或者直接在 `config/index.ts`中修改**
 
 | 设置项             | 环境变量            | 默认/必填                                                      | 描述                                                                         |
 | ------------------ | ------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |

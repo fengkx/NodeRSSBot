@@ -1,11 +1,11 @@
 const fs = require('fs');
-const cfg = require('../source/config');
-
+import cfg from '../source/config';
+import initDB from '../source/database/init-tables';
 beforeAll(() => {
     if (fs.existsSync(cfg.db_path)) {
         fs.unlinkSync(cfg.db_path);
     }
-    require('../source/database/init-tables')();
+    initDB();
 });
 
 const RSS = require('../source/proxies/rss-feed');
@@ -59,5 +59,7 @@ test('USER new', async () => {
 
 afterAll(() => {
     // const cfg = require('../config');
-    fs.unlinkSync(cfg.db_path);
+    if (fs.existsSync(cfg.db_path)) {
+        fs.unlinkSync(cfg.db_path);
+    }
 });

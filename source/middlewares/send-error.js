@@ -1,5 +1,5 @@
 const i18n = require('../i18n');
-const logger = require('../utils/logger');
+import logger from '../utils/logger';
 const errors = require('../utils/errors');
 const USERS = require('../proxies/users');
 module.exports = async (ctx, next) => {

@@ -1,6 +1,5 @@
-const winston = require('winston');
-require('winston-daily-rotate-file');
-
+import * as winston from 'winston';
+import * as DailyRotateFile from 'winston-daily-rotate-file';
 const logger = winston.createLogger({
     level: process.env.NODE_PRODUTION ? 'info' : 'debug',
     format: winston.format.combine(
@@ -13,7 +12,7 @@ const logger = winston.createLogger({
         // - Write all logs error (and below) to `error.log`.
         //
 
-        new winston.transports.DailyRotateFile({
+        new DailyRotateFile({
             filename: 'logs/error-%DATE%.log',
             level: 'error',
             datePattern: 'YYYY-MM-DD',
@@ -21,7 +20,7 @@ const logger = winston.createLogger({
             maxFiles: '14d'
         }),
 
-        new winston.transports.DailyRotateFile({
+        new DailyRotateFile({
             filename: 'logs/combined-%DATE%.log',
             datePattern: 'YYYY-MM-DD',
             zippedArchive: true,
@@ -41,4 +40,4 @@ logger.add(
         )
     })
 );
-module.exports = logger;
+export default logger;

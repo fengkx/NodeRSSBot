@@ -1,5 +1,6 @@
 /* eslint-disable */
-const { proxy } = require('../config');
+import {config} from "../config";
+const { proxy } = config;
 const HttpProxyAgent = require('http-proxy-agent');
 const HttpsProxyAgent = require('https-proxy-agent');
 const SocksProxyAgent = require('socks-proxy-agent');

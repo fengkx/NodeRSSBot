@@ -1,5 +1,11 @@
 export interface Outline {
-    type: string;
     text: string;
-    xmlUrl: string;
+    type?: string;
+    xmlUrl?: string;
+    outline?: XmlOutline;
+}
+
+export interface XmlOutline {
+    $: Outline;
+    outline?: XmlOutline[];
 }

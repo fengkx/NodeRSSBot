@@ -1,17 +1,19 @@
+import {Outline, XmlOutline} from "../types/outline";
+
 const got = require('../utils/got');
 const Parser = require('xml2js').Parser;
 const errors = require('../utils/errors');
 const RSS = require('../proxies/rss-feed');
 const i18n = require('../i18n');
 
-function parseOutlines(outlines: any[], lst) {
+function parseOutlines(outlines: XmlOutline[], lst: Outline[]) {
     outlines.forEach((outline) => {
         if (outline.$.type && outline.$.type === 'rss') lst.push(outline.$);
         else if (outline.outline) parseOutlines(outline.outline, lst);
     });
 }
 
-const getOutlines = function(data: string): Promise<any[]> {
+const getOutlines = function(data: string): Promise<Outline[]> {
     return new Promise((resolve, reject) => {
         const parser = new Parser();
         parser.parseString(data, function(err, res) {
@@ -24,8 +26,9 @@ const getOutlines = function(data: string): Promise<any[]> {
     });
 };
 
-exports._getOutlines = getOutlines;
-exports.default = async (ctx, next) => {
+// eslint-disable-line
+export const _getOutlines = getOutlines;
+export default async (ctx, next) => {
     const { fileLink, lang } = ctx.state;
 
     try {

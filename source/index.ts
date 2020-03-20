@@ -1,4 +1,4 @@
-const Telegraf = require('telegraf');
+import Telegraf from 'telegraf';
 const initTable = require('./database/init-tables');
 const { fork } = require('child_process');
 const { join } = require('path');
@@ -10,7 +10,7 @@ const i18n = require('./i18n');
 const LANG = require('./controlers/language');
 const RSS = require('./controlers/rss');
 const importReply = require('./controlers/import-reply');
-
+import {config} from './config';
 const {
     token,
     view_all,
@@ -18,12 +18,10 @@ const {
     item_num,
     db_path,
     not_send
-} = require('./config');
-
+} = config;
 const {
     getUrl,
     exportToOpml,
-    importFromOpml,
     getFileLink,
     sendError,
     testUrl,
@@ -32,7 +30,8 @@ const {
     onlyPrivateChat,
     subMultiUrl
 } = require('./middlewares');
-
+import importFromOpml from './middlewares/import-from-opml';
+import {MContext} from "./types/ctx";
 const twoKeyReply = require('./utils/two-key-reply');
 
 (async () => {
@@ -53,7 +52,7 @@ bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username;
 });
 
-bot.command('start', sendError, async (ctx) => {
+bot.command('start', sendError, async (ctx: MContext) => {
     const builder = [];
     const { lang } = ctx.state;
     builder.push(i18n[lang]['WELCOME']);
@@ -68,7 +67,7 @@ bot.command('start', sendError, async (ctx) => {
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
 
-bot.command('help', sendError, async (ctx) => {
+bot.command('help', sendError, async (ctx: MContext) => {
     const builder = [];
     const { lang } = ctx.state;
     builder.push(i18n[lang]['SUB_USAGE']);
@@ -103,7 +102,7 @@ bot.command(
     'viewall',
     sendError,
     onlyPrivateChat,
-    async (ctx, next) => {
+    async (_ctx: MContext, next) => {
         if (view_all) await next();
         else throw errors.newCtrlErr('COMMAND_NOT_ENABLED');
     },
@@ -115,7 +114,7 @@ bot.command(
     sendError,
     isAdmin,
     // RSS.unsubAll,
-    async (ctx, next) => {
+    async (ctx: MContext, next) => {
         const { lang } = ctx.state;
         await twoKeyReply(i18n[lang]['CONFIRM'], [
             {
@@ -136,13 +135,13 @@ bot.action(/^CHANGE_LANG[\w_]+/, LANG.changeLangCallback);
 
 bot.hears(
     /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
-    async (ctx, next) => {
+    async (ctx: MContext, next) => {
         if (!ctx.message.text.startsWith('/')) {
             await next();
         }
     },
     sendError,
-    async (ctx, next) => {
+    async (ctx: MContext, next) => {
         ctx.state.chat = await ctx.getChat();
         if (ctx.state.chat.type === 'private') {
             await next();
@@ -158,15 +157,17 @@ bot.action(
     sendError,
     isAdmin,
     RSS.unsubAll,
-    async (ctx, next) => {
+    async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
+        // @ts-ignore
         ctx.telegram.answerCbQuery(cb.id);
         await next();
     }
 );
 
-bot.action('UNSUB_ALL_NO', async (ctx, next) => {
+bot.action('UNSUB_ALL_NO', async (ctx: MContext, next) => {
     const cb = ctx.callbackQuery;
+    // @ts-ignore
     ctx.telegram.answerCbQuery(cb.id, i18n[lang]['CANCEL']);
     await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
     await next();
@@ -176,7 +177,7 @@ bot.action(
     /^VIEWALL_(\d+)/,
     sendError,
     onlyPrivateChat,
-    async (ctx, next) => {
+    async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
         ctx.state.viewallPage = parseInt(cb.data.split('_')[1]);
         await ctx.telegram.deleteMessage(
@@ -192,7 +193,7 @@ bot.action(
     /^RSS_(RAW_)*(\d+)/,
     sendError,
     onlyPrivateChat,
-    async (ctx, next) => {
+    async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
         const splitedStr = cb.data.split('_');
         if (splitedStr[1] === 'RAW') ctx.state.showRaw = true;
@@ -208,7 +209,7 @@ bot.action(
 
 bot.launch();
 
-function startFetchProcess(restartTime) {
+function startFetchProcess(restartTime: number): void {
     if (restartTime > 3) {
         logger.error('fetch process exit to much');
         process.exit(1);

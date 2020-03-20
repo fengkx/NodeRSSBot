@@ -14,8 +14,7 @@
     "lint-lockfile": "npx lockfile-lint --path package-lock.json --allowed-hosts npm yarn --validate-https"
   },
   "pre-commit": [
-    "lint",
-    "test"
+    "lint"
   ],
   "repository": {
     "type": "git",

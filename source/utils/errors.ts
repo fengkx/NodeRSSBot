@@ -1,7 +1,7 @@
 const i18n = require('../i18n');
-const logger = require('./logger');
-
-class ControllableError extends Error {
+import logger from './logger';
+export class ControllableError extends Error {
+    code: string;
     constructor(err) {
         super(err);
         if (err) {
@@ -14,7 +14,7 @@ class ControllableError extends Error {
     }
 }
 
-exports.newCtrlErr = function(code, e) {
+export function newCtrlErr(code, e?: any) {
     const err = new ControllableError(e);
     if (e && e.response) {
         switch (e.response.statusCode) {
@@ -25,6 +25,4 @@ exports.newCtrlErr = function(code, e) {
     }
     err.code = code;
     return err;
-};
-
-exports.ControllableError = ControllableError;
+}
