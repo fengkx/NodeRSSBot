@@ -1,7 +1,7 @@
 const errors = require('../utils/errors');
 const dbPool = require('../database');
 
-// eslint-disable-next-line no-empty-function
+// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
 const placeHolder = { release() {} };
 const px = {};
 

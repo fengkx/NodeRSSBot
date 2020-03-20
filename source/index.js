@@ -54,7 +54,7 @@ bot.telegram.getMe().then((botInfo) => {
 });
 
 bot.command('start', sendError, async (ctx) => {
-    let builder = [];
+    const builder = [];
     const { lang } = ctx.state;
     builder.push(i18n[lang]['WELCOME']);
     builder.push(i18n[lang]['SUB_USAGE']);
@@ -69,7 +69,7 @@ bot.command('start', sendError, async (ctx) => {
 });
 
 bot.command('help', sendError, async (ctx) => {
-    let builder = [];
+    const builder = [];
     const { lang } = ctx.state;
     builder.push(i18n[lang]['SUB_USAGE']);
     builder.push(i18n[lang]['UNSUB_USAGE']);
@@ -214,7 +214,7 @@ function startFetchProcess(restartTime) {
         process.exit(1);
     }
     const fetchJS = join(__dirname, `utils/fetch.js`);
-    let child = process.env.NODE_PRODUTION
+    const child = process.env.NODE_PRODUTION
         ? fork(fetchJS)
         : fork(fetchJS, [], {
               execArgv: ['--inspect-brk=46209']

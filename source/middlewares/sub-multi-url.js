@@ -31,7 +31,7 @@ module.exports = async (ctx, next) => {
         })
     );
 
-    let builder = [i18n[lang]['SUB_SUCCESS']];
+    const builder = [i18n[lang]['SUB_SUCCESS']];
     feedsReady
         .filter((i) => i)
         .forEach(function(feed) {

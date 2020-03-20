@@ -75,7 +75,7 @@ ctrl.rss = async (ctx, next) => {
     if (feeds.length === 0) {
         throw errors.newCtrlErr('NOT_SUB');
     }
-    let builder = [];
+    const builder = [];
 
     builder.push(`<strong>${i18n[lang]['SUB_LIST']}</strong>`);
     if (raw) {
@@ -132,7 +132,7 @@ ctrl.viewAll = async (ctx, next) => {
     if (feeds.length === 0) {
         throw errors.newCtrlErr('NOT_SUB');
     }
-    let builder = [];
+    const builder = [];
     builder.push(`<strong>${i18n[lang]['ALL_FEED']}</strong>`);
     feeds.forEach((feed) => {
         const url = feed.url.trim();

@@ -4,14 +4,14 @@ const errors = require('../utils/errors');
 const RSS = require('../proxies/rss-feed');
 const i18n = require('../i18n');
 
-function parseOutlines(outlines, lst) {
+function parseOutlines(outlines: any[], lst) {
     outlines.forEach((outline) => {
         if (outline.$.type && outline.$.type === 'rss') lst.push(outline.$);
         else if (outline.outline) parseOutlines(outline.outline, lst);
     });
 }
 
-const getOutlines = function(data) {
+const getOutlines = function(data: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
         const parser = new Parser();
         parser.parseString(data, function(err, res) {

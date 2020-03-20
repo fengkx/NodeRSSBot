@@ -1,7 +1,7 @@
 const dbPool = require('../database');
 const errors = require('../utils/errors');
 
-// eslint-disable-next-line no-empty-function
+// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
 const placeHolder = { release() {} };
 const px = {};
 px.getSubscribersByFeedId = async (feedId) => {

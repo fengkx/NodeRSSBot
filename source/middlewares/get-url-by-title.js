@@ -9,7 +9,7 @@ module.exports = async (ctx, next) => {
         throw errors.newCtrlErr('UNSUBTHIS_USAGE');
     }
     const title = replyToMessage.text.split('\n')[0];
-    let feeds = await getFeedsByTitle(title);
+    const feeds = await getFeedsByTitle(title);
     if (feeds.length > 1) throw errors.newCtrlErr('SAME_NAME');
     if (feeds.length === 0) throw errors.newCtrlErr('UNSUBTHIS_USAGE');
     ctx.state.feed = feeds[0];
