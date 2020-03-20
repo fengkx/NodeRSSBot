@@ -2,7 +2,8 @@ const util = require('util');
 const fs = require('fs');
 
 const source = require('./test-data/feeds');
-const getOutlines = require('../middlewares/import-from-opml')._getOutlines;
+const getOutlines = require('../source/middlewares/import-from-opml')
+    ._getOutlines;
 const readFile = util.promisify(fs.readFile);
 
 test('getOutlines', async () => {

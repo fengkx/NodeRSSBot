@@ -1,16 +1,16 @@
 const fs = require('fs');
-const cfg = require('../config');
+const cfg = require('../source/config');
 
 beforeAll(() => {
     if (fs.existsSync(cfg.db_path)) {
         fs.unlinkSync(cfg.db_path);
     }
-    require('../database/init-tables')();
+    require('../source/database/init-tables')();
 });
 
-const RSS = require('../proxies/rss-feed');
-const USERS = require('../proxies/users');
-const SUBSCRIBES = require('../proxies/subscribes');
+const RSS = require('../source/proxies/rss-feed');
+const USERS = require('../source/proxies/users');
+const SUBSCRIBES = require('../source/proxies/subscribes');
 
 const [userId, feedUrl, feedTitle] = [
     233233233,

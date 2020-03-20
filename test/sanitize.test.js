@@ -1,4 +1,4 @@
-const sanitize = require('../utils/sanitize');
+const sanitize = require('../source/utils/sanitize');
 
 test('escape html character', () => {
     const cs = '<>';

@@ -1,6 +1,6 @@
-const got = require('../utils/got');
+const got = require('../source/utils/got');
 const nock = require('nock');
-const config = require('../config');
+const config = require('../source/config');
 
 test('ensure got work', async () => {
     nock('https://node_rssbot.test')

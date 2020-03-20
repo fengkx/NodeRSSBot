@@ -1,7 +1,7 @@
 const { atom, rss, noKey } = require('./test-data/feed_items');
 const crypto = require('crypto');
 
-const hashFeed = require('../utils/hash-feed');
+const hashFeed = require('../source/utils/hash-feed');
 
 test('atom hash', async () => {
     const md5 = crypto.createHash('md5');

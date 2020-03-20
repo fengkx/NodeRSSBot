@@ -1,4 +1,4 @@
-jest.mock('../proxies/users', () => ({
+jest.mock('../source/proxies/users', () => ({
     getUserById: (id) => {
         const testUser = {
             user_id: 233233233,
@@ -9,7 +9,7 @@ jest.mock('../proxies/users', () => ({
     }
 }));
 
-const sendError = require('../middlewares/send-error');
+const sendError = require('../source/middlewares/send-error');
 
 test('sendError@message', async () => {
     const ctx = require('./test-data/ctx/send-error-ctx').messageCtx; // reply with message_id 233

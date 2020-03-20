@@ -1,8 +1,8 @@
 /* eslint no-empty-function:0 */
-const getUrl = require('../middlewares/get-url');
-const ErrClass = require('../utils/errors').ControllableError;
+const getUrl = require('../source/middlewares/get-url');
+const ErrClass = require('../source/utils/errors').ControllableError;
 
-jest.mock('../proxies/rss-feed', () => ({
+jest.mock('../source/proxies/rss-feed', () => ({
     // eslint-disable-next-line no-unused-vars
     getSubscribedFeedsByUserId: async (id) => {
         return require('./test-data/feeds');

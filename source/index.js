@@ -1,6 +1,7 @@
 const Telegraf = require('telegraf');
 const initTable = require('./database/init-tables');
 const { fork } = require('child_process');
+const { join } = require('path');
 const send = require('./utils/send');
 const logger = require('./utils/logger');
 const errors = require('./utils/errors');
@@ -212,9 +213,10 @@ function startFetchProcess(restartTime) {
         logger.error('fetch process exit to much');
         process.exit(1);
     }
+    const fetchJS = join(__dirname, `utils/fetch.js`);
     let child = process.env.NODE_PRODUTION
-        ? fork(`utils/fetch.js`)
-        : fork(`utils/fetch.js`, [], {
+        ? fork(fetchJS)
+        : fork(fetchJS, [], {
               execArgv: ['--inspect-brk=46209']
           });
     child.on('message', function(message) {

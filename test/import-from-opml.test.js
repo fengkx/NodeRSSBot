@@ -1,10 +1,11 @@
-const importFromOpml = require('../middlewares/import-from-opml').default;
+const importFromOpml = require('../source/middlewares/import-from-opml')
+    .default;
 
-jest.mock('../proxies/rss-feed', () => ({
+jest.mock('../source/proxies/rss-feed', () => ({
     sub: jest.fn()
 }));
 
-jest.mock('../utils/got', () => {
+jest.mock('../source/utils/got', () => {
     const { promisify } = require('util');
     const fs = require('fs');
 

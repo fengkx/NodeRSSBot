@@ -1,8 +1,8 @@
-const errors = require('../utils/errors');
+const errors = require('../source/utils/errors');
 
 const TEST_CODE = 'TEST_CODE';
 
-jest.mock('../utils/logger', () => ({
+jest.mock('../source/utils/logger', () => ({
     error: jest.fn()
 }));
 
@@ -10,7 +10,7 @@ test('newCtrlErr', async () => {
     const err = errors.newCtrlErr(TEST_CODE);
     expect(err).toHaveProperty('code', TEST_CODE);
     expect(err).toBeInstanceOf(errors.ControllableError);
-    expect(require('../utils/logger').error).not.toHaveBeenCalled();
+    expect(require('../source/utils/logger').error).not.toHaveBeenCalled();
 });
 
 test('newCtrlErr with exist error', async () => {
@@ -19,5 +19,5 @@ test('newCtrlErr with exist error', async () => {
 
     expect(err).toHaveProperty('code', TEST_CODE);
     expect(err).toBeInstanceOf(errors.ControllableError);
-    expect(require('../utils/logger').error).toHaveBeenCalled();
+    expect(require('../source/utils/logger').error).toHaveBeenCalled();
 });

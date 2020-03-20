@@ -3,6 +3,7 @@ const errors = require('../utils/errors');
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
+const config = require('../config');
 
 function readFilePromise(path) {
     return new Promise((resolve, reject) => {
@@ -44,7 +45,7 @@ module.exports = async (ctx, next) => {
     }
     const opml = await render(feeds);
     try {
-        const filePath = path.join(__dirname, '../data/', chat.id.toString());
+        const filePath = path.join(config.db_path, '..', chat.id.toString());
         fs.writeFileSync(filePath, opml);
         await ctx.replyWithDocument({
             source: fs.readFileSync(filePath),
