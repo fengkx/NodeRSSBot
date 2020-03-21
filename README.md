@@ -6,15 +6,15 @@ An RSSBot in telegram similar to [https://github.com/iovxw/rssbot/](https://gith
 
 # Support version
 
-Rss is parsered using [rss-parser](https://www.npmjs.com/package/rss-parser)
+RSS is parsered using [rss-parser](https://www.npmjs.com/package/rss-parser)
 
 # Usage
 
 ```
 /rss       - show subscriptions，add raw to show links
-/sub       - subscribe a Rss: /sub http://example.com/feed.xml automatically detecting Rss feed is supported
-/unsub     - unsubscribe a Rss: /unsub http://example.com/feed.xml or by keyboard
-/unsubthis - reply a message from a Rss feed to unsubscribe it
+/sub       - subscribe a RSS: /sub http://example.com/feed.xml automatically detecting RSS feed is supported
+/unsub     - unsubscribe a RSS: /unsub http://example.com/feed.xml or by keyboard
+/unsubthis - reply a message from a RSS feed to unsubscribe it
 /allunsub  - unsubscribe all feeds
 /export    - export subscriptions to opml file
 /viewall   - view all subscriptions and number of subscribers need to enable in settings
@@ -22,7 +22,7 @@ Rss is parsered using [rss-parser](https://www.npmjs.com/package/rss-parser)
 /lang      - change language
 ```
 
-Automatically detecting Rss feed ，you can use `/sub https://www.fengkx.top` rather than `/sub https://www.fengkx.top/atom.xml`
+Automatically detecting RSS feed ，you can use `/sub https://www.fengkx.top` rather than `/sub https://www.fengkx.top/atom.xml`
 
 You can send multi feeds directly to subscribe in private chat(split by line)
 
@@ -114,7 +114,7 @@ set `lang` setting using one of the following languages
 
 # NodeRSSBot
 
-又是一个 telegram Rss Bot 不过这次用的是 Node.js
+又是一个 telegram RSS Bot 不过这次用的是 Node.js
 
 模仿[https://github.com/iovxw/rssbot/](https://github.com/iovxw/rssbot/) 做的一个 RSSBot，用[telegraf](https://www.npmjs.com/package/telegraf)
 首先感谢 iovxw 的 RSSBot 一直用的很好
@@ -122,15 +122,15 @@ set `lang` setting using one of the following languages
 
 # 支持的版本
 
-Rss 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它支持的就支持
+RSS 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它支持的就支持
 
 # Usage
 
 ```
 /rss       - 显示订阅列表，加 `raw`显示链接
-/sub       - 订阅 Rss: /sub http://example.com/feed.xml 支持自动检测 Rss feed
-/unsub     - 退订 Rss: /unsub http://example.com/feed.xml 或者通过键盘
-/unsubthis - 回复一个 Rss 发来的消息退订该 Rss
+/sub       - 订阅 RSS: /sub http://example.com/feed.xml 支持自动检测 RSS feed
+/unsub     - 退订 RSS: /unsub http://example.com/feed.xml 或者通过键盘
+/unsubthis - 回复一个 RSS 发来的消息退订该 RSS
 /allunsub  - 退订所有源
 /export    - 导出订阅到opml文件
 /viewall   - 查看所有订阅和订阅人数 需要在设置中打开
@@ -138,14 +138,14 @@ Rss 解析用的是 [rss-parser](https://www.npmjs.com/package/rss-parser)，它
 /lang      - 更改语言
 ```
 
-自动检测 Rss feed，可以直接 `/sub https://www.fengkx.top` 而不用 `/sub https://www.fengkx.top/atom.xml`
+自动检测 RSS feed，可以直接 `/sub https://www.fengkx.top` 而不用 `/sub https://www.fengkx.top/atom.xml`
 
 私聊可以直接发送 feed 地址订阅，支持同时发送多个地址按行分割
 
 把 bot 设为频道管理员并正确配置权限后，可通过私聊在`/sub`后加上频道 id 来在频道中订阅 feed
 例如 `/sub <频道 id > <feed url>` (频道 id 是@打头的)
 
-直接发送 opml 文件，可以导入 Rss 源
+直接发送 opml 文件，可以导入 RSS 源
 频道导入需要将文件名改成频道 id 并且以 opml 作为后缀在私聊中发送 例如 `@myChannel.opml`
 viewall 只能在私聊中使用
 
