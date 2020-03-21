@@ -1,9 +1,9 @@
 /* eslint no-empty-function:0 */
-const isAdmin = require('../middlewares/is-admin');
-const { pass, noAdmin } = require('./test-data/ctx/is-admin-ctx');
-const ErrClass = require('../utils/errors').ControllableError;
+import isAdmin from '../source/middlewares/is-admin';
+import { pass, noAdmin } from './test-data/ctx/is-admin-ctx';
+const ErrClass = require('../source/utils/errors').ControllableError;
 
-jest.mock('../proxies/users', () => ({
+jest.mock('../source/proxies/users', () => ({
     getUserById: (id) => {
         const testUser = {
             user_id: 233233233,
