@@ -19,6 +19,7 @@
         // "useDefineForClassFields": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
+        "esModuleInterop": true,
 
         //    remove it after totally rewrite to ts
         "allowJs": true,

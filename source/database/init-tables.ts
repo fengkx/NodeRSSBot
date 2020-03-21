@@ -1,9 +1,10 @@
 import {config} from "../config";
 import * as fs from 'fs';
-const logger = require('../utils/logger');
-const errors = require('../utils/errors');
+import logger from "../utils/logger";
+import errors from "../utils/errors";
+import dbPool from "./index";
 
-const dbPool = require('./index');
+
 const initTables = async () => {
     if (!fs.existsSync(__dirname + '/sql/create_tables.sql')) {
         throw errors.newCtrlErr('CAN_INIT_DB');

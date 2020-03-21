@@ -1,10 +1,10 @@
 /* eslint-disable */
 import {config} from "../config";
 const { proxy } = config;
-const HttpProxyAgent = require('http-proxy-agent');
-const HttpsProxyAgent = require('https-proxy-agent');
-const SocksProxyAgent = require('socks-proxy-agent');
-let agent = null;
+import {HttpProxyAgent} from 'http-proxy-agent';
+import {HttpsProxyAgent} from 'https-proxy-agent';
+import {SocksProxyAgent} from 'socks-proxy-agent';
+let agent;
 if (proxy.protocol && proxy.host && proxy.port) {
     const proxyUrl = `${proxy.protocol}://${proxy.host}:${proxy.port}`;
     switch (proxy.protocol.slice(0, 5)) {
@@ -20,4 +20,4 @@ if (proxy.protocol && proxy.host && proxy.port) {
     }
 }
 
-module.exports = agent;
+export default agent;

@@ -1,5 +1,5 @@
-import * as winston from 'winston';
-import * as DailyRotateFile from 'winston-daily-rotate-file';
+import winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 const logger = winston.createLogger({
     level: process.env.NODE_PRODUTION ? 'info' : 'debug',
     format: winston.format.combine(
@@ -11,7 +11,6 @@ const logger = winston.createLogger({
         // - Write to all logs with level `info` and below to `combined.log`
         // - Write all logs error (and below) to `error.log`.
         //
-
         new DailyRotateFile({
             filename: 'logs/error-%DATE%.log',
             level: 'error',

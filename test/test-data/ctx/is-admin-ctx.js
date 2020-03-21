@@ -6,7 +6,7 @@ const chat = {
     type: 'private'
 };
 
-exports.pass = (text, channelId) => ({
+export const pass = (text, channelId) => ({
     state: {
         chat
     },
@@ -52,7 +52,7 @@ exports.pass = (text, channelId) => ({
     }
 });
 
-exports.noAdmin = (text, channelId) => {
+export const noAdmin = (text, channelId) => {
     const pass = exports.pass(text, channelId);
     const chatId = pass.state.chat.id;
     pass.telegram.getChatAdministrators = jest

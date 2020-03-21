@@ -1,11 +1,9 @@
 import {Outline, XmlOutline} from "../types/outline";
-
-const got = require('../utils/got');
-const Parser = require('xml2js').Parser;
-const errors = require('../utils/errors');
-const RSS = require('../proxies/rss-feed');
-const i18n = require('../i18n');
-
+import got from '../utils/got';
+import {Parser} from 'xml2js';
+import errors from "../utils/errors";
+import {sub} from '../proxies/rss-feed'
+import i18n from '../i18n';
 function parseOutlines(outlines: XmlOutline[], lst: Outline[]) {
     outlines.forEach((outline) => {
         if (outline.$.type && outline.$.type === 'rss') lst.push(outline.$);
@@ -39,7 +37,7 @@ export default async (ctx, next) => {
         await Promise.all(
             outlines.map(async (outline) => {
                 try {
-                    await RSS.sub(
+                    await sub(
                         ctx.state.chat.id,
                         outline.xmlUrl,
                         outline.text

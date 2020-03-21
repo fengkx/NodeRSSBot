@@ -1,6 +1,6 @@
 import * as path from 'path';
 import {Config} from "./types/config";
-const { version } = require('../package');
+import { version } from '../package.json';
 
 export const config: Config = {
     token: process.env.RSSBOT_TOKEN || '',

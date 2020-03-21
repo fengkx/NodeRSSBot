@@ -1,16 +1,17 @@
 import Telegraf from 'telegraf';
-const initTable = require('./database/init-tables');
-const { fork } = require('child_process');
-const { join } = require('path');
-const send = require('./utils/send');
-const logger = require('./utils/logger');
-const errors = require('./utils/errors');
-const i18n = require('./i18n');
+import initTable from './database/init-tables';
+import { fork } from 'child_process';
+import { join } from 'path';
+import send from "./utils/send";
+import logger from "./utils/logger";
+import errors from "./utils/errors";
+import i18n from './i18n';
 
-const LANG = require('./controlers/language');
-const RSS = require('./controlers/rss');
-const importReply = require('./controlers/import-reply');
+import {replyKeyboard, changeLangCallback} from './controlers/language';
+import {getUrlById, rss, sub, unsub, unsubAll, viewAll} from './controlers/rss';
+import importReply from './controlers/import-reply';
 import {config} from './config';
+import agent from "./utils/agent";
 const {
     token,
     view_all,
@@ -19,20 +20,19 @@ const {
     db_path,
     not_send
 } = config;
-const {
-    getUrl,
-    exportToOpml,
-    getFileLink,
-    sendError,
-    testUrl,
-    getUrlByTitle,
-    isAdmin,
-    onlyPrivateChat,
-    subMultiUrl
-} = require('./middlewares');
+
+import getUrl from './middlewares/get-url'
+import getUrlByTitle from './middlewares/get-url-by-title'
+import getFileLink from './middlewares/get-file-link';
+import sendError from './middlewares/send-error';
+import testUrl from './middlewares/test-url';
+import isAdmin from './middlewares/is-admin';
+import onlyPrivateChat from './middlewares/is-admin';
+import subMultiUrl from './middlewares/sub-multi-url';
+import exportToOpml from './middlewares/export-to-opml';
 import importFromOpml from './middlewares/import-from-opml';
 import {MContext} from "./types/ctx";
-const twoKeyReply = require('./utils/two-key-reply');
+import twoKeyReply from'./utils/two-key-reply';
 
 (async () => {
     await initTable();
@@ -41,7 +41,7 @@ const twoKeyReply = require('./utils/two-key-reply');
 const bot = new Telegraf(token, {
     telegram: {
         // Telegram options
-        agent: require('./utils/agent') // https.Agent instance, allows custom proxy, certificate, keep alive, etc.
+        agent: agent // https.Agent instance, allows custom proxy, certificate, keep alive, etc.
     }
 });
 
@@ -84,13 +84,13 @@ bot.command('help', sendError, async (ctx: MContext) => {
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
 
-bot.command('sub', sendError, isAdmin, getUrl, testUrl, RSS.sub);
+bot.command('sub', sendError, isAdmin, getUrl, testUrl, sub);
 
-bot.command('unsub', sendError, isAdmin, getUrl, RSS.unsub);
+bot.command('unsub', sendError, isAdmin, getUrl, unsub);
 
-bot.command('unsubthis', sendError, isAdmin, getUrlByTitle, RSS.unsub);
+bot.command('unsubthis', sendError, isAdmin, getUrlByTitle, unsub);
 
-bot.command('rss', sendError, isAdmin, RSS.rss);
+bot.command('rss', sendError, isAdmin, rss);
 
 bot.command('export', sendError, isAdmin, exportToOpml);
 
@@ -106,7 +106,7 @@ bot.command(
         if (view_all) await next();
         else throw errors.newCtrlErr('COMMAND_NOT_ENABLED');
     },
-    RSS.viewAll
+    viewAll
 );
 
 bot.command(
@@ -116,7 +116,7 @@ bot.command(
     // RSS.unsubAll,
     async (ctx: MContext, next) => {
         const { lang } = ctx.state;
-        await twoKeyReply(i18n[lang]['CONFIRM'], [
+        await twoKeyReply([
             {
                 text: i18n[lang]['YES'],
                 callback_data: 'UNSUB_ALL_YES'
@@ -125,13 +125,13 @@ bot.command(
                 text: i18n[lang]['NO'],
                 callback_data: 'UNSUB_ALL_NO'
             }
-        ])(ctx, next);
+        ], i18n[lang]['CONFIRM'])(ctx, next);
     }
 );
 
-bot.command('lang', sendError, isAdmin, LANG.replyKeyboard);
+bot.command('lang', sendError, isAdmin, replyKeyboard);
 
-bot.action(/^CHANGE_LANG[\w_]+/, LANG.changeLangCallback);
+bot.action(/^CHANGE_LANG[\w_]+/, changeLangCallback);
 
 bot.hears(
     /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
@@ -150,13 +150,13 @@ bot.hears(
     subMultiUrl
 );
 
-bot.hears(/^\[(\d+)] (.+)/, sendError, isAdmin, RSS.getUrlById, RSS.unsub);
+bot.hears(/^\[(\d+)] (.+)/, sendError, isAdmin, getUrlById, unsub);
 
 bot.action(
     'UNSUB_ALL_YES',
     sendError,
     isAdmin,
-    RSS.unsubAll,
+    unsubAll,
     async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
         // @ts-ignore
@@ -186,7 +186,7 @@ bot.action(
         );
         await next();
     },
-    RSS.viewAll
+    viewAll
 );
 
 bot.action(
@@ -204,7 +204,7 @@ bot.action(
         );
         await next();
     },
-    RSS.rss
+    rss
 );
 
 bot.launch();
@@ -220,7 +220,7 @@ function startFetchProcess(restartTime: number): void {
         : fork(fetchJS, [], {
               execArgv: ['--inspect-brk=46209']
           });
-    child.on('message', function(message) {
+    child.on('message', function(message: any) {
         if (typeof message === 'string') logger.info(message);
         else if (message.success) {
             const feed = message.eachFeed;

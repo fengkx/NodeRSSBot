@@ -1,5 +1,7 @@
-const i18n = require('../i18n');
+import i18n from '../i18n';
 import logger from './logger';
+import {config} from "../config";
+
 export class ControllableError extends Error {
     code: string;
     constructor(err) {
@@ -9,7 +11,10 @@ export class ControllableError extends Error {
         }
     }
 
-    toString(lang) {
+    toString(lang: string) {
+        if(!lang) {
+            lang = config.lang;
+        }
         return i18n[lang][this.code];
     }
 }
@@ -25,4 +30,9 @@ export function newCtrlErr(code, e?: any) {
     }
     err.code = code;
     return err;
+}
+
+export default {
+    newCtrlErr,
+    ControllableError
 }
