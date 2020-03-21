@@ -5,8 +5,13 @@ import {
 import logger from './logger';
 import sanitize from './sanitize';
 import { config } from '../config';
+import Telegraf, { ContextMessageUpdate } from 'telegraf';
 
-export default async (bot, toSend: string | any[], feed) => {
+export default async (
+    bot: Telegraf<ContextMessageUpdate>,
+    toSend: string | any[],
+    feed
+) => {
     const subscribers = await getSubscribersByFeedId(feed.feed_id);
     if (typeof toSend === 'string') {
         subscribers.map(async (subscribe) => {
