@@ -12,7 +12,7 @@ import { Agent as HttpsAgent } from 'https';
 let agent: {
     http: HttpAgent;
     https: HttpsAgent;
-};
+} = { https: undefined, http: undefined };
 if (proxy.protocol && proxy.host && proxy.port) {
     const port = parseInt(proxy.port);
     const proxyUrl = `${proxy.protocol}://${proxy.host}:${proxy.port}`;
