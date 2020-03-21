@@ -3,6 +3,9 @@
 import getUrl from '../source/middlewares/get-url';
 import { ControllableError } from '../source/utils/errors';
 import testFeeds from './test-data/feeds';
+import testCtx from './test-data/ctx/get-url-ctx';
+import { MContext } from '../source/types/ctx';
+
 jest.mock('../source/proxies/rss-feed', () => ({
     // eslint-disable-next-line no-unused-vars
     getSubscribedFeedsByUserId: async () => {
@@ -11,25 +14,29 @@ jest.mock('../source/proxies/rss-feed', () => ({
 }));
 
 test('get-url@only_sub', async () => {
-    const ctx = require('./test-data/ctx/get-url-ctx')('/sub');
-    await expect(getUrl(ctx, () => {})).rejects.toThrow(ControllableError);
+    const ctx = testCtx('/sub');
+    await expect(
+        getUrl((ctx as unknown) as MContext, () => {})
+    ).rejects.toThrow(ControllableError);
 });
 
 test('get-url@only_unsub', async () => {
-    const ctx = require('./test-data/ctx/get-url-ctx')('/unsub');
-    await expect(getUrl(ctx, () => {})).resolves.not.toThrow();
+    const ctx = testCtx('/unsub');
+    await expect(
+        getUrl((ctx as unknown) as MContext, () => {})
+    ).resolves.not.toThrow();
 });
 
 test('get-url@sub_with_url', async () => {
     const url = 'https://www.fengkx.top/atom.xml';
-    const ctx = require('./test-data/ctx/get-url-ctx')(`/sub ${url}`);
+    const ctx = (testCtx(`/sub ${url}`) as unknown) as MContext;
     await expect(getUrl(ctx, () => {}));
     expect(ctx).toHaveProperty('state.feedUrl', url);
 });
 
 test('get-url@sub_with_url_need_escape', async () => {
     const url = 'https://www.fengkx.top/测试.xml';
-    const ctx = require('./test-data/ctx/get-url-ctx')(`/sub ${url}`);
+    const ctx = (testCtx(`/sub ${url}`) as unknown) as MContext;
     await expect(getUrl(ctx, () => {}));
     expect(ctx).toHaveProperty('state.feedUrl', url);
 });

@@ -1,4 +1,4 @@
-module.exports = (text) => ({
+export default (text) => ({
     state: {
         lang: 'en',
         chat: {
