@@ -1,6 +1,6 @@
 import i18n from '../i18n';
 import logger from './logger';
-import {config} from "../config";
+import { config } from '../config';
 
 export class ControllableError extends Error {
     code: string;
@@ -12,7 +12,7 @@ export class ControllableError extends Error {
     }
 
     toString(lang: string) {
-        if(!lang) {
+        if (!lang) {
             lang = config.lang;
         }
         return i18n[lang][this.code];
@@ -35,4 +35,4 @@ export function newCtrlErr(code, e?: any) {
 export default {
     newCtrlErr,
     ControllableError
-}
+};

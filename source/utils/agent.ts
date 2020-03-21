@@ -1,7 +1,12 @@
-import {config} from "../config";
+import { config } from '../config';
 const { proxy } = config;
-import {httpOverHttp, httpOverHttps, httpsOverHttp, httpsOverHttps} from 'tunnel'
-import {SocksProxyAgent} from 'socks-proxy-agent';
+import {
+    httpOverHttp,
+    httpOverHttps,
+    httpsOverHttp,
+    httpsOverHttps
+} from 'tunnel';
+import { SocksProxyAgent } from 'socks-proxy-agent';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 let agent: {
@@ -47,7 +52,9 @@ if (proxy.protocol && proxy.host && proxy.port) {
         case 'socks':
             agent = {
                 http: new SocksProxyAgent(proxyUrl),
-                https: new SocksProxyAgent(proxyUrl) as HttpAgent as HttpsAgent
+                https: (new SocksProxyAgent(
+                    proxyUrl
+                ) as HttpAgent) as HttpsAgent
             };
             break;
     }

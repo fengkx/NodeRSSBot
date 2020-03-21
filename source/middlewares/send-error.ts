@@ -1,9 +1,9 @@
 import i18n from '../i18n';
 import logger from '../utils/logger';
-import errors from "../utils/errors";
-import {getUserById} from '../proxies/users';
-import {MContext, Next} from "../types/ctx";
-import {config} from "../config";
+import errors from '../utils/errors';
+import { getUserById } from '../proxies/users';
+import { MContext, Next } from '../types/ctx';
+import { config } from '../config';
 
 export default async (ctx: MContext, next: Next) => {
     let id: number;

@@ -1,8 +1,8 @@
 /* eslint no-empty-function:0 */
 /* eslint @typescript-eslint/no-empty-function:0 */
 import getUrl from '../source/middlewares/get-url';
-import {ControllableError} from '../source/utils/errors';
-import testFeeds from './test-data/feeds'
+import { ControllableError } from '../source/utils/errors';
+import testFeeds from './test-data/feeds';
 jest.mock('../source/proxies/rss-feed', () => ({
     // eslint-disable-next-line no-unused-vars
     getSubscribedFeedsByUserId: async () => {

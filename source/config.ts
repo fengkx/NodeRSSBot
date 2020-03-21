@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {Config} from "./types/config";
+import { Config } from './types/config';
 import { version } from '../package.json';
 
 export const config: Config = {

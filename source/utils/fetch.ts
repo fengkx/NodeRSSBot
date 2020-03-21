@@ -2,11 +2,11 @@ import got from '../utils/got';
 import Parser from 'rss-parser';
 import pMap from 'p-map';
 import hashFeed from './hash-feed';
-import {RecurrenceRule, scheduleJob} from 'node-schedule';
-import logger from "./logger";
-import {findFeed}  from './feed';
-import {Feed} from "../types/feed";
-import {config} from "../config";
+import { RecurrenceRule, scheduleJob } from 'node-schedule';
+import logger from './logger';
+import { findFeed } from './feed';
+import { Feed } from '../types/feed';
+import { config } from '../config';
 
 import {
     getAllFeeds,
@@ -16,14 +16,9 @@ import {
     resetErrorCount,
     handleRedirect,
     updateFeedUrl
-} from '../proxies/rss-feed'
+} from '../proxies/rss-feed';
 
-const {
-    notify_error_count,
-    item_num,
-    fetch_gap,
-    concurrency
-} = config;
+const { notify_error_count, item_num, fetch_gap, concurrency } = config;
 
 async function handleErr(e, feed) {
     logger.info(feed, 'ERROR_MANY_TIME');
@@ -48,7 +43,7 @@ async function handleErr(e, feed) {
     }
 }
 
-const fetch = async (feedUrl): Promise<any[]|void> => {
+const fetch = async (feedUrl): Promise<any[] | void> => {
     try {
         logger.debug(`fetching ${feedUrl}`);
         const res = await got.get(encodeURI(feedUrl));
@@ -61,8 +56,8 @@ const fetch = async (feedUrl): Promise<any[]|void> => {
         const items = feed.items.slice(0, item_num);
         await resetErrorCount(feedUrl);
         return items.map((item) => {
-            const {link, title, content, guid, id} = item;
-            return {link, title, content, guid, id};
+            const { link, title, content, guid, id } = item;
+            return { link, title, content, guid, id };
         });
     } catch (e) {
         logger.error(`${feedUrl} ${e.message}`);
@@ -93,9 +88,11 @@ const fetchAll = async () => {
                     logger.debug(eachFeed.url, 'Error');
                 } else {
                     const newHashList: string[] = await Promise.all(
-                        newItems.map(async (item): Promise<string> => {
-                            return await hashFeed(item);
-                        })
+                        newItems.map(
+                            async (item): Promise<string> => {
+                                return await hashFeed(item);
+                            }
+                        )
                     );
                     sendItems = await Promise.all(
                         newItems.map(async (item) => {
@@ -157,5 +154,4 @@ switch (unit) {
         break;
 }
 
-// eslint-disable-next-line
 scheduleJob(rule, run);

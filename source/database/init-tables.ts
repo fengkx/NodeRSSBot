@@ -1,9 +1,8 @@
-import {config} from "../config";
+import { config } from '../config';
 import * as fs from 'fs';
-import logger from "../utils/logger";
-import errors from "../utils/errors";
-import dbPool from "./index";
-
+import logger from '../utils/logger';
+import errors from '../utils/errors';
+import dbPool from './index';
 
 const initTables = async () => {
     if (!fs.existsSync(__dirname + '/sql/create_tables.sql')) {

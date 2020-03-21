@@ -1,8 +1,8 @@
-import {Outline, XmlOutline} from "../types/outline";
+import { Outline, XmlOutline } from '../types/outline';
 import got from '../utils/got';
-import {Parser} from 'xml2js';
-import errors from "../utils/errors";
-import {sub} from '../proxies/rss-feed'
+import { Parser } from 'xml2js';
+import errors from '../utils/errors';
+import { sub } from '../proxies/rss-feed';
 import i18n from '../i18n';
 function parseOutlines(outlines: XmlOutline[], lst: Outline[]) {
     outlines.forEach((outline) => {
@@ -37,11 +37,7 @@ export default async (ctx, next) => {
         await Promise.all(
             outlines.map(async (outline) => {
                 try {
-                    await sub(
-                        ctx.state.chat.id,
-                        outline.xmlUrl,
-                        outline.text
-                    );
+                    await sub(ctx.state.chat.id, outline.xmlUrl, outline.text);
                 } catch (e) {
                     if (e.code !== 'ALREADY_SUB')
                         // ignore feed already sub

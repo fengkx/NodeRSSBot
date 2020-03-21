@@ -1,5 +1,5 @@
-import errors from "../utils/errors";
-import {MContext, Next} from "../types/ctx";
+import errors from '../utils/errors';
+import { MContext, Next } from '../types/ctx';
 
 export default async (ctx: MContext, next: Next) => {
     const fileId = ctx.message.document.file_id;
@@ -26,4 +26,4 @@ export default async (ctx: MContext, next: Next) => {
         ctx.state.fileLink = fileLink;
         await next();
     }
-}
+};

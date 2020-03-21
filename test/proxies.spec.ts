@@ -1,5 +1,5 @@
 import fs from 'fs';
-import {config as cfg} from '../source/config';
+import { config as cfg } from '../source/config';
 import initDB from '../source/database/init-tables';
 beforeAll(() => {
     if (fs.existsSync(cfg.db_path)) {
