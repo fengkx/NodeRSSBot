@@ -2,7 +2,7 @@ const util = require('util');
 const fs = require('fs');
 
 import source from './test-data/feeds';
-import {_getOutlines} from '../source/middlewares/import-from-opml';
+import { _getOutlines } from '../source/middlewares/import-from-opml';
 const getOutlines = _getOutlines;
 const readFile = util.promisify(fs.readFile);
 
@@ -13,7 +13,7 @@ test('getOutlines', async () => {
         return {
             feed_id: index + 1,
             feed_title: item.text,
-            url: item.xmlUrl,
+            url: item.xmlUrl
         };
     });
     expect(outlines).toEqual(source);

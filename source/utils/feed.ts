@@ -1,7 +1,9 @@
 import * as cheerio from 'cheerio';
-import RSSParser from 'rss-parser'
+import RSSParser from 'rss-parser';
 
-export async function isFeedValid(feedStr): Promise<RSSParser.Output|undefined> {
+export async function isFeedValid(
+    feedStr
+): Promise<RSSParser.Output | undefined> {
     const parser = new RSSParser();
     try {
         return await parser.parseString(feedStr);
@@ -10,7 +12,10 @@ export async function isFeedValid(feedStr): Promise<RSSParser.Output|undefined> 
     }
 }
 
-export async function findFeed(html: string, reqUrl: string): Promise<string[]> {
+export async function findFeed(
+    html: string,
+    reqUrl: string
+): Promise<string[]> {
     const reqURL = new URL(reqUrl);
     const $ = cheerio.load(html);
     const urls = $('head')

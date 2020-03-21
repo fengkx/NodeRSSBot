@@ -1,4 +1,4 @@
-import sanitize from '../source/utils/sanitize'
+import sanitize from '../source/utils/sanitize';
 
 test('escape html character', () => {
     const cs = '<>';

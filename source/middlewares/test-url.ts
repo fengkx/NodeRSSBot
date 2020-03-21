@@ -4,14 +4,14 @@ import errors from '../utils/errors';
 import Parser from 'rss-parser';
 import i18n from '../i18n';
 import { getFeedByUrl } from '../proxies/rss-feed';
-import {Feed} from "../types/feed";
+import { Feed } from '../types/feed';
 
 export default async (ctx, next) => {
     const url = encodeURI(ctx.state.feedUrl);
-    let feed: Feed | Parser.Output| undefined;
+    let feed: Feed | Parser.Output | undefined;
     feed = await getFeedByUrl(url);
     if (feed) {
-        feed = (feed as Feed);
+        feed = feed as Feed;
         ctx.state.feed = feed;
         ctx.state.feed.title = feed.feed_title;
         await next();
@@ -20,7 +20,8 @@ export default async (ctx, next) => {
             const res = await got(url);
             ctx.state.feedUrl = decodeURI(res.url); // handle redirect
             feed = await isFeedValid(res.body);
-            if (!feed) { // feed: undefined
+            if (!feed) {
+                // feed: undefined
                 // check feedUrl
                 ctx.state.feedUrl = await findFeed(res.body, res.url);
                 ctx.state.feedUrl = ctx.state.feedUrl.map(decodeURI);
@@ -50,7 +51,7 @@ export default async (ctx, next) => {
                         break;
                 }
             } else {
-                feed = (feed as Parser.Output);
+                feed = feed as Parser.Output;
                 delete feed.items;
                 ctx.state.feed = feed;
                 await next();

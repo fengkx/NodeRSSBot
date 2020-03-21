@@ -1,12 +1,12 @@
-import dbPool from "../database";
-import errors from "../utils/errors";
-import {User} from "../types/user";
-import * as Database from "better-sqlite3";
+import dbPool from '../database';
+import errors from '../utils/errors';
+import { User } from '../types/user';
+import * as Database from 'better-sqlite3';
 
 // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
 const placeHolder: any = { available: false, release() {} };
 
-export async function getUserById (id: number): Promise<User> {
+export async function getUserById(id: number): Promise<User> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
@@ -18,7 +18,10 @@ export async function getUserById (id: number): Promise<User> {
     }
 }
 
-export async function setLangById (id: number, lang: string): Promise<Database.RunResult> {
+export async function setLangById(
+    id: number,
+    lang: string
+): Promise<Database.RunResult> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
@@ -33,7 +36,7 @@ export async function setLangById (id: number, lang: string): Promise<Database.R
     }
 }
 
-export async function newUser (id: number, lang: string): Promise<User> {
+export async function newUser(id: number, lang: string): Promise<User> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();

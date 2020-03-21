@@ -1,6 +1,6 @@
-import {setLangById} from '../proxies/users';
+import { setLangById } from '../proxies/users';
 import i18n from '../i18n';
-import {MContext, Next} from "../types/ctx";
+import { MContext, Next } from '../types/ctx';
 
 const chunk = (input: any[], size: number) => {
     return input.reduce((arr, item, idx): any[][] => {
@@ -10,7 +10,7 @@ const chunk = (input: any[], size: number) => {
     }, []);
 };
 
-export async function replyKeyboard (ctx: MContext, next: Next) {
+export async function replyKeyboard(ctx: MContext, next: Next) {
     const kbs = Object.keys(i18n).map((i) => {
         return {
             text: i,
@@ -31,14 +31,17 @@ export async function replyKeyboard (ctx: MContext, next: Next) {
     await next();
 }
 
-export async function changeLangCallback (ctx: MContext, next: Next) {
+export async function changeLangCallback(ctx: MContext, next: Next) {
     const cb = ctx.callbackQuery;
     const data = cb.data.split('_');
     const lang = data[data.length - 2];
     const id = data[data.length - 1];
     await setLangById(parseInt(id), lang);
     // @ts-ignore
-    ctx.telegram.answerCbQuery(parseInt(cb).id, i18n[lang]['SET_LANG_TO'] + ' ' + lang);
+    ctx.telegram.answerCbQuery(
+        parseInt(cb).id,
+        i18n[lang]['SET_LANG_TO'] + ' ' + lang
+    );
     await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
     await next();
 }

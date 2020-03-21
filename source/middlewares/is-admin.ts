@@ -1,8 +1,8 @@
-import {config} from '../config';
-import errors from "../utils/errors";
-import {getUserById, newUser} from "../proxies/users";
-import {MContext, Next} from "../types/ctx";
-import {User} from 'telegram-typings'
+import { config } from '../config';
+import errors from '../utils/errors';
+import { getUserById, newUser } from '../proxies/users';
+import { MContext, Next } from '../types/ctx';
+import { User } from 'telegram-typings';
 
 /**
  * Check if using for channel

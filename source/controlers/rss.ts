@@ -1,8 +1,8 @@
-import * as RSS from '../proxies/rss-feed'
+import * as RSS from '../proxies/rss-feed';
 import i18n from '../i18n';
-import twoKeyReply from'../utils/two-key-reply';
+import twoKeyReply from '../utils/two-key-reply';
 import errors from '../utils/errors';
-import {MContext, Next} from "../types/ctx";
+import { MContext, Next } from '../types/ctx';
 
 export async function sub(ctx: MContext, next: Next) {
     const { feedUrl, chat, lang } = ctx.state;
@@ -21,7 +21,7 @@ export async function sub(ctx: MContext, next: Next) {
     await next();
 }
 
-export async function unsub (ctx: MContext, next: Next) {
+export async function unsub(ctx: MContext, next: Next) {
     const { feedUrl, chat, lang } = ctx.state;
     const userId = chat.id;
     try {
@@ -49,7 +49,7 @@ export async function unsub (ctx: MContext, next: Next) {
     await next();
 }
 
-export async function rss (ctx: MContext, next: Next) {
+export async function rss(ctx: MContext, next: Next) {
     const limit = 50;
     const page = ctx.state.rssPage || 1;
     const hasRaw = ctx.message && ctx.message.text.split(/\s/)[1] === 'raw';
@@ -96,7 +96,7 @@ export async function rss (ctx: MContext, next: Next) {
     await twoKeyReply(kbs, builder.join('\n'))(ctx, next);
 }
 
-export async function unsubAll (ctx: MContext, next: Next) {
+export async function unsubAll(ctx: MContext, next: Next) {
     const userId = ctx.state.chat.id;
     const lang = ctx.state.lang;
     await RSS.unsubAll(userId);
@@ -111,7 +111,7 @@ export async function unsubAll (ctx: MContext, next: Next) {
     await next();
 }
 
-export async function viewAll (ctx: MContext, next: Next) {
+export async function viewAll(ctx: MContext, next: Next) {
     const limit = 50;
     const page = ctx.state.viewallPage || 1;
     const count = await RSS.getAllFeedsCount();
@@ -145,8 +145,7 @@ export async function viewAll (ctx: MContext, next: Next) {
     await twoKeyReply(kbs)(ctx, next);
 }
 
-
-export async function getUrlById (ctx: MContext, next: Next) {
+export async function getUrlById(ctx: MContext, next: Next) {
     const { text } = ctx.message;
     const feed_id = text.match(/^\[(\d+)] (.+)/)[1];
     const feed = await RSS.getFeedById(parseInt(feed_id));

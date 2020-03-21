@@ -1,5 +1,5 @@
-import {ContextMessageUpdate} from "telegraf";
-import {Chat} from "telegraf/typings/telegram-types";
+import { ContextMessageUpdate } from 'telegraf';
+import { Chat } from 'telegraf/typings/telegram-types';
 
 export interface MContext extends ContextMessageUpdate {
     state?: {
@@ -16,4 +16,4 @@ export interface MContext extends ContextMessageUpdate {
     };
 }
 
-export type Next = () => any
+export type Next = () => any;

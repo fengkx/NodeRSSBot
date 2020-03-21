@@ -1,5 +1,5 @@
-import {ControllableError, newCtrlErr} from '../source/utils/errors';
-import { mocked } from 'ts-jest/utils'
+import { ControllableError, newCtrlErr } from '../source/utils/errors';
+import { mocked } from 'ts-jest/utils';
 
 jest.mock('../source/utils/logger');
 import logger from '../source/utils/logger';
@@ -19,5 +19,5 @@ test('newCtrlErr with exist error', async () => {
 
     expect(err).toHaveProperty('code', TEST_CODE);
     expect(err).toBeInstanceOf(ControllableError);
-    expect(mockedLogger.error.mock.calls.length).toBeGreaterThanOrEqual(1)
+    expect(mockedLogger.error.mock.calls.length).toBeGreaterThanOrEqual(1);
 });

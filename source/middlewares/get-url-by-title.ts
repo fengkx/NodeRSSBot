@@ -1,7 +1,7 @@
-import {MContext, Next} from "../types/ctx";
+import { MContext, Next } from '../types/ctx';
 
 import { getFeedsByTitle } from '../proxies/rss-feed';
-import errors from "../utils/errors";
+import errors from '../utils/errors';
 export default async (ctx: MContext, next: Next) => {
     const me = await ctx.telegram.getMe();
     const myId = me.id;

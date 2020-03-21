@@ -9,8 +9,8 @@
     "start-withsnapshot": "cross-env NODE_PRODUTION=true node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "dev": "proxychains -q node dist/source/index",
     "test": "cross-env RSSBOT_DB_PATH=test/test-data/test.db npx jest --verbose",
-    "format": "eslint \"source/**/*.{js,ts}\" --fix && prettier \"**/*.{js,json,md}\" --write",
-    "lint": "eslint \"source/**/*.{js,ts}\" && prettier-check \"**/*.{js,json,md}\" && npm run lint-lockfile",
+    "format": "eslint \"source/**/*.{js,ts}\" --fix && prettier \"**/*.{js,ts,json,md}\" --write",
+    "lint": "eslint \"source/**/*.{js,ts}\" && prettier-check \"**/*.{js,ts,json,md}\" && npm run lint-lockfile",
     "lint-lockfile": "npx lockfile-lint --path package-lock.json --allowed-hosts npm yarn --validate-https"
   },
   "pre-commit": [

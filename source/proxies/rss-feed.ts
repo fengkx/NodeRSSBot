@@ -1,13 +1,17 @@
-import dbPool from "../database";
-import errors from "../utils/errors";
-import {PoolConnection} from "better-sqlite-pool";
-import {Feed} from "../types/feed";
-import * as Database from "better-sqlite3";
+import dbPool from '../database';
+import errors from '../utils/errors';
+import { PoolConnection } from 'better-sqlite-pool';
+import { Feed } from '../types/feed';
+import * as Database from 'better-sqlite3';
 
 // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
 const placeHolder: any = { available: false, release() {} };
 
-export async function sub(userId: number, feedUrl: string, feedTitle: string): Promise<string> {
+export async function sub(
+    userId: number,
+    feedUrl: string,
+    feedTitle: string
+): Promise<string> {
     feedUrl = decodeURI(feedUrl);
     const db = await dbPool.acquire();
     const feed = db
@@ -48,7 +52,7 @@ export async function sub(userId: number, feedUrl: string, feedTitle: string): P
     }
 }
 
-export async function getFeedByUrl(feedUrl: string): Promise<Feed|undefined> {
+export async function getFeedByUrl(feedUrl: string): Promise<Feed | undefined> {
     let db: PoolConnection = placeHolder;
     try {
         db = await dbPool.acquire();
@@ -71,7 +75,7 @@ export async function getFeedByUrl(feedUrl: string): Promise<Feed|undefined> {
  * get feed by id
  * @param {number} id feed id
  */
-export async function getFeedById(id: number): Promise<Feed>{
+export async function getFeedById(id: number): Promise<Feed> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
@@ -90,14 +94,16 @@ export async function getFeedById(id: number): Promise<Feed>{
     }
 }
 
-export async function unsub(userId: number, feedId: number): Promise<Database.RunResult> {
+export async function unsub(
+    userId: number,
+    feedId: number
+): Promise<Database.RunResult> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
-        return db.prepare('DELETE FROM subscribes WHERE feed_id=? AND user_id=?').run([
-            feedId,
-            userId
-        ]);
+        return db
+            .prepare('DELETE FROM subscribes WHERE feed_id=? AND user_id=?')
+            .run([feedId, userId]);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     } finally {
@@ -125,15 +131,20 @@ export async function getAllFeeds(): Promise<Feed[]> {
     }
 }
 
-export async function updateHashList(feedId: number, hashList: string[]): Promise<Database.RunResult> {
+export async function updateHashList(
+    feedId: number,
+    hashList: string[]
+): Promise<Database.RunResult> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
-        return db.prepare(
-            `UPDATE rss_feed
+        return db
+            .prepare(
+                `UPDATE rss_feed
                  SET recent_hash_list=?
                  where feed_id = ?`
-        ).run(JSON.stringify(hashList), feedId);
+            )
+            .run(JSON.stringify(hashList), feedId);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     } finally {
@@ -159,7 +170,11 @@ export async function getFeedsByTitle(title: string): Promise<Feed[]> {
     }
 }
 
-export async function getSubscribedFeedsByUserId(userId: number, limit = 1000, page = 1): Promise<Feed[]> {
+export async function getSubscribedFeedsByUserId(
+    userId: number,
+    limit = 1000,
+    page = 1
+): Promise<Feed[]> {
     if (page < 1) {
         page = 1;
     }
@@ -180,7 +195,9 @@ export async function getSubscribedFeedsByUserId(userId: number, limit = 1000, p
     }
 }
 
-export async function getSubscribedCountByUserId (userId: number): Promise<number> {
+export async function getSubscribedCountByUserId(
+    userId: number
+): Promise<number> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
@@ -214,7 +231,9 @@ export async function resetErrorCount(feedUrl: string): Promise<void> {
     }
 }
 
-export async function failAttempt(feedUrl: string): Promise<Database.RunResult> {
+export async function failAttempt(
+    feedUrl: string
+): Promise<Database.RunResult> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
@@ -233,11 +252,13 @@ export async function unsubAll(userId: number): Promise<Database.RunResult> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
-        return db.prepare(
-            `DELETE
+        return db
+            .prepare(
+                `DELETE
                  FROM subscribes
                  WHERE user_id = ?`
-        ).run(userId);
+            )
+            .run(userId);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     } finally {
@@ -245,7 +266,10 @@ export async function unsubAll(userId: number): Promise<Database.RunResult> {
     }
 }
 
-export async function getAllFeedsWithCount (limit: number, page: number): Promise<Feed[]> {
+export async function getAllFeedsWithCount(
+    limit: number,
+    page: number
+): Promise<Feed[]> {
     let db = placeHolder;
     if (page < 1) page = 1;
     try {
@@ -286,7 +310,10 @@ export async function getAllFeedsCount(): Promise<number> {
     }
 }
 
-export async function handleRedirect(url: string, realUrl: string): Promise<void>{
+export async function handleRedirect(
+    url: string,
+    realUrl: string
+): Promise<void> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
@@ -322,7 +349,10 @@ export async function handleRedirect(url: string, realUrl: string): Promise<void
     }
 }
 
-export async function updateFeedUrl(oldUrl, newUrl): Promise<Database.RunResult> {
+export async function updateFeedUrl(
+    oldUrl,
+    newUrl
+): Promise<Database.RunResult> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();

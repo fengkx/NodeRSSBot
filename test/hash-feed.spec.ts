@@ -1,5 +1,5 @@
 // const { atom, rss, noKey } = require('./test-data/feed_items');
-import { atom, rss, noKey }  from './test-data/feed_items';
+import { atom, rss, noKey } from './test-data/feed_items';
 import * as crypto from 'crypto';
 
 import hashFeed from '../source/utils/hash-feed';

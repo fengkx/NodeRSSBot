@@ -1,6 +1,6 @@
-import got from '../source/utils/got'
+import got from '../source/utils/got';
 const nock = require('nock');
-import {config} from '../source/config';
+import { config } from '../source/config';
 
 test('ensure got work', async () => {
     nock('https://node_rssbot.test')

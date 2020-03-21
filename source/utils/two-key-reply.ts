@@ -1,10 +1,10 @@
-import { InlineKeyboardButton } from "telegraf/typings/telegram-types";
-import {MContext, Next} from "../types/ctx";
+import { InlineKeyboardButton } from 'telegraf/typings/telegram-types';
+import { MContext, Next } from '../types/ctx';
 
 interface Middleware {
     (ctx: MContext, next?: Next): any;
 }
-export default  (kbs: InlineKeyboardButton[], text?: string): Middleware => {
+export default (kbs: InlineKeyboardButton[], text?: string): Middleware => {
     // text is optional default to ctx.state.replyText
     return async (ctx, next) => {
         if (ctx.state.processMesId) {

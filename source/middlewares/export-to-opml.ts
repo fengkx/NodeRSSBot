@@ -1,11 +1,11 @@
-import {getSubscribedFeedsByUserId} from '../proxies/rss-feed';
-import errors from "../utils/errors";
+import { getSubscribedFeedsByUserId } from '../proxies/rss-feed';
+import errors from '../utils/errors';
 import * as path from 'path';
 import * as ejs from 'ejs';
 import * as fs from 'fs';
-import {config} from '../config';
-import {MContext, Next} from "../types/ctx";
-import {Feed} from "../types/feed";
+import { config } from '../config';
+import { MContext, Next } from '../types/ctx';
+import { Feed } from '../types/feed';
 
 function readFilePromise(path: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -58,4 +58,4 @@ export default async (ctx: MContext, next: Next) => {
         throw errors.newCtrlErr('FILESYSTEM_ERROR', e);
     }
     await next();
-}
+};

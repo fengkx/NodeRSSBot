@@ -2,27 +2,27 @@ import Telegraf from 'telegraf';
 import initTable from './database/init-tables';
 import { fork } from 'child_process';
 import { join } from 'path';
-import send from "./utils/send";
-import logger from "./utils/logger";
-import errors from "./utils/errors";
+import send from './utils/send';
+import logger from './utils/logger';
+import errors from './utils/errors';
 import i18n from './i18n';
 
-import {replyKeyboard, changeLangCallback} from './controlers/language';
-import {getUrlById, rss, sub, unsub, unsubAll, viewAll} from './controlers/rss';
+import { replyKeyboard, changeLangCallback } from './controlers/language';
+import {
+    getUrlById,
+    rss,
+    sub,
+    unsub,
+    unsubAll,
+    viewAll
+} from './controlers/rss';
 import importReply from './controlers/import-reply';
-import {config} from './config';
-import agent from "./utils/agent";
-const {
-    token,
-    view_all,
-    lang,
-    item_num,
-    db_path,
-    not_send
-} = config;
+import { config } from './config';
+import agent from './utils/agent';
+const { token, view_all, lang, item_num, db_path, not_send } = config;
 
-import getUrl from './middlewares/get-url'
-import getUrlByTitle from './middlewares/get-url-by-title'
+import getUrl from './middlewares/get-url';
+import getUrlByTitle from './middlewares/get-url-by-title';
 import getFileLink from './middlewares/get-file-link';
 import sendError from './middlewares/send-error';
 import testUrl from './middlewares/test-url';
@@ -31,8 +31,8 @@ import onlyPrivateChat from './middlewares/is-admin';
 import subMultiUrl from './middlewares/sub-multi-url';
 import exportToOpml from './middlewares/export-to-opml';
 import importFromOpml from './middlewares/import-from-opml';
-import {MContext} from "./types/ctx";
-import twoKeyReply from'./utils/two-key-reply';
+import { MContext } from './types/ctx';
+import twoKeyReply from './utils/two-key-reply';
 
 (async () => {
     await initTable();
@@ -116,16 +116,19 @@ bot.command(
     // RSS.unsubAll,
     async (ctx: MContext, next) => {
         const { lang } = ctx.state;
-        await twoKeyReply([
-            {
-                text: i18n[lang]['YES'],
-                callback_data: 'UNSUB_ALL_YES'
-            },
-            {
-                text: i18n[lang]['NO'],
-                callback_data: 'UNSUB_ALL_NO'
-            }
-        ], i18n[lang]['CONFIRM'])(ctx, next);
+        await twoKeyReply(
+            [
+                {
+                    text: i18n[lang]['YES'],
+                    callback_data: 'UNSUB_ALL_YES'
+                },
+                {
+                    text: i18n[lang]['NO'],
+                    callback_data: 'UNSUB_ALL_NO'
+                }
+            ],
+            i18n[lang]['CONFIRM']
+        )(ctx, next);
     }
 );
 

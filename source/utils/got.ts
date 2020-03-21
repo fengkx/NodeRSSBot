@@ -1,9 +1,9 @@
 import got from 'got';
-import {config} from "../config";
+import { config } from '../config';
 import charset from 'charset';
 import * as charDet from 'jschardet';
-import {decode} from 'iconv-lite';
-import {Response} from "got/dist/source/types";
+import { decode } from 'iconv-lite';
+import { Response } from 'got/dist/source/types';
 import agent from './agent';
 
 const AcceptHeader =
@@ -29,15 +29,17 @@ export default custom.extend({
                 if (enc) {
                     fromHeader = true;
                 } else {
-                    enc = charDet.detect((res.body as Buffer)).encoding;
+                    enc = charDet.detect(res.body as Buffer).encoding;
                 }
                 if (enc !== 'utf8') {
                     (res.body as Buffer) = await custom(res.url).buffer();
                     if (!fromHeader) {
-                        enc = charDet.detect((res.body as Buffer)).encoding || 'utf8';
+                        enc =
+                            charDet.detect(res.body as Buffer).encoding ||
+                            'utf8';
                         enc = enc.toLowerCase();
                     }
-                    res.body = decode((res.body as Buffer) , enc);
+                    res.body = decode(res.body as Buffer, enc);
                 }
 
                 return res;

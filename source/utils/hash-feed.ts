@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import {Item} from "rss-parser";
+import { Item } from 'rss-parser';
 
 export default async (feed: Item): Promise<string> => {
     return new Promise((resolve) => {

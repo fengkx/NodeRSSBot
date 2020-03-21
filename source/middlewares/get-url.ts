@@ -1,7 +1,7 @@
-import errors from "../utils/errors";
-import {getSubscribedFeedsByUserId} from '../proxies/rss-feed';
+import errors from '../utils/errors';
+import { getSubscribedFeedsByUserId } from '../proxies/rss-feed';
 import i18n from '../i18n';
-import {MContext, Next} from "../types/ctx";
+import { MContext, Next } from '../types/ctx';
 
 export default async (ctx: MContext, next: Next) => {
     const { lang } = ctx.state;
