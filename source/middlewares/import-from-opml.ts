@@ -6,7 +6,7 @@ import { sub } from '../proxies/rss-feed';
 import i18n from '../i18n';
 function parseOutlines(outlines: XmlOutline[], lst: Outline[]) {
     outlines.forEach((outline) => {
-        if (outline.$.type && outline.$.type === 'rss') lst.push(outline.$);
+        if (outline.$?.type === 'rss') lst.push(outline.$);
         else if (outline.outline) parseOutlines(outline.outline, lst);
     });
 }

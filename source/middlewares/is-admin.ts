@@ -44,11 +44,7 @@ export default async (ctx: MContext, next: Next) => {
                 });
                 if (!isAdmin) throw errors.newCtrlErr('ADMIN_ONLY');
         }
-    } else if (
-        ctx.message && // button respone without message
-        ctx.message.text &&
-        checkChannelId(ctx.message.text)
-    ) {
+    } else if (checkChannelId(ctx.message?.text)) {
         // for channel subscription in private chat
         const channelId = ctx.message.text.match(/(@\w+)|(-\d+)/)[0];
         if (channelId) {

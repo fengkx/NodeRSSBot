@@ -52,7 +52,7 @@ export async function unsub(ctx: MContext, next: Next) {
 export async function rss(ctx: MContext, next: Next) {
     const limit = 50;
     const page = ctx.state.rssPage || 1;
-    const hasRaw = ctx.message && ctx.message.text.split(/\s/)[1] === 'raw';
+    const hasRaw = ctx.message?.text.split(/\s/)[1] === 'raw';
     const raw = hasRaw || ctx.state.showRaw;
     const rawStr = raw ? 'RAW_' : '';
 
