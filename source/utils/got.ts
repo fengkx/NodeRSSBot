@@ -4,6 +4,7 @@ import charset from 'charset';
 import * as charDet from 'jschardet';
 import {decode} from 'iconv-lite';
 import {Response} from "got/dist/source/types";
+import agent from './agent';
 
 const AcceptHeader =
     'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 ';
@@ -15,7 +16,8 @@ const custom = got.extend({
     },
     timeout: {
         response: config.resp_timeout * 1000
-    }
+    },
+    agent: agent
 });
 
 export default custom.extend({
