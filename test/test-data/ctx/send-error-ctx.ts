@@ -1,4 +1,4 @@
-exports.messageCtx = {
+export const messageCtx = {
     state: {}, // wait for data
     updateType: 'message',
     updateSubTypes: ['text'],

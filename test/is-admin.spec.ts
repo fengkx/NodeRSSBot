@@ -1,7 +1,9 @@
+/* eslint @typescript-eslint/no-empty-function:0 */
 /* eslint no-empty-function:0 */
 import isAdmin from '../source/middlewares/is-admin';
 import { pass, noAdmin } from './test-data/ctx/is-admin-ctx';
-const ErrClass = require('../source/utils/errors').ControllableError;
+import { ControllableError } from '../source/utils/errors';
+import { MContext } from '../source/types/ctx';
 
 jest.mock('../source/proxies/users', () => ({
     getUserById: (id) => {
@@ -17,7 +19,7 @@ jest.mock('../source/proxies/users', () => ({
 test('sub channel with @', async () => {
     const channelId = 666;
     const ctx = pass('/sub @testChannel http://test.test', 666);
-    await isAdmin(ctx, () => {});
+    await isAdmin((ctx as unknown) as MContext, () => {});
     expect(ctx).toHaveProperty('state.chat.id', channelId);
     expect(ctx.message.text).not.toMatch(/@\w+/);
 });
@@ -25,7 +27,7 @@ test('sub channel with @', async () => {
 test('sub channel without @', async () => {
     const channelId = 666;
     const ctx = pass('/sub -123456 http://test.test', channelId);
-    await isAdmin(ctx, () => {});
+    await isAdmin((ctx as unknown) as MContext, () => {});
     expect(ctx).toHaveProperty('state.chat.id', channelId);
     expect(ctx.message.text).not.toMatch(/-\d+/);
 });
@@ -33,7 +35,7 @@ test('sub channel without @', async () => {
 test('bot no admin in channel', async () => {
     const channelId = 666;
     const ctx = noAdmin('/sub -123456 http://test.test', channelId);
-    await expect(isAdmin(ctx, () => {})).rejects.toThrow(ErrClass);
+    await expect(isAdmin(ctx, () => {})).rejects.toThrow(ControllableError);
 });
 
 test('url contain -', async () => {
@@ -42,6 +44,6 @@ test('url contain -', async () => {
         '/sub http://ip-243-184bpo123.com/kuaidi100/141abc',
         channelId
     );
-    await isAdmin(ctx, () => {});
+    await isAdmin((ctx as unknown) as MContext, () => {});
     expect(ctx).toHaveProperty('state.chat.id', 233233233);
 });

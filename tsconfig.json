@@ -22,7 +22,7 @@
         "esModuleInterop": true,
 
         //    remove it after totally rewrite to ts
-        "allowJs": true,
+        "allowJs": false,
         "noImplicitAny": false
     },
     "include": ["source"]
