@@ -41,7 +41,7 @@ import twoKeyReply from'./utils/two-key-reply';
 const bot = new Telegraf(token, {
     telegram: {
         // Telegram options
-        agent: agent // https.Agent instance, allows custom proxy, certificate, keep alive, etc.
+        agent: agent.https // https.Agent instance, allows custom proxy, certificate, keep alive, etc.
     }
 });
 
