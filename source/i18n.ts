@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const result = {};
-const localeDir = path.join(__dirname, '../i18n');
+const localeDir = path.join(__dirname, '../i18n'); // /dist/source/i18n -> /dist/[i18n]
 const baseStr = fs.readFileSync(path.join(localeDir, 'en.yaml'), {encoding: 'utf8'});
 
 fs.readdirSync(localeDir)

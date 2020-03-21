@@ -11,7 +11,7 @@ export const config: Config = {
     },
     db_path:
         process.env.RSSBOT_DB_PATH ||
-        path.join(__dirname, '../data/database.db'),
+        path.join(__dirname, '../../data/database.db'), // /dist/source/config.js -> /data/
     lang: process.env.RSSBOT_LANG || 'zh-cn',
     item_num: parseInt(process.env.RSSBOT_ITEM_NUM) || 10,
     fetch_gap: process.env.RSSBOT_FETCH_GAP || '5m',
