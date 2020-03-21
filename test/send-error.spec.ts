@@ -1,4 +1,7 @@
+/* eslint @typescript-eslint/no-empty-function:0 */
+/* eslint no-empty-function:0 */
 import sendError from '../source/middlewares/send-error';
+import { MContext } from '../source/types/ctx';
 jest.mock('../source/proxies/users', () => ({
     getUserById: (id) => {
         const testUser = {
@@ -12,9 +15,8 @@ jest.mock('../source/proxies/users', () => ({
 
 test('sendError@message', async () => {
     const ctx = require('./test-data/ctx/send-error-ctx').messageCtx; // reply with message_id 233
-    // eslint-disable-next-line no-empty-function
     const next = () => {};
-    await sendError(ctx, next);
+    await sendError((ctx as unknown) as MContext, next);
     expect(ctx).toHaveProperty('state.processMesId', 233);
     expect(ctx).toHaveProperty('state.lang', 'en');
 });
