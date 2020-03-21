@@ -39,7 +39,7 @@ export async function changeLangCallback(ctx: MContext, next: Next) {
     await setLangById(parseInt(id), lang);
     // @ts-ignore
     ctx.telegram.answerCbQuery(
-        parseInt(cb).id,
+        parseInt(cb.id),
         i18n[lang]['SET_LANG_TO'] + ' ' + lang
     );
     await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
