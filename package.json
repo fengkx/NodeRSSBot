@@ -4,7 +4,7 @@
   "description": "Another Telegram RSSBot in Node.js",
   "main": "dist/source",
   "scripts": {
-    "build": "rm -rf dist && tsc && cp -r source/database/sql dist/source/database/ && cp -r source/template dist/source/template && cp -r i18n dist",
+    "build": "del-cli dist && tsc && cpy source/database/sql dist/source/database/sql && cpy source/template dist/source/template && cpy i18n dist/i18n",
     "start": "cross-env NODE_PRODUTION=true node dist/source/index.js",
     "start-withsnapshot": "cross-env NODE_PRODUTION=true node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "dev": "proxychains -q node dist/source/index",
@@ -66,6 +66,8 @@
     "@types/xml2js": "^0.4.5",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
+    "cpy-cli": "^3.1.0",
+    "del-cli": "^3.0.0",
     "eslint": "^6.8.0",
     "jest": "^25.1.0",
     "lockfile-lint": "^4.1.0",
