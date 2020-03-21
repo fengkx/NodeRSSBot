@@ -13,7 +13,7 @@ export const rss = {
     guid: 'https://toutiao.io/k/dld5rnz'
 };
 
-exports.noKey = {
+export const noKey = {
     link: 'https://toutiao.io/k/dld5rnz',
     title: '不论微信钉钉还是什么软件，我写了个通用的消息监控处理机器人',
     content: '不论微信钉钉还是什么软件，我写了个通用的消息监控处理机器人'
