@@ -9,10 +9,11 @@ import {
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
-let agent: {
+type Agent = {
     http: HttpAgent;
     https: HttpsAgent;
-} = { https: undefined, http: undefined };
+};
+let agent: Agent | undefined = undefined;
 if (proxy.protocol && proxy.host && proxy.port) {
     const port = parseInt(proxy.port);
     const proxyUrl = `${proxy.protocol}://${proxy.host}:${proxy.port}`;
