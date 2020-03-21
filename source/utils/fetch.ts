@@ -17,11 +17,12 @@ import {
     handleRedirect,
     updateFeedUrl
 } from '../proxies/rss-feed';
+import { Messager } from '../types/message';
 
 const { notify_error_count, item_num, fetch_gap, concurrency } = config;
 
-async function handleErr(e, feed) {
-    logger.info(feed, 'ERROR_MANY_TIME');
+async function handleErr(e: Messager, feed: Feed) {
+    logger.info(`${feed.feed_title} ${feed.url}`, 'ERROR_MANY_TIME');
     process.send({
         success: false,
         message: 'MAX_TIME',
@@ -43,7 +44,7 @@ async function handleErr(e, feed) {
     }
 }
 
-const fetch = async (feedUrl): Promise<any[] | void> => {
+const fetch = async (feedUrl: string): Promise<any[] | void> => {
     try {
         logger.debug(`fetching ${feedUrl}`);
         const res = await got.get(encodeURI(feedUrl));
