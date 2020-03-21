@@ -67,7 +67,7 @@ for example `docker run --name rssbot -d -e RSSBOT_TOKEN=123456:abcdef123456-U f
 1. Build it `npm run build`
 1. Run `pm2 start npm --name node_rssbot -- start` (recommend) or `npm start`
 
-**Note that NODE_PRODUTION environment should be set in prodution mode**
+**Note that NODE_PRODUTION environment should be set**
 
 # Setting
 
