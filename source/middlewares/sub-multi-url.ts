@@ -4,6 +4,8 @@ import Parser from 'rss-parser';
 import { getFeedByUrl, sub } from '../proxies/rss-feed';
 import i18n from '../i18n';
 import { MContext, Next } from '../types/ctx';
+import { isSome } from '../types/option';
+import { Feed } from '../types/feed';
 
 export default async (ctx: MContext, next: Next) => {
     const urls = ctx.message.text.match(
@@ -11,26 +13,28 @@ export default async (ctx: MContext, next: Next) => {
     );
     const { lang } = ctx.state;
     const feedsReady = await Promise.all(
-        urls.map(async (url) => {
-            url = decodeURI(url);
-            const feed = await getFeedByUrl(url);
-            if (feed) {
-                return feed;
-            } else {
-                try {
-                    const parser = new Parser();
-                    const res = await got.get(encodeURI(url));
-                    const rssFeed = await parser.parseString(res.body);
-                    return {
-                        feed_title: rssFeed.title,
-                        url
-                    };
-                } catch (e) {
-                    ctx.reply(`${url} ${i18n[lang]['FETCH_ERROR']}`);
-                    return undefined;
+        urls.map(
+            async (url): Promise<Partial<Feed>> => {
+                url = decodeURI(url);
+                const feed = await getFeedByUrl(url);
+                if (isSome(feed)) {
+                    return feed.value;
+                } else {
+                    try {
+                        const parser = new Parser();
+                        const res = await got.get(encodeURI(url));
+                        const rssFeed = await parser.parseString(res.body);
+                        return {
+                            feed_title: rssFeed.title,
+                            url
+                        };
+                    } catch (e) {
+                        ctx.reply(`${url} ${i18n[lang]['FETCH_ERROR']}`);
+                        return undefined;
+                    }
                 }
             }
-        })
+        )
     );
 
     const builder = [i18n[lang]['SUB_SUCCESS']];
