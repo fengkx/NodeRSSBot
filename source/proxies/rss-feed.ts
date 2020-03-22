@@ -1,8 +1,9 @@
 import dbPool from '../database';
 import errors from '../utils/errors';
 import { PoolConnection } from 'better-sqlite-pool';
-import { Feed } from '../types/feed';
 import * as Database from 'better-sqlite3';
+import { Feed } from '../types/feed';
+import { isSome, Option, Optional, Some } from '../types/option';
 
 // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
 const placeHolder: any = { available: false, release() {} };
@@ -52,7 +53,7 @@ export async function sub(
     }
 }
 
-export async function getFeedByUrl(feedUrl: string): Promise<Feed | undefined> {
+export async function getFeedByUrl(feedUrl: string): Promise<Option<Feed>> {
     let db: PoolConnection = placeHolder;
     try {
         db = await dbPool.acquire();
@@ -63,7 +64,7 @@ export async function getFeedByUrl(feedUrl: string): Promise<Feed | undefined> {
                  WHERE url = ?`
             )
             .get([feedUrl]);
-        return feed;
+        return Optional(feed);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     } finally {
@@ -317,13 +318,13 @@ export async function handleRedirect(
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
-        const oldFeed = db
-            .prepare(`SELECT * FROM rss_feed WHERE url=?`)
-            .get(url);
-        const realFeed = db
-            .prepare(`SELECT * FROM rss_feed WHERE url=?`)
-            .get(realUrl);
-        if (realFeed) {
+        const oldFeed: Option<Feed> = Optional(
+            db.prepare(`SELECT * FROM rss_feed WHERE url=?`).get(url)
+        );
+        const realFeed: Option<Feed> = Optional(
+            db.prepare(`SELECT * FROM rss_feed WHERE url=?`).get(realUrl)
+        );
+        if (isSome(realFeed) && isSome(oldFeed)) {
             const updateSubStm = db.prepare(
                 `UPDATE subscribes SET feed_id=? WHERE feed_id=?`
             );
@@ -331,14 +332,16 @@ export async function handleRedirect(
                 `DELETE FROM rss_feed WHERE url=?`
             );
 
-            const handleFeedRedirect = db.transaction((oldFeed, realFeed) => {
-                updateSubStm.run(realFeed.feed_id, oldFeed.feed_id);
-                delOldFeedStm.run(oldFeed.url);
-            });
-            handleFeedRedirect(oldFeed, realFeed);
+            const handleFeedRedirect = db.transaction(
+                (oldFeed: Feed, realFeed: Feed) => {
+                    updateSubStm.run(realFeed.feed_id, oldFeed.feed_id);
+                    delOldFeedStm.run(oldFeed.url);
+                }
+            );
+            handleFeedRedirect(oldFeed.value, realFeed.value);
         } else {
             db.prepare(`UPDATE rss_feed SET url=? WHERE url=?`).run(
-                oldFeed.url,
+                (oldFeed as Some<Feed>).value.url,
                 realUrl
             );
         }
@@ -350,8 +353,8 @@ export async function handleRedirect(
 }
 
 export async function updateFeedUrl(
-    oldUrl,
-    newUrl
+    oldUrl: string,
+    newUrl: string
 ): Promise<Database.RunResult> {
     let db = placeHolder;
     try {

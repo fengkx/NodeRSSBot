@@ -4,6 +4,7 @@ import { Parser } from 'xml2js';
 import errors from '../utils/errors';
 import { sub } from '../proxies/rss-feed';
 import i18n from '../i18n';
+import { MContext, Next } from '../types/ctx';
 function parseOutlines(outlines: XmlOutline[], lst: Outline[]) {
     outlines.forEach((outline) => {
         if (outline.$?.type === 'rss') lst.push(outline.$);
@@ -11,22 +12,18 @@ function parseOutlines(outlines: XmlOutline[], lst: Outline[]) {
     });
 }
 
-const getOutlines = function(data: string): Promise<Outline[]> {
-    return new Promise((resolve, reject) => {
-        const parser = new Parser();
-        parser.parseString(data, function(err, res) {
-            if (err) reject(err);
-            const { opml } = res;
-            const ret = [];
-            parseOutlines(opml.body[0].outline, ret);
-            resolve(ret);
-        });
-    });
+const getOutlines = async function(data: string): Promise<Outline[]> {
+    const parser = new Parser();
+    const res = await parser.parseStringPromise(data);
+    const { opml } = res;
+    const ret: Outline[] = [];
+    parseOutlines(opml.body[0].outline, ret);
+    return ret;
 };
 
 // eslint-disable-line
 export const _getOutlines = getOutlines;
-export default async (ctx, next) => {
+export default async (ctx: MContext, next: Next) => {
     const { fileLink, lang } = ctx.state;
 
     try {
@@ -49,8 +46,8 @@ export default async (ctx, next) => {
         outlines.forEach((outline) => {
             text += `\n<a href="${outline.xmlUrl}">${outline.text}</a>`;
         });
-        ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMesId);
-        ctx.state.processMesId = null;
+        ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMsgId);
+        ctx.state.processMsgId = null;
         ctx.replyWithHTML(text);
     } catch (e) {
         if (e.response) {

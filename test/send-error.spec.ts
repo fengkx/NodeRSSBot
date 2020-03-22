@@ -17,6 +17,6 @@ test('sendError@message', async () => {
     const ctx = require('./test-data/ctx/send-error-ctx').messageCtx; // reply with message_id 233
     const next = () => {};
     await sendError((ctx as unknown) as MContext, next);
-    expect(ctx).toHaveProperty('state.processMesId', 233);
+    expect(ctx).toHaveProperty('state.processMsgId', 233);
     expect(ctx).toHaveProperty('state.lang', 'en');
 });

@@ -7,7 +7,7 @@ import logger from './logger';
 import { findFeed } from './feed';
 import { config } from '../config';
 import { Feed, FeedItem } from '../types/feed';
-import { Optional, Option, isNone, none, isSome, Some } from '../types/utils';
+import { Optional, Option, isNone, none, isSome, Some } from '../types/option';
 
 import {
     getAllFeeds,
@@ -71,12 +71,14 @@ async function fetch(feedUrl: string): Promise<Option<FeedItem[]>> {
         logger.error(`${feedUrl} ${e.stack}`);
         await failAttempt(feedUrl);
         const feed = await getFeedByUrl(feedUrl);
-        const round_time = notify_error_count * 10;
-        const round_happen =
-            feed.error_count % round_time === 0 &&
-            feed.error_count > round_time;
-        if (feed.error_count === notify_error_count || round_happen) {
-            handleErr(e, feed);
+        if (isSome(feed)) {
+            const round_time = notify_error_count * 10;
+            const round_happen =
+                feed.value.error_count % round_time === 0 &&
+                feed.value.error_count > round_time;
+            if (feed.value.error_count === notify_error_count || round_happen) {
+                handleErr(e, feed.value);
+            }
         }
     }
     return Optional();

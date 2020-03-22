@@ -3,6 +3,7 @@ import ctx from './test-data/ctx/import-from-opml-ctx';
 import importFromOpml from '../source/middlewares/import-from-opml';
 import { Feed } from '../source/types/feed';
 import { Outline } from '../source/types/outline';
+import { MContext } from '../source/types/ctx';
 
 jest.mock('../source/proxies/rss-feed', () => ({
     sub: jest.fn()
@@ -24,7 +25,7 @@ jest.mock('../source/utils/got', () => {
 });
 
 test('import from opml', async () => {
-    await importFromOpml(ctx, jest.fn());
+    await importFromOpml((ctx as unknown) as MContext, jest.fn());
     const feeds = testFeeds;
     feeds.map(
         (item: Feed): Outline => {
@@ -32,5 +33,5 @@ test('import from opml', async () => {
         }
     );
     expect(ctx).toHaveProperty('state.outlines');
-    expect(ctx).toHaveProperty('state.processMesId');
+    expect(ctx).toHaveProperty('state.processMsgId');
 });

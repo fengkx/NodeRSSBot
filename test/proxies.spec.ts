@@ -11,6 +11,8 @@ beforeAll(() => {
 import * as RSS from '../source/proxies/rss-feed';
 import * as USERS from '../source/proxies/users';
 import * as SUBSCRIBES from '../source/proxies/subscribes';
+import { Some } from '../source/types/option';
+import { Feed } from '../source/types/feed';
 
 const [userId, feedUrl, feedTitle] = [
     233233233,
@@ -21,16 +23,18 @@ const [userId, feedUrl, feedTitle] = [
 test('RSS sub', async () => {
     const r = await RSS.sub(userId, feedUrl, feedTitle);
     expect(r).toEqual('ok');
-    const feed = await RSS.getFeedByUrl(feedUrl);
-    const subscriptions = await SUBSCRIBES.getSubscribersByFeedId(feed.feed_id);
+    const feed = (await RSS.getFeedByUrl(feedUrl)) as Some<Feed>;
+    const subscriptions = await SUBSCRIBES.getSubscribersByFeedId(
+        feed.value.feed_id
+    );
     const sub = subscriptions[0];
     expect(sub).toHaveProperty('user_id', userId);
 });
 
 test('RSS getAllFeeds', async () => {
     const allFeeds = await RSS.getAllFeeds();
-    const feed = await RSS.getFeedByUrl('http://test.test');
-    expect(allFeeds).toEqual(expect.arrayContaining([feed]));
+    const feed = (await RSS.getFeedByUrl('http://test.test')) as Some<Feed>;
+    expect(allFeeds).toEqual(expect.arrayContaining([feed.value]));
 });
 
 test('RSS updateHashList', async () => {
