@@ -33,6 +33,7 @@ import exportToOpml from './middlewares/export-to-opml';
 import importFromOpml from './middlewares/import-from-opml';
 import { MContext } from './types/ctx';
 import twoKeyReply from './utils/two-key-reply';
+import { Message } from './types/message';
 
 (async () => {
     await initTable();
@@ -223,7 +224,7 @@ function startFetchProcess(restartTime: number): void {
         : fork(fetchJS, [], {
               execArgv: ['--inspect-brk=46209']
           });
-    child.on('message', function(message: any) {
+    child.on('message', function(message: Message | string) {
         if (typeof message === 'string') logger.info(message);
         else if (message.success) {
             const feed = message.eachFeed;
@@ -234,7 +235,7 @@ function startFetchProcess(restartTime: number): void {
                 const { feed, err } = message;
                 send(
                     bot,
-                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n[lang]['ERROR_MANY_TIME']} ${err}`,
+                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n[lang]['ERROR_MANY_TIME']} ${err.message}`,
                     feed
                 );
             }

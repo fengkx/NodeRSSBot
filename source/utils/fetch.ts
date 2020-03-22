@@ -5,8 +5,9 @@ import hashFeed from './hash-feed';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import logger from './logger';
 import { findFeed } from './feed';
-import { Feed } from '../types/feed';
 import { config } from '../config';
+import { Feed, FeedItem } from '../types/feed';
+import { Optional, Option, isNone, none, isSome, Some } from '../types/utils';
 
 import {
     getAllFeeds,
@@ -17,18 +18,18 @@ import {
     handleRedirect,
     updateFeedUrl
 } from '../proxies/rss-feed';
-import { Messager } from '../types/message';
-
+import { Messager, Message } from '../types/message';
 const { notify_error_count, item_num, fetch_gap, concurrency } = config;
 
-async function handleErr(e: Messager, feed: Feed) {
+async function handleErr(e: Messager, feed: Feed): Promise<void> {
     logger.info(`${feed.feed_title} ${feed.url}`, 'ERROR_MANY_TIME');
-    process.send({
+    const message: Message = {
         success: false,
         message: 'MAX_TIME',
-        err: e.message,
+        err: e,
         feed
-    });
+    };
+    process.send(message);
     const originUrl = new URL(feed.url).origin;
     const res = await got(originUrl);
     const newUrl = await findFeed(res.body, originUrl);
@@ -44,7 +45,7 @@ async function handleErr(e: Messager, feed: Feed) {
     }
 }
 
-const fetch = async (feedUrl: string): Promise<any[] | void> => {
+async function fetch(feedUrl: string): Promise<Option<FeedItem[]>> {
     try {
         logger.debug(`fetching ${feedUrl}`);
         const res = await got.get(encodeURI(feedUrl));
@@ -56,12 +57,14 @@ const fetch = async (feedUrl: string): Promise<any[] | void> => {
         const feed = await parser.parseString(res.body);
         const items = feed.items.slice(0, item_num);
         await resetErrorCount(feedUrl);
-        return items.map((item) => {
-            const { link, title, content, guid, id } = item;
-            return { link, title, content, guid, id };
-        });
+        return Optional(
+            items.map((item) => {
+                const { link, title, content, guid, id } = item;
+                return { link, title, content, guid, id };
+            })
+        );
     } catch (e) {
-        logger.error(`${feedUrl} ${e.message}`);
+        logger.error(`${feedUrl} ${e.stack}`);
         await failAttempt(feedUrl);
         const feed = await getFeedByUrl(feedUrl);
         const round_time = notify_error_count * 10;
@@ -72,9 +75,10 @@ const fetch = async (feedUrl: string): Promise<any[] | void> => {
             handleErr(e, feed);
         }
     }
-};
+    return Optional();
+}
 
-const fetchAll = async () => {
+const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
 
     const allFeeds = await getAllFeeds();
@@ -82,26 +86,34 @@ const fetchAll = async () => {
         allFeeds,
         async (eachFeed: Feed) => {
             const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-            let newItems, sendItems;
+            let fetchedItems: Option<FeedItem[]>, sendItems: FeedItem[];
             try {
-                newItems = await fetch(eachFeed.url);
-                if (!newItems) {
+                fetchedItems = await fetch(eachFeed.url);
+                if (isNone(fetchedItems)) {
                     logger.debug(eachFeed.url, 'Error');
                 } else {
                     const newHashList: string[] = await Promise.all(
-                        newItems.map(
-                            async (item): Promise<string> => {
+                        fetchedItems.value.map(
+                            async (item: FeedItem): Promise<string> => {
                                 return await hashFeed(item);
                             }
                         )
                     );
-                    sendItems = await Promise.all(
-                        newItems.map(async (item) => {
-                            const hash = await hashFeed(item);
-                            if (oldHashList.indexOf(hash) === -1) return item;
-                        })
+                    const newItems = await Promise.all(
+                        fetchedItems.value.map(
+                            async (
+                                item: FeedItem
+                            ): Promise<Option<FeedItem>> => {
+                                const hash = await hashFeed(item);
+                                if (oldHashList.indexOf(hash) === -1)
+                                    return Optional(item);
+                                else return none;
+                            }
+                        )
                     );
-                    sendItems = sendItems.filter((i) => i);
+                    sendItems = newItems
+                        .filter(isSome)
+                        .map((some: Some<FeedItem>) => some.value);
                     if (sendItems.length > 0) {
                         await updateHashList(eachFeed.feed_id, newHashList);
                     }
@@ -119,13 +131,11 @@ const fetchAll = async () => {
         },
         { concurrency }
     );
-
-    logger.info('fetch a round');
 };
 
 function run() {
     try {
-        fetchAll();
+        fetchAll().then(() => logger.info('fetch a round'));
     } catch (e) {
         logger.error(
             `[Catch in all ${e.name}] ${e.url} ${e.statusCode} ${e.statusMessage}`

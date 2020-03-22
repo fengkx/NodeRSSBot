@@ -6,3 +6,11 @@ export interface Feed {
     error_count: number;
     sub_count?: number;
 }
+
+export interface FeedItem {
+    link: string;
+    title: string;
+    content: string;
+    guid?: string;
+    id?: string;
+}

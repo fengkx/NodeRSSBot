@@ -1,7 +1,6 @@
 import * as crypto from 'crypto';
-import { Item } from 'rss-parser';
-
-export default async (feed: Item): Promise<string> => {
+import { FeedItem } from '../types/feed';
+export default async (feed: FeedItem): Promise<string> => {
     return new Promise((resolve) => {
         const key = feed.guid || feed.id;
         if (key) {
