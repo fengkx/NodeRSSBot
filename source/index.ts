@@ -33,7 +33,12 @@ import exportToOpml from './middlewares/export-to-opml';
 import importFromOpml from './middlewares/import-from-opml';
 import { MContext } from './types/ctx';
 import twoKeyReply from './utils/two-key-reply';
-import { Message } from './types/message';
+import {
+    isChangeFeedUrl,
+    isErrorMaxTime,
+    isSuccess,
+    Message
+} from './types/message';
 
 (async () => {
     await initTable();
@@ -226,12 +231,11 @@ function startFetchProcess(restartTime: number): void {
           });
     child.on('message', function(message: Message | string) {
         if (typeof message === 'string') logger.info(message);
-        else if (message.success) {
-            const feed = message.eachFeed;
-            const { sendItems } = message;
+        else if (isSuccess(message)) {
+            const { sendItems, feed } = message;
             if (sendItems.length > 0 && !not_send) send(bot, sendItems, feed);
         } else {
-            if (message.message === 'MAX_TIME') {
+            if (isErrorMaxTime(message)) {
                 const { feed, err } = message;
                 send(
                     bot,
@@ -239,7 +243,7 @@ function startFetchProcess(restartTime: number): void {
                     feed
                 );
             }
-            if (message.message === 'CHANGE') {
+            if (isChangeFeedUrl(message)) {
                 const { feed, new_feed } = message;
                 const builder = [];
                 builder.push(
