@@ -1,4 +1,3 @@
-import * as cheerio from 'cheerio';
 import RSSParser from 'rss-parser';
 
 export async function isFeedValid(
@@ -17,13 +16,11 @@ export async function findFeed(
     reqUrl: string
 ): Promise<string[]> {
     const reqURL = new URL(reqUrl);
-    const $ = cheerio.load(html);
-    const urls = $('head')
-        .find('[rel=alternate]')
-        .get()
-        .map((i) => {
-            i = $(i);
-            const url = i.attr('href');
+    const linksTag = html.match(/<link[^>]+rel="alternate"[^>]+\/?>/g);
+    const urls = linksTag
+        .filter((t) => t.match(/rss|atom/) && t.includes('href'))
+        .map((linkTag) => {
+            const url = linkTag.match(/href="(.+?)"/)[1];
             try {
                 return new URL(url).toString();
             } catch (e) {
