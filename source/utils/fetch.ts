@@ -18,12 +18,16 @@ import {
     handleRedirect,
     updateFeedUrl
 } from '../proxies/rss-feed';
-import { Messager, Message } from '../types/message';
+import {
+    Messager,
+    SuccessMessage,
+    ErrorMaxTimeMessage
+} from '../types/message';
 const { notify_error_count, item_num, fetch_gap, concurrency } = config;
 
 async function handleErr(e: Messager, feed: Feed): Promise<void> {
     logger.info(`${feed.feed_title} ${feed.url}`, 'ERROR_MANY_TIME');
-    const message: Message = {
+    const message: ErrorMaxTimeMessage = {
         success: false,
         message: 'MAX_TIME',
         err: e,
@@ -126,8 +130,8 @@ const fetchAll = async (): Promise<void> => {
                 process.send({
                     success: true,
                     sendItems,
-                    eachFeed
-                });
+                    feed: eachFeed
+                } as SuccessMessage);
         },
         { concurrency }
     );
