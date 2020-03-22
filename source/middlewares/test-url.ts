@@ -4,56 +4,54 @@ import errors from '../utils/errors';
 import Parser from 'rss-parser';
 import i18n from '../i18n';
 import { getFeedByUrl } from '../proxies/rss-feed';
-import { Feed } from '../types/feed';
+import { MContext, Next } from '../types/ctx';
+import { isNone, isSome } from '../types/option';
 
-export default async (ctx, next) => {
+export default async (ctx: MContext, next: Next) => {
     const url = encodeURI(ctx.state.feedUrl);
-    let feed: Feed | Parser.Output | undefined;
-    feed = await getFeedByUrl(url);
-    if (feed) {
-        feed = feed as Feed;
-        ctx.state.feed = feed;
-        ctx.state.feed.title = feed.feed_title;
+    const feedOption = await getFeedByUrl(url);
+    if (isSome(feedOption)) {
+        // feed is in database;
+        ctx.state.feed = feedOption.value;
         await next();
     } else {
         try {
             const res = await got(url);
             ctx.state.feedUrl = decodeURI(res.url); // handle redirect
-            feed = await isFeedValid(res.body);
-            if (!feed) {
-                // feed: undefined
-                // check feedUrl
-                ctx.state.feedUrl = await findFeed(res.body, res.url);
-                ctx.state.feedUrl = ctx.state.feedUrl.map(decodeURI);
+            const feedOption = await isFeedValid(res.body);
+            if (isNone(feedOption)) {
+                // feed is NOT valid, try to find feed by link tag with type contain rss/atom
+                ctx.state.feedUrls = await findFeed(res.body, res.url);
+                ctx.state.feedUrls = ctx.state.feedUrls.map(decodeURI);
+                /* eslint no-case-declarations: 0*/
                 const parser = new Parser();
-                switch (ctx.state.feedUrl.length) {
+                switch (ctx.state.feedUrls.length) {
                     case 0:
                         throw errors.newCtrlErr('FETCH_ERROR');
                     case 1:
-                        // eslint-disable-next-line no-case-declarations
-                        const res = await got(encodeURI(ctx.state.feedUrl[0]));
-                        feed = await parser.parseString(res.body);
-                        delete feed.items;
-                        ctx.state.feed = feed;
-                        ctx.state.feedUrl = ctx.state.feedUrl[0];
+                        const res = await got(encodeURI(ctx.state.feedUrls[0]));
+                        const realFeed = await parser.parseString(res.body);
+                        ctx.state.feed = {
+                            url: ctx.state.feedUrls[0],
+                            feed_title: realFeed.title
+                        };
+                        ctx.state.feedUrl = ctx.state.feedUrls[0];
                         await next(); // next
                         break;
                     default:
-                        // eslint-disable-next-line no-case-declarations
                         const builder = [];
                         builder.push(
                             `**${
                                 i18n[ctx.state.lang]['FOUND_FEED_MORE_THAN_ONE']
                             }:**`
                         );
-                        builder.push(...ctx.state.feedUrl);
+                        builder.push(...ctx.state.feedUrls);
                         ctx.replyWithMarkdown(builder.join('\n'));
                         break;
                 }
             } else {
-                feed = feed as Parser.Output;
-                delete feed.items;
-                ctx.state.feed = feed;
+                // new feed is valid sub it in next middleware
+                ctx.state.feed = { feed_title: feedOption.value.title };
                 await next();
             }
         } catch (e) {

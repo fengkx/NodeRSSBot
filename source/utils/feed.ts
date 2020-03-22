@@ -1,13 +1,15 @@
 import RSSParser from 'rss-parser';
+import { none, Option, Optional } from '../types/option';
 
 export async function isFeedValid(
-    feedStr
-): Promise<RSSParser.Output | undefined> {
+    feedStr: string
+): Promise<Option<RSSParser.Output>> {
     const parser = new RSSParser();
     try {
-        return await parser.parseString(feedStr);
+        const feed = await parser.parseString(feedStr);
+        return Optional(feed);
     } catch (e) {
-        return undefined;
+        return none;
     }
 }
 

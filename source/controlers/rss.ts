@@ -3,17 +3,18 @@ import i18n from '../i18n';
 import twoKeyReply from '../utils/two-key-reply';
 import errors from '../utils/errors';
 import { MContext, Next } from '../types/ctx';
+import { isNone } from '../types/option';
 
 export async function sub(ctx: MContext, next: Next) {
     const { feedUrl, chat, lang } = ctx.state;
-    const feedTitle = ctx.state.feed.title;
+    const feedTitle = ctx.state.feed.feed_title;
     const userId = chat.id;
     try {
         await RSS.sub(userId, feedUrl, feedTitle);
-        await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMesId);
-        ctx.state.processMesId = null;
+        await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
+        ctx.state.processMsgId = null;
         ctx.replyWithMarkdown(`
-        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.title}](${ctx.state.feedUrl})`);
+        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.feed_title}](${ctx.state.feedUrl})`);
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
@@ -26,14 +27,14 @@ export async function unsub(ctx: MContext, next: Next) {
     const userId = chat.id;
     try {
         const feed = await RSS.getFeedByUrl(feedUrl);
-        if (!feed) throw errors.newCtrlErr('DID_NOT_SUB');
-        await RSS.unsub(userId, feed.feed_id);
+        if (isNone(feed)) throw errors.newCtrlErr('DID_NOT_SUB');
+        await RSS.unsub(userId, feed.value.feed_id);
 
-        await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMesId);
-        ctx.state.processMesId = null;
+        await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
+        ctx.state.processMsgId = null;
         ctx.replyWithMarkdown(
             `
-        ${i18n[lang]['UNSUB_SUCCESS']} [${feed.feed_title}](${encodeURI(
+        ${i18n[lang]['UNSUB_SUCCESS']} [${feed.value.feed_title}](${encodeURI(
                 ctx.state.feedUrl
             )})`,
             {

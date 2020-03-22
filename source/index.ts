@@ -31,7 +31,7 @@ import onlyPrivateChat from './middlewares/is-admin';
 import subMultiUrl from './middlewares/sub-multi-url';
 import exportToOpml from './middlewares/export-to-opml';
 import importFromOpml from './middlewares/import-from-opml';
-import { MContext } from './types/ctx';
+import { MContext, Next } from './types/ctx';
 import twoKeyReply from './utils/two-key-reply';
 import {
     isChangeFeedUrl,
@@ -51,7 +51,7 @@ const bot = new Telegraf(token, {
     }
 });
 
-bot.catch((err) => logger.error(err.toString()));
+bot.catch((err: Error) => logger.error(err.stack || err.message));
 
 // for handling command form group
 bot.telegram.getMe().then((botInfo) => {
@@ -150,7 +150,7 @@ bot.hears(
         }
     },
     sendError,
-    async (ctx: MContext, next) => {
+    async (ctx: MContext, next: Next) => {
         ctx.state.chat = await ctx.getChat();
         if (ctx.state.chat.type === 'private') {
             await next();

@@ -20,16 +20,16 @@ export default async (ctx: MContext, next: Next) => {
     else ctx.state.lang = config.lang;
     const lang = ctx.state.lang;
     const m = await ctx.reply(i18n[lang]['PROCESSING']);
-    ctx.state.processMesId = m.message_id;
+    ctx.state.processMsgId = m.message_id;
     logger.debug(ctx.message);
     try {
         await next();
     } catch (e) {
         if (e instanceof errors.ControllableError) {
-            if (ctx.state.processMesId) {
+            if (ctx.state.processMsgId) {
                 ctx.telegram.deleteMessage(
                     ctx.state.chat.id,
-                    ctx.state.processMesId
+                    ctx.state.processMsgId
                 );
             }
             ctx.reply(e.toString(lang));
