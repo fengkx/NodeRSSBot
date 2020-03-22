@@ -7,13 +7,16 @@ import {
     httpsOverHttps
 } from 'tunnel';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import { Agent as HttpAgent } from 'http';
+import { Agent as HttpAgent, AgentOptions } from 'http';
 import { Agent as HttpsAgent } from 'https';
 type Agent = {
     http: HttpAgent;
     https: HttpsAgent;
 };
-let agent: Agent | undefined = undefined;
+let agent: Agent = {
+    http: new HttpAgent({ keepAlive: true }),
+    https: new HttpsAgent({ keepAlive: true })
+};
 if (proxy.protocol && proxy.host && proxy.port) {
     const port = parseInt(proxy.port);
     const proxyUrl = `${proxy.protocol}://${proxy.host}:${proxy.port}`;
@@ -59,6 +62,8 @@ if (proxy.protocol && proxy.host && proxy.port) {
             };
             break;
     }
+    ((agent.http as unknown) as Partial<AgentOptions>).keepAlive = true;
+    ((agent.https as unknown) as Partial<AgentOptions>).keepAlive = true;
 }
 
 export default agent;
