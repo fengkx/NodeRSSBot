@@ -239,7 +239,7 @@ function startFetchProcess(restartTime: number): void {
                 const { feed, err } = message;
                 send(
                     bot,
-                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n[lang]['ERROR_MANY_TIME']} ${err}`,
+                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n[lang]['ERROR_MANY_TIME']} ${err.message}`,
                     feed
                 );
             }

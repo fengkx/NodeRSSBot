@@ -21,7 +21,8 @@ import {
 import {
     Messager,
     SuccessMessage,
-    ErrorMaxTimeMessage
+    ErrorMaxTimeMessage,
+    ChangeFeedUrlMessage
 } from '../types/message';
 const { notify_error_count, item_num, fetch_gap, concurrency } = config;
 
@@ -30,7 +31,7 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
     const message: ErrorMaxTimeMessage = {
         success: false,
         message: 'MAX_TIME',
-        err: e,
+        err: { message: e.message },
         feed
     };
     process.send(message);
@@ -39,13 +40,14 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
     const newUrl = await findFeed(res.body, originUrl);
     if (newUrl.length > 0) {
         updateFeedUrl(feed.url, newUrl[0]);
-        process.send({
+        const message: ChangeFeedUrlMessage = {
             success: false,
             message: 'CHANGE',
-            err: e.message,
             new_feed: newUrl,
-            feed
-        });
+            err: { message: e.message },
+            feed: feed
+        };
+        process.send(message);
     }
 }
 
