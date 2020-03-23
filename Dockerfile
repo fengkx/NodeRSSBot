@@ -17,4 +17,4 @@ COPY logs /app/logs
 COPY package.json /app/package.json
 COPY --from=ts-builder /app/dist /app/dist
 COPY --from=dep-builder /app/node_modules /app/node_modules
-CMD npm run start-withsnapshot
+ENTRYPOINT ["/bin/node", "/app/node_modules/.bin/cross-env", "NODE_PRODUTION=true", "/bin/node", "/app/dist/source/index.js"]
