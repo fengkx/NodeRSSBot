@@ -4,6 +4,7 @@ import errors from '../utils/errors';
 import { getUserById } from '../proxies/users';
 import { MContext, Next } from '../types/ctx';
 import { config } from '../config';
+import { isSome } from '../types/option';
 
 export default async (ctx: MContext, next: Next) => {
     let id: number;
@@ -16,7 +17,7 @@ export default async (ctx: MContext, next: Next) => {
             break;
     }
     const user = await getUserById(id);
-    if (user) ctx.state.lang = user.lang;
+    if (isSome(user)) ctx.state.lang = user.value.lang;
     else ctx.state.lang = config.lang;
     const lang = ctx.state.lang;
     const m = await ctx.reply(i18n[lang]['PROCESSING']);

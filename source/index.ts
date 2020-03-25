@@ -39,6 +39,7 @@ import {
     isSuccess,
     Message
 } from './types/message';
+import { migrateUser } from './proxies/users';
 
 (async () => {
     await initTable();
@@ -103,6 +104,12 @@ bot.command('export', sendError, isAdmin, exportToOpml);
 bot.command('import', importReply);
 
 bot.on('document', sendError, isAdmin, getFileLink, importFromOpml);
+
+bot.on('migrate_to_chat_id', (ctx) => {
+    const from = ctx.update.message.chat.id;
+    const to = ctx.update.message.migrate_to_chat_id;
+    migrateUser(from, to);
+});
 
 bot.command(
     'viewall',
@@ -220,7 +227,7 @@ bot.launch();
 
 function startFetchProcess(restartTime: number): void {
     if (restartTime > 3) {
-        logger.error('fetch process exit to much');
+        logger.error('fetch process exit too much(3) times');
         process.exit(1);
     }
     const fetchJS = join(__dirname, `utils/fetch.js`);

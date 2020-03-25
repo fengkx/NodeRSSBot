@@ -11,7 +11,7 @@ beforeAll(() => {
 import * as RSS from '../source/proxies/rss-feed';
 import * as USERS from '../source/proxies/users';
 import * as SUBSCRIBES from '../source/proxies/subscribes';
-import { Some } from '../source/types/option';
+import { isSome, Some } from '../source/types/option';
 import { Feed } from '../source/types/feed';
 
 const [userId, feedUrl, feedTitle] = [
@@ -57,8 +57,11 @@ test('RSS unsub', async () => {
 test('USER new', async () => {
     await USERS.newUser(userId, 'en');
     const user = await USERS.getUserById(userId);
-    expect(user).toHaveProperty('user_id', userId);
-    expect(user).toHaveProperty('lang', 'en');
+    expect(isSome(user));
+    if (isSome(user)) {
+        expect(user.value).toHaveProperty('user_id', userId);
+        expect(user.value).toHaveProperty('lang', 'en');
+    }
 });
 
 afterAll(() => {

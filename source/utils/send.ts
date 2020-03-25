@@ -7,8 +7,43 @@ import sanitize from './sanitize';
 import { config } from '../config';
 import Telegraf, { ContextMessageUpdate } from 'telegraf';
 import { Feed, FeedItem } from '../types/feed';
+import { getUserById, migrateUser } from '../proxies/users';
+import { isNone } from '../types/option';
 
-export default async (
+/**
+ * handle send error log or delete user or migrate user
+ * @param e the error that handle
+ * @param userId user_id that this error occur
+ * @return whether to send again
+ */
+async function handlerSendError(e: any, userId: number): Promise<boolean> {
+    // bot was blocked or chat is deleted
+    logger.error(e.description);
+    const re = new RegExp(
+        'chat not found|bot was blocked by the user|bot was kicked'
+    );
+    if (config.delete_on_err_send && re.test(e.description)) {
+        logger.error(`delete all subscribes for user ${userId}`);
+        deleteSubscribersByUserId(userId);
+    }
+    if (
+        e.description ===
+        'Bad Request: group chat was upgraded to a supergroup chat'
+    ) {
+        const from = userId;
+        const to = e.parameters.migrate_to_chat_id;
+        const user = await getUserById(to);
+        if (isNone(user)) {
+            await migrateUser(from, to);
+            return true;
+        } else {
+            deleteSubscribersByUserId(from);
+        }
+    }
+    return false;
+}
+
+const send = async (
     bot: Telegraf<ContextMessageUpdate>,
     toSend: NonNullable<string | FeedItem[]>,
     feed: Feed
@@ -23,12 +58,7 @@ export default async (
                     disable_web_page_preview: true
                 });
             } catch (e) {
-                logger.error(e.description);
-                const re = new RegExp('chat not found');
-                if (re.test(e.description)) {
-                    logger.error(`delete all subscribes for user ${userId}`);
-                    await deleteSubscribersByUserId(userId);
-                }
+                handlerSendError(e, userId);
             }
         });
     } else {
@@ -46,16 +76,20 @@ export default async (
                     disable_web_page_preview: true
                 });
             } catch (e) {
-                // bot was blocked or chat is deleted
-                logger.error(e.description);
-                const re = new RegExp(
-                    'chat not found|bot was blocked by the user'
-                );
-                if (config.delete_on_err_send && re.test(e.description)) {
-                    logger.error(`delete all subscribes for user ${userId}`);
-                    deleteSubscribersByUserId(userId);
+                const resend = handlerSendError(e, userId);
+                if (resend && e.parameters?.migrate_to_chat_id) {
+                    await bot.telegram.sendMessage(
+                        e.parameters.migrate_to_chat_id,
+                        text,
+                        {
+                            parse_mode: 'HTML',
+                            disable_web_page_preview: true
+                        }
+                    );
                 }
             }
         });
     }
 };
+
+export default send;

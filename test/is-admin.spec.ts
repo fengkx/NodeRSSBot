@@ -4,6 +4,7 @@ import isAdmin from '../source/middlewares/is-admin';
 import { pass, noAdmin } from './test-data/ctx/is-admin-ctx';
 import { ControllableError } from '../source/utils/errors';
 import { MContext } from '../source/types/ctx';
+import { Optional } from '../source/types/option';
 
 jest.mock('../source/proxies/users', () => ({
     getUserById: (id) => {
@@ -12,7 +13,7 @@ jest.mock('../source/proxies/users', () => ({
             lang: 'en'
         };
         testUser.user_id = id;
-        return testUser;
+        return Optional(testUser);
     }
 }));
 

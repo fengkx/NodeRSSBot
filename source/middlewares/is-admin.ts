@@ -3,6 +3,8 @@ import errors from '../utils/errors';
 import { getUserById, newUser } from '../proxies/users';
 import { MContext, Next } from '../types/ctx';
 import { User } from 'telegraf/typings/telegram-types';
+import { isNone, Option } from '../types/option';
+import { User as DBUser } from '../types/user';
 
 /**
  * Check if using for channel
@@ -20,9 +22,11 @@ function checkChannelId(text: string): boolean {
 export default async (ctx: MContext, next: Next) => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
-    let user = await getUserById(chat.id);
-    if (!user) {
+    let user: Option<DBUser> | DBUser = await getUserById(chat.id);
+    if (isNone(user)) {
         user = await newUser(chat.id, config.lang);
+    } else {
+        user = user.value;
     }
     ctx.state.lang = user.lang;
 
@@ -52,9 +56,11 @@ export default async (ctx: MContext, next: Next) => {
             try {
                 ctx.state.chat = await ctx.telegram.getChat(channelId);
                 // set lang
-                let user = await getUserById(chat.id);
-                if (!user) {
+                let user: Option<DBUser> | DBUser = await getUserById(chat.id);
+                if (isNone(user)) {
                     user = await newUser(chat.id, config.lang);
+                } else {
+                    user = user.value;
                 }
                 ctx.state.lang = user.lang;
             } catch (e) {

@@ -70,7 +70,7 @@ async function fetch(feedUrl: string): Promise<Option<FeedItem[]>> {
             })
         );
     } catch (e) {
-        logger.error(`${feedUrl} ${e.stack}`);
+        logger.error(`${feedUrl} ${e.stack || e.message}`);
         await failAttempt(feedUrl);
         const feed = await getFeedByUrl(feedUrl);
         if (isSome(feed)) {

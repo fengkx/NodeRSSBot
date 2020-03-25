@@ -2,6 +2,7 @@
 /* eslint no-empty-function:0 */
 import sendError from '../source/middlewares/send-error';
 import { MContext } from '../source/types/ctx';
+import { Optional } from '../source/types/option';
 jest.mock('../source/proxies/users', () => ({
     getUserById: (id) => {
         const testUser = {
@@ -9,7 +10,7 @@ jest.mock('../source/proxies/users', () => ({
             lang: 'en'
         };
         testUser.user_id = id;
-        return testUser;
+        return Optional(testUser);
     }
 }));
 
