@@ -40,7 +40,7 @@ export default async (ctx: MContext, next: Next) => {
     const builder = [i18n[lang]['SUB_SUCCESS']];
     feedsReady
         .filter((i) => i !== undefined)
-        .forEach(function(feed: { feed_title: string; url: string }) {
+        .forEach(function (feed: { feed_title: string; url: string }) {
             try {
                 sub(ctx.state.chat.id, feed.url, feed.feed_title);
             } catch (e) {

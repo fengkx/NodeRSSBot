@@ -14,7 +14,7 @@ function readFilePromise(path: string): Promise<string> {
             {
                 encoding: 'utf8'
             },
-            function(err, data) {
+            function (err, data) {
                 if (err) reject(err);
                 resolve(data);
             }
@@ -32,7 +32,7 @@ const render = async (feeds: Feed[]): Promise<string> => {
 
 function remove(path: string): Promise<void> {
     return new Promise((resolve, reject) => {
-        fs.unlink(path, function(err) {
+        fs.unlink(path, function (err) {
             if (err) reject(err);
             resolve();
         });

@@ -12,7 +12,7 @@ function parseOutlines(outlines: XmlOutline[], lst: Outline[]) {
     });
 }
 
-const getOutlines = async function(data: string): Promise<Outline[]> {
+const getOutlines = async function (data: string): Promise<Outline[]> {
     const parser = new Parser();
     const res = await parser.parseStringPromise(data);
     const { opml } = res;

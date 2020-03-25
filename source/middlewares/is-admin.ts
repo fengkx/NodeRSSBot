@@ -39,7 +39,7 @@ export default async (ctx: MContext, next: Next) => {
             case 'supergroup':
             case 'channel':
                 // eslint-disable-next-line no-case-declarations
-                const isAdmin = admins.some(function(item) {
+                const isAdmin = admins.some(function (item) {
                     return item.user.id === from.id;
                 });
                 if (!isAdmin) throw errors.newCtrlErr('ADMIN_ONLY');
@@ -65,7 +65,7 @@ export default async (ctx: MContext, next: Next) => {
             const admins = await ctx.telegram.getChatAdministrators(
                 ctx.state.chat.id
             );
-            const isAdmin = admins.some(function(item) {
+            const isAdmin = admins.some(function (item) {
                 return item.user.id === me.id;
             });
             if (!isAdmin) throw errors.newCtrlErr('CHANNEL_ADMIN_REQUIRE');

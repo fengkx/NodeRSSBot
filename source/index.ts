@@ -229,7 +229,7 @@ function startFetchProcess(restartTime: number): void {
         : fork(fetchJS, [], {
               execArgv: ['--inspect-brk=46209']
           });
-    child.on('message', function(message: Message | string) {
+    child.on('message', function (message: Message | string) {
         if (typeof message === 'string') logger.info(message);
         else if (isSuccess(message)) {
             const { sendItems, feed } = message;
@@ -257,7 +257,7 @@ function startFetchProcess(restartTime: number): void {
         }
     });
 
-    child.on('exit', function(code, signal) {
+    child.on('exit', function (code, signal) {
         logger.error(`child process exit`);
         logger.error({
             code,
