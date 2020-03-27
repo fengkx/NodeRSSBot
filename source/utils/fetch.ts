@@ -56,7 +56,7 @@ async function fetch(feedUrl: string): Promise<Option<FeedItem[]>> {
         logger.debug(`fetching ${feedUrl}`);
         const res = await got.get(encodeURI(feedUrl));
         // handle redirect
-        if (encodeURI(feedUrl) !== res.url) {
+        if (encodeURI(feedUrl) !== res.url && Object.is(res.statusCode, 301)) {
             await handleRedirect(feedUrl, decodeURI(res.url));
         }
         const parser = new Parser();
