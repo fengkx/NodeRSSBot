@@ -20,7 +20,11 @@ export default async (ctx: MContext, next: Next) => {
     if (isSome(user)) ctx.state.lang = user.value.lang;
     else ctx.state.lang = config.lang;
     const lang = ctx.state.lang;
-    const m = await ctx.reply(i18n[lang]['PROCESSING']);
+    const m = await ctx.reply(i18n[lang]['PROCESSING'], {
+        reply_markup: {
+            remove_keyboard: true
+        }
+    });
     ctx.state.processMsgId = m.message_id;
     logger.debug(ctx.message);
     try {
