@@ -12,11 +12,13 @@ An RSSBot in telegram similar to [https://github.com/iovxw/rssbot/](https://gith
 # Hightlights
 
 1. Import and export an opml file
-1. Various configuration
+1. [Various configuration](https://github.com/fengkx/NodeRSSBot/wiki/English-Document)
 1. Pagination on command that list feeds
 1. Automaticlly extract feed from page (from link tag with type such as `type="application/atom+xml"`)
 1. I18N
+
 # Commands
+
 ```
 /rss       - show subscriptions，add raw to show links
 /sub       - subscribe a RSS: /sub http://example.com/feed.xml automatically detecting RSS feed is supported
@@ -30,13 +32,14 @@ An RSSBot in telegram similar to [https://github.com/iovxw/rssbot/](https://gith
 ```
 
 # Deploy with docker
+
 Once you got a [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) and docker installed
+
 ```sh
 docker run --name rssbot -d -v <directory to store database file>:/app/data/ -e RSSBOT_TOKEN=<YOUR_TGBOT_TOKEN> fengkx/node_rssbot
 ```
 
 More ways to depoly and more configurations can be found on [Wiki](https://github.com/fengkx/NodeRSSBot/wiki)
-
 
 # NodeRSSBot
 
@@ -51,6 +54,7 @@ More ways to depoly and more configurations can be found on [Wiki](https://githu
 1. I18N
 
 # Commands
+
 ```
 /rss       - 显示订阅列表，加 `raw`显示链接
 /sub       - 订阅 RSS: /sub http://example.com/feed.xml 支持自动检测 RSS feed
@@ -64,10 +68,11 @@ More ways to depoly and more configurations can be found on [Wiki](https://githu
 ```
 
 # Deploy with docker
+
 有了 [telegram bot token](https://core.telegram.org/bots#3-how-do-i-create-a-bot) 并安装 Docker 之后
+
 ```sh
 docker run --name rssbot -d -v <directory to store database file>:/app/data/ -e RSSBOT_TOKEN=<YOUR_TGBOT_TOKEN> fengkx/node_rssbot
 ```
 
 更多部署方式和配置项请参见 [Wiki](https://github.com/fengkx/NodeRSSBot/wiki)
-
