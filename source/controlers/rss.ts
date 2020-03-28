@@ -153,3 +153,27 @@ export async function getUrlById(ctx: MContext, next: Next) {
     ctx.state.feedUrl = decodeURI(feed.url);
     await next();
 }
+
+export async function getActiveFeedWithErrorCount(ctx: MContext, next: Next) {
+    const feedsWithErrorCount = await RSS.getActiveFeedWithErrorCount();
+    const count = feedsWithErrorCount.reduce((acc, cur) => {
+        if (cur.error_count > 1000) {
+            return acc + 1;
+        }
+        return acc;
+    }, 0);
+    const heath = `heath: ${
+        i18n[ctx.state.lang]['ACTIVE_FEED_COUNT_WITH_ERROR']
+    }: ${count} ${i18n[ctx.state.lang]['TOTAL_ACTIVE_FEED_COUNT']}: ${
+        feedsWithErrorCount.length
+    }`;
+    ctx.reply(heath);
+    await next();
+}
+
+export async function cleanUpErrorFeed(ctx: MContext, next: Next) {
+    const feedToCleanUp = await RSS.getActiveFeedWithErrorCount(10);
+    await RSS.batchUnsubByFeedIds(feedToCleanUp.map((f) => f.feed_id));
+    ctx.reply('Clean up');
+    await next();
+}

@@ -47,3 +47,6 @@ CHOOSE_LANG: 选择语言
 SET_LANG_TO: 更改语言为
 LANG_USAGE: 使用方法：/lang 更改语言
 CHOOSE_UNSUB: 选择你想要退订的源
+ACTIVE_FEED_COUNT_WITH_ERROR: 错误的活跃订阅源数
+TOTAL_ACTIVE_FEED_COUNT: 总活跃订阅源数
+CREATOR_ONLY: 只限 Bot 创建者使用

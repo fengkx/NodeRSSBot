@@ -369,3 +369,40 @@ export async function updateFeedUrl(
         db.release();
     }
 }
+
+export async function getActiveFeedWithErrorCount(
+    largerThan = -1
+): Promise<Feed[]> {
+    let db = placeHolder;
+    try {
+        db = await dbPool.acquire();
+        const result = db
+            .prepare(
+                `SELECT rf.feed_id, rf.feed_title, rf.url, rf.error_count FROM subscribes LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id WHERE error_count > ? GROUP BY rf.feed_id ORDER BY rf.error_count DESC;`
+            )
+            .all(largerThan);
+        return result;
+    } catch (e) {
+        throw errors.newCtrlErr('DB_ERROR', e);
+    } finally {
+        db.release();
+    }
+}
+
+export async function batchUnsubByFeedIds(ids: number[]) {
+    let db = placeHolder;
+    try {
+        db = await dbPool.acquire();
+        const unsubStm = db.prepare(`DELETE FROM subscribes WHERE feed_id=?`);
+        const unsubBatch = db.transaction((ids: number[]) => {
+            ids.forEach((id) => {
+                unsubStm.run(id);
+            });
+        });
+        return unsubBatch(ids);
+    } catch (e) {
+        throw errors.newCtrlErr('DB_ERROR', e);
+    } finally {
+        db.release();
+    }
+}

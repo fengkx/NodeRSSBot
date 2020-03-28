@@ -14,7 +14,8 @@ import {
     sub,
     unsub,
     unsubAll,
-    viewAll
+    viewAll,
+    getActiveFeedWithErrorCount
 } from './controlers/rss';
 import importReply from './controlers/import-reply';
 import { config } from './config';
@@ -27,7 +28,7 @@ import getFileLink from './middlewares/get-file-link';
 import sendError from './middlewares/send-error';
 import testUrl from './middlewares/test-url';
 import isAdmin from './middlewares/is-admin';
-import onlyPrivateChat from './middlewares/is-admin';
+import onlyPrivateChat from './middlewares/only-private-chat';
 import subMultiUrl from './middlewares/sub-multi-url';
 import exportToOpml from './middlewares/export-to-opml';
 import importFromOpml from './middlewares/import-from-opml';
@@ -146,6 +147,14 @@ bot.command(
 );
 
 bot.command('lang', sendError, isAdmin, replyKeyboard);
+
+bot.command(
+    'heath',
+    sendError,
+    onlyPrivateChat,
+    isAdmin,
+    getActiveFeedWithErrorCount
+);
 
 bot.action(/^CHANGE_LANG[\w_]+/, changeLangCallback);
 

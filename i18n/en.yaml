@@ -47,3 +47,6 @@ CHOOSE_LANG: Choose languages
 SET_LANG_TO: Set language to
 LANG_USAGE: 'USAGE: /lang change language'
 CHOOSE_UNSUB: Choose the subscription you want to unsub
+ACTIVE_FEED_COUNT_WITH_ERROR: Number of active feeds with error
+TOTAL_ACTIVE_FEED_COUNT: Total number of active feeds
+CREATOR_ONLY: Bot Craetor only
