@@ -29,7 +29,7 @@ An RSSBot in telegram similar to [https://github.com/iovxw/rssbot/](https://gith
 /viewall   - view all subscriptions and number of subscribers need to enable in settings
 /import    - reply this message a opml file to import(in group)
 /lang      - change language
-/heath     - show the heath of actively subscribed feed(Bot creator only)
+/heath     - show the heath of actively subscribed feed
 ```
 
 # Deploy with docker
@@ -66,7 +66,7 @@ More ways to depoly and more configurations can be found on [Wiki](https://githu
 /viewall   - 查看所有订阅和订阅人数 需要在设置中打开
 /import    - 回复此消息 opml 文件导入订阅(群组)
 /lang      - 更改语言
-/heath      - 展示活跃订阅源的健康程度(Bot 创建者 only）
+/heath      - 展示活跃订阅源的健康程度
 ```
 
 # Deploy with docker
