@@ -34,7 +34,7 @@
     "better-sqlite-pool": "^0.2.3",
     "camelcase": "^5.3.1",
     "cross-env": "^7.0.2",
-    "ejs": "^3.0.1",
+    "ejs": "^3.0.2",
     "escape-goat": "^3.0.0",
     "got-iconv": "^0.1.5",
     "js-yaml": "^3.13.1",
