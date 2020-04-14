@@ -32,7 +32,7 @@
   "homepage": "https://github.com/fengkx/NodeRSSBot#readme",
   "dependencies": {
     "better-sqlite-pool": "^0.2.3",
-    "camelcase": "^5.3.1",
+    "camelcase": "^6.0.0",
     "cross-env": "^7.0.2",
     "ejs": "^3.0.2",
     "escape-goat": "^3.0.0",
