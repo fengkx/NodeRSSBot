@@ -14,8 +14,8 @@ const custom = ((got as unknown) as Got).extend({
     timeout: {
         response: config.resp_timeout * 1000
     },
-    agent: agent,
-    http2: true
+    agent: agent
+    // http2: true
 });
 
 export default custom;
