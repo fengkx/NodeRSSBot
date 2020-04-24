@@ -41,7 +41,7 @@
     "p-map": "^4.0.0",
     "rss-parser": "^3.7.6",
     "socks-proxy-agent": "^5.0.0",
-    "telegraf": "^3.37.0",
+    "telegraf": "^3.38.0",
     "tunnel": "0.0.6",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.4.2",
