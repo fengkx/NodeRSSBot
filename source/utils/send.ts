@@ -5,7 +5,7 @@ import {
 import logger from './logger';
 import sanitize from './sanitize';
 import { config } from '../config';
-import Telegraf, { ContextMessageUpdate } from 'telegraf';
+import Telegraf, { Context } from 'telegraf';
 import { Feed, FeedItem } from '../types/feed';
 import { getUserById, migrateUser } from '../proxies/users';
 import { isNone } from '../types/option';
@@ -44,7 +44,7 @@ async function handlerSendError(e: any, userId: number): Promise<boolean> {
 }
 
 const send = async (
-    bot: Telegraf<ContextMessageUpdate>,
+    bot: Telegraf<Context>,
     toSend: NonNullable<string | FeedItem[]>,
     feed: Feed
 ) => {

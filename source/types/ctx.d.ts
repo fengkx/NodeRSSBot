@@ -1,9 +1,9 @@
-import { ContextMessageUpdate } from 'telegraf';
+import { Context } from 'telegraf';
 import { Chat } from 'telegraf/typings/telegram-types';
 import { Outline } from './outline';
 import { Feed } from './feed';
 
-export interface MContext extends ContextMessageUpdate {
+export interface MContext extends Context {
     state?: {
         feedUrl?: string;
         feedUrls?: string[];
