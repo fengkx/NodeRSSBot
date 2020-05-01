@@ -263,8 +263,10 @@ function startFetchProcess(restartTime: number): void {
                 const { feed, new_feed } = message;
                 const builder = [];
                 builder.push(
-                    `${feed.feed_title}: <a href="${feed.url}"></a> ${i18n[lang]['ERROR_MANY_TIME']}`
-                );
+                    `${feed.feed_title}: <a href="${encodeURI(
+                        feed.url
+                    )}"></a> ${i18n[lang]['ERROR_MANY_TIME']}`
+                ); // feed is from database which not urlencoded
                 builder.push(`<b>${i18n[lang]['FOUND_FEEDS']}</b>:`);
                 builder.push(...new_feed);
                 builder.push(`${i18n[lang]['FEED_CHANGE_TO']} ${new_feed[0]}`);

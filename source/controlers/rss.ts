@@ -82,15 +82,17 @@ export async function rss(ctx: MContext, next: Next) {
     if (raw) {
         feeds.forEach((feed) => {
             builder.push(
-                `${feed.feed_title.trim()}: <a href="${feed.url.trim()}">${decodeURI(
+                `${feed.feed_title.trim()}: <a href="${encodeURI(
                     feed.url.trim()
-                )}</a>`
+                )}">${decodeURI(feed.url.trim())}</a>`
             );
         });
     } else {
         feeds.forEach((feed) => {
             builder.push(
-                `<a href="${feed.url.trim()}">${feed.feed_title.trim()}</a>`
+                `<a href="${encodeURI(
+                    feed.url.trim()
+                )}">${feed.feed_title.trim()}</a>`
             );
         });
     }
@@ -139,7 +141,9 @@ export async function viewAll(ctx: MContext, next: Next) {
         const url = feed.url.trim();
         const title = feed.feed_title.trim();
         builder.push(
-            `<a href="${url}">${title}</a>  ${i18n[lang]['NUMBER_OF_SUBSCRIBER']}: ${feed.sub_count}`
+            `<a href="${encodeURI(url)}">${title}</a>  ${
+                i18n[lang]['NUMBER_OF_SUBSCRIBER']
+            }: ${feed.sub_count}`
         );
     });
     ctx.state.replyText = builder.join('\n');
@@ -168,6 +172,8 @@ export async function getActiveFeedWithErrorCount(ctx: MContext, next: Next) {
         feedsWithErrorCount.length
     }`;
     ctx.reply(heath);
+    await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
+    ctx.state.processMsgId = null;
     await next();
 }
 

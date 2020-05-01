@@ -35,9 +35,9 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
         feed
     };
     process.send(message);
-    const originUrl = new URL(feed.url).origin;
-    const res = await got(originUrl);
-    const newUrl = await findFeed(res.body, originUrl);
+    const { origin } = new URL(feed.url);
+    const res = await got(origin);
+    const newUrl = await findFeed(res.body, origin);
     if (newUrl.length > 0) {
         updateFeedUrl(feed.url, newUrl[0]);
         const message: ChangeFeedUrlMessage = {

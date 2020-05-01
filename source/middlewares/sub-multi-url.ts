@@ -15,7 +15,7 @@ export default async (ctx: MContext, next: Next) => {
     const feedsReady = await Promise.all(
         urls.map(
             async (url): Promise<Partial<Feed>> => {
-                url = decodeURI(url);
+                url = decodeURI(url); // idempotent operation just do it first
                 const feed = await getFeedByUrl(url);
                 if (isSome(feed)) {
                     return feed.value;
@@ -47,7 +47,10 @@ export default async (ctx: MContext, next: Next) => {
                 if (e.message !== 'ALREADY_SUB')
                     throw errors.newCtrlErr('DB_ERROR');
             }
-            builder.push(`<a href="${feed.url}">${feed.feed_title}</a>`);
+            // encodeURL because it is decoded
+            builder.push(
+                `<a href="${encodeURI(feed.url)}">${feed.feed_title}</a>`
+            );
         });
     if (builder.length > 1) {
         // some feed did sub successfully
