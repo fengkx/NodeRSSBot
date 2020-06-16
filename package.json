@@ -44,7 +44,7 @@
     "telegraf": "^3.38.0",
     "tunnel": "0.0.6",
     "winston": "^3.2.1",
-    "winston-daily-rotate-file": "^4.4.2",
+    "winston-daily-rotate-file": "^4.5.0",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
