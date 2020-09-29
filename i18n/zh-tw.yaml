@@ -50,3 +50,4 @@ CHOOSE_UNSUB: 選擇想要退訂的源
 ACTIVE_FEED_COUNT_WITH_ERROR: 錯誤的活躍訂閱源數
 TOTAL_ACTIVE_FEED_COUNT: 總活躍訂閱源數
 CREATOR_ONLY: 只限 Bot 創建者使用
+ALLOW_LIST_NOT_INCLUDE: 該 Bot 已啟用白名單，妳已經被禁用

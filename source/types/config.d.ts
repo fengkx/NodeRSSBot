@@ -16,4 +16,5 @@ export type Config = {
     concurrency: number;
     delete_on_err_send: boolean;
     resp_timeout: number;
+    allow_list: number[] | null;
 };

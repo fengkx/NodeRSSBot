@@ -1,6 +1,7 @@
 /* eslint @typescript-eslint/no-empty-function:0 */
 /* eslint no-empty-function:0 */
 import sendError from '../source/middlewares/send-error';
+import userAllowList from '../source/middlewares/user_allow_list';
 import { MContext } from '../source/types/ctx';
 import { Optional } from '../source/types/option';
 jest.mock('../source/proxies/users', () => ({
@@ -17,6 +18,7 @@ jest.mock('../source/proxies/users', () => ({
 test('sendError@message', async () => {
     const ctx = require('./test-data/ctx/send-error-ctx').messageCtx; // reply with message_id 233
     const next = () => {};
+    await userAllowList(ctx, next); // init lang
     await sendError((ctx as unknown) as MContext, next);
     expect(ctx).toHaveProperty('state.processMsgId', 233);
     expect(ctx).toHaveProperty('state.lang', 'en');

@@ -1,0 +1,31 @@
+import { config } from '../config';
+import i18n from '../i18n';
+import { MContext, Next } from '../types/ctx';
+import { getUserById } from '../proxies/users';
+import { isSome } from '../types/option';
+
+export default async (ctx: MContext, next: Next) => {
+    let id: number;
+    switch (ctx.updateType) {
+        case 'message':
+            id = ctx.message.chat.id;
+            break;
+        case 'callback_query':
+            id = ctx.callbackQuery.from.id;
+            break;
+    }
+    const user = await getUserById(id);
+    if (isSome(user)) ctx.state.lang = user.value.lang;
+    else ctx.state.lang = config.lang;
+    const { lang } = ctx.state;
+    if (config.allow_list && config.allow_list.length > 0) {
+        // enabled allow list
+        if (config.allow_list.includes(id)) {
+            await next();
+        } else {
+            ctx.reply(i18n[lang]['ALLOW_LIST_NOT_INCLUDE']);
+        }
+    } else {
+        await next();
+    }
+};

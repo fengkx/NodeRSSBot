@@ -23,5 +23,8 @@ export const config: Config = {
     not_send: !!process.env.NOT_SEND || false, // just for debug use
     concurrency: parseInt(process.env.RSSBOT_CONCURRENCY) || 200,
     delete_on_err_send: !!process.env.DELETE_ON_ERR_SEND || true, // block and chat not found
-    resp_timeout: parseInt(process.env.RSSBOT_RESP_TIMEOUT) || 40
+    resp_timeout: parseInt(process.env.RSSBOT_RESP_TIMEOUT) || 40,
+    allow_list: process.env.RSSBOT_ALLOW_LIST
+        ? process.env.RSSBOT_ALLOW_LIST.split(',').map((id) => Number(id))
+        : null
 };

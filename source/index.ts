@@ -32,6 +32,7 @@ import onlyPrivateChat from './middlewares/only-private-chat';
 import subMultiUrl from './middlewares/sub-multi-url';
 import exportToOpml from './middlewares/export-to-opml';
 import importFromOpml from './middlewares/import-from-opml';
+import userAllowList from './middlewares/user_allow_list';
 import { MContext, Next } from './types/ctx';
 import twoKeyReply from './utils/two-key-reply';
 import {
@@ -59,6 +60,8 @@ bot.catch((err: Error) => logger.error(err.stack || err.message));
 bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username;
 });
+
+bot.use(userAllowList);
 
 bot.command('start', sendError, async (ctx: MContext) => {
     const builder = [];
