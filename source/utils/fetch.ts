@@ -14,7 +14,7 @@ import {
     updateHashList,
     failAttempt,
     getFeedByUrl,
-    resetErrorCount,
+    updateFeed,
     handleRedirect,
     updateFeedUrl
 } from '../proxies/rss-feed';
@@ -51,7 +51,8 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
     }
 }
 
-async function fetch(feedUrl: string): Promise<Option<FeedItem[]>> {
+async function fetch(feedModal: Feed): Promise<Option<FeedItem[]>> {
+    const feedUrl = feedModal.url;
     try {
         logger.debug(`fetching ${feedUrl}`);
         const res = await got.get(encodeURI(feedUrl));
@@ -62,7 +63,9 @@ async function fetch(feedUrl: string): Promise<Option<FeedItem[]>> {
         const parser = new Parser();
         const feed = await parser.parseString(res.body);
         const items = feed.items.slice(0, item_num);
-        await resetErrorCount(feedUrl);
+        feedModal.error_count = 0;
+        feedModal.feed_title = feed.title;
+        await updateFeed(feedModal);
         return Optional(
             items.map((item) => {
                 const { link, title, content, guid, id } = item;
@@ -96,7 +99,7 @@ const fetchAll = async (): Promise<void> => {
             const oldHashList = JSON.parse(eachFeed.recent_hash_list);
             let fetchedItems: Option<FeedItem[]>, sendItems: FeedItem[];
             try {
-                fetchedItems = await fetch(eachFeed.url);
+                fetchedItems = await fetch(eachFeed);
                 if (isNone(fetchedItems)) {
                     logger.debug(eachFeed.url, 'Error');
                 } else {

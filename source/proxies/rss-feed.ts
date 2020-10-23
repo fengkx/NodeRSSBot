@@ -216,15 +216,17 @@ export async function getSubscribedCountByUserId(
     }
 }
 
-export async function resetErrorCount(feedUrl: string): Promise<void> {
+export async function updateFeed(feed: Feed): Promise<void> {
     let db = placeHolder;
     try {
         db = await dbPool.acquire();
+        const { feed_title, error_count, url } = feed;
         db.prepare(
             `UPDATE rss_feed
-                 SET error_count=0
+                 SET error_count=?,
+                     feed_title=?
                  WHERE url = ?`
-        ).run(feedUrl);
+        ).run(error_count, feed_title, url);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     } finally {
