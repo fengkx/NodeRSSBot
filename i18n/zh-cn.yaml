@@ -3,7 +3,7 @@ FETCH_ERROR: 抓取错误
 404: 抓取错误 HTTP404 Not Found
 403: 抓取错误 HTTP403 Forbidden
 ALREADY_SUB: 已经订阅过了
-DB_ERROR: SQLite操作出错
+DB_ERROR: SQL操作出错
 DID_NOT_SUB: 你没有订阅这个feed
 SUB_USAGE: 使用方法： /sub <RSS URL> 支持自动检测 RSS feed
 UNSUB_USAGE: 使用方法： /unsub <RSS URL>

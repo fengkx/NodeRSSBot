@@ -26,7 +26,7 @@ export async function setLangById(id: number, lang: string): Promise<number> {
 
 export async function newUser(id: number, lang: string): Promise<User> {
     try {
-        await db('users').insert({ user_id: id, lang });
+        await db('users').insert({ user_id: id, lang }, 'user_id');
         // returning() is not support in sqlite
         return await db('users').where('user_id', id).select().first();
     } catch (e) {

@@ -17,20 +17,29 @@ export async function sub(
             .andWhere('feed_id', feed.feed_id)
             .select();
         if (res.length === 0) {
-            await db<Subscribe>('subscribes').insert({
-                feed_id: feed.feed_id,
-                user_id: userId
-            });
+            await db<Subscribe>('subscribes').insert(
+                {
+                    feed_id: feed.feed_id,
+                    user_id: userId
+                },
+                'subscribe_id'
+            );
             return 'ok';
         } else {
             throw errors.newCtrlErr('ALREADY_SUB');
         }
     } else {
-        const [feed_id] = await db('rss_feed').insert({
-            url: feedUrl,
-            feed_title: feedTitle
-        });
-        await db('subscribes').insert({ feed_id, user_id: userId });
+        const [feed_id] = await db('rss_feed').insert(
+            {
+                url: feedUrl,
+                feed_title: feedTitle
+            },
+            'feed_id'
+        );
+        await db('subscribes').insert(
+            { feed_id, user_id: userId },
+            'subscribe_id'
+        );
         return 'ok';
     }
 }

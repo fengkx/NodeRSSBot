@@ -43,10 +43,6 @@ import {
 } from './types/message';
 import { migrateUser } from './proxies/users';
 
-(async () => {
-    await initDB();
-})();
-
 const bot = new Telegraf(token, {
     telegram: {
         // Telegram options
@@ -237,7 +233,8 @@ bot.action(
 
 bot.launch();
 
-function startFetchProcess(restartTime: number): void {
+async function startFetchProcess(restartTime: number): Promise<void> {
+    await initDB();
     if (restartTime > 3) {
         logger.error('fetch process exit too much(3) times');
         process.exit(1);
