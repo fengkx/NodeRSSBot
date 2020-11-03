@@ -3,7 +3,7 @@ import * as Knex from 'knex';
 export async function up(knex: Knex): Promise<void> {
     return knex.schema
         .createTable('rss_feed', function (table) {
-            table.increments('feed_id');
+            table.bigIncrements('feed_id');
             table
                 .text('url')
                 .notNullable()
@@ -14,18 +14,18 @@ export async function up(knex: Knex): Promise<void> {
             table.integer('error_count').defaultTo(0).notNullable();
         })
         .createTable('subscribes', function (table) {
-            table.increments('subscribe_id');
+            table.bigIncrements('subscribe_id');
             table
-                .integer('feed_id')
+                .bigInteger('feed_id')
                 .notNullable()
                 .references('feed_id')
                 .inTable('rss_feed')
                 .onDelete('CASCADE');
-            table.integer('user_id').notNullable();
+            table.bigInteger('user_id').notNullable();
             table.unique(['feed_id', 'user_id']);
         })
         .createTable('users', function (table) {
-            table.increments('user_id');
+            table.bigIncrements('user_id');
             table.text('lang').notNullable();
         });
 }
