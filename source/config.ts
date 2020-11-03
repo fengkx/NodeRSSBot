@@ -11,7 +11,10 @@ export const config: Config = {
     },
     db_path:
         process.env.RSSBOT_DB_PATH ||
-        path.join(__dirname, '../../data/database.db'), // /dist/source/config.js -> /data/
+        path.join(
+            __dirname,
+            `${__dirname.includes('dist') ? '../..' : '..'}/data/database.db`
+        ), // /dist/source/config.js -> /data/
     lang: process.env.RSSBOT_LANG || 'zh-cn',
     item_num: parseInt(process.env.RSSBOT_ITEM_NUM) || 10,
     fetch_gap: process.env.RSSBOT_FETCH_GAP || '5m',
@@ -26,5 +29,6 @@ export const config: Config = {
     resp_timeout: parseInt(process.env.RSSBOT_RESP_TIMEOUT) || 40,
     allow_list: process.env.RSSBOT_ALLOW_LIST
         ? process.env.RSSBOT_ALLOW_LIST.split(',').map((id) => Number(id))
-        : null
+        : null,
+    auto_migrate: !!process.env.AUTO_MIGRATE || true
 };
