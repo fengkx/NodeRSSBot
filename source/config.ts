@@ -10,7 +10,9 @@ export const config: Config = {
         port: process.env.PROXY_PORT || null
     },
     db_path:
-        process.env.RSSBOT_DB_PATH ||
+        (process.env.DYNO // heroku
+            ? process.env.DATABASE_URL
+            : process.env.RSSBOT_DB_PATH) ||
         path.join(
             __dirname,
             `${__dirname.includes('dist') ? '../..' : '..'}/data/database.db`
