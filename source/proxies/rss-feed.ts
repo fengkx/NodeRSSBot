@@ -183,7 +183,7 @@ export async function getAllFeedsWithCount(
     try {
         return await db<Feed>('subscribes')
             .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
-            .groupBy('subscribes.feed_id')
+            .groupBy('subscribes.feed_id', 'rf.feed_title', 'rf.url')
             .orderBy('sub_count', 'desc')
             .limit(limit)
             .offset(limit * (page - 1))
@@ -202,7 +202,7 @@ export async function getAllFeedsCount(): Promise<number> {
             .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
             .countDistinct({ count: 'rf.feed_id' })
             .first();
-        return result.count;
+        return parseInt(result.count);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     }

@@ -3,9 +3,9 @@ import errors from '../utils/errors';
 import * as path from 'path';
 import * as ejs from 'ejs';
 import * as fs from 'fs';
-import { config } from '../config';
 import { MContext, Next } from '../types/ctx';
 import { Feed } from '../types/feed';
+import { config } from '../config';
 
 function readFilePromise(path: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -47,7 +47,11 @@ export default async (ctx: MContext, next: Next) => {
     }
     const opml = await render(feeds);
     try {
-        const filePath = path.join(config.db_path, '..', chat.id.toString());
+        const filePath = path.join(
+            config['PKG_ROOT'],
+            'data',
+            `${chat.id.toString()}.opml`
+        );
         fs.writeFileSync(filePath, opml);
         await ctx.replyWithDocument({
             source: fs.readFileSync(filePath),

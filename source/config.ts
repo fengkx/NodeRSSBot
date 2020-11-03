@@ -2,6 +2,10 @@ import * as path from 'path';
 import { Config } from './types/config';
 import { version } from '../package.json';
 
+const PKGROOT = path.join(
+    __dirname,
+    __dirname.includes('dist') ? '../..' : '..'
+);
 export const config: Config = {
     token: process.env.RSSBOT_TOKEN || '',
     proxy: {
@@ -13,10 +17,7 @@ export const config: Config = {
         (process.env.DYNO // heroku
             ? process.env.DATABASE_URL
             : process.env.RSSBOT_DB_PATH) ||
-        path.join(
-            __dirname,
-            `${__dirname.includes('dist') ? '../..' : '..'}/data/database.db`
-        ), // /dist/source/config.js -> /data/
+        path.join(PKGROOT, 'data', 'database.db'), // /dist/source/config.js -> /data/
     lang: process.env.RSSBOT_LANG || 'zh-cn',
     item_num: parseInt(process.env.RSSBOT_ITEM_NUM) || 10,
     fetch_gap: process.env.RSSBOT_FETCH_GAP || '5m',
@@ -34,3 +35,8 @@ export const config: Config = {
         : null,
     auto_migrate: !!process.env.AUTO_MIGRATE || true
 };
+Object.defineProperty(config, 'PKG_ROOT', {
+    enumerable: false,
+    writable: false,
+    value: PKGROOT
+});
