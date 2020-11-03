@@ -40,7 +40,7 @@ Once you got a [telegram bot token](https://core.telegram.org/bots#3-how-do-i-cr
 docker run --name rssbot -d -v <directory to store database file>:/app/data/ -e RSSBOT_TOKEN=<YOUR_TGBOT_TOKEN> fengkx/node_rssbot
 ```
 
-More ways to depoly and more configurations can be found on [Wiki](https://github.com/fengkx/NodeRSSBot/wiki)
+For more information on deployment and usage, configuration items, see the [Wiki](https://github.com/fengkx/NodeRSSBot/wiki)
 
 # NodeRSSBot
 
@@ -77,4 +77,4 @@ More ways to depoly and more configurations can be found on [Wiki](https://githu
 docker run --name rssbot -d -v <directory to store database file>:/app/data/ -e RSSBOT_TOKEN=<YOUR_TGBOT_TOKEN> fengkx/node_rssbot
 ```
 
-更多部署方式和配置项请参见 [Wiki](https://github.com/fengkx/NodeRSSBot/wiki)
+更多部署方式和使用方式,配置项,请参见 [Wiki](https://github.com/fengkx/NodeRSSBot/wiki)
