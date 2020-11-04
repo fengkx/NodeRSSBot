@@ -25,7 +25,7 @@ export async function up(knex: Knex): Promise<void> {
             table.unique(['feed_id', 'user_id']);
         })
         .createTable('users', function (table) {
-            table.bigIncrements('user_id');
+            table.bigInteger('user_id');
             table.text('lang').notNullable();
         });
 }
