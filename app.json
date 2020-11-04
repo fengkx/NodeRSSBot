@@ -1,0 +1,94 @@
+{
+    "name": "NodeRSSBot",
+    "description": "Another Telegram RSSBot but in Node.js Telegram RSS 机器人",
+    "keywords": ["RSS", "Telegram", "Telegram Bot", "rssbot"],
+    "website": "https://rssbot.vercel.app",
+    "repository": "https://github.com/fengkx/NodeRSSBot",
+    "logo": "https://avatars.githubusercontent.com/u/73875367?s=200&v=4",
+    "addons": [
+        {
+            "plan": "heroku-postgresql",
+            "options": {
+                "version": "12"
+            }
+        }
+    ],
+    "buildpacks": [
+        {
+            "url": "heroku/nodejs"
+        }
+    ],
+    "formation": {
+        "web": {
+            "quantity": 0
+        },
+        "worker": {
+            "quantity": 1,
+            "size": "free"
+        }
+    },
+    "env": {
+        "RSSBOT_TOKEN": {
+            "description": "Telegram Bot Token from @BotFather",
+            "required": true
+        },
+        "DATABASE_URL": {
+            "description": "connection string of other c/s dbms",
+            "required": false
+        },
+        "RSSBOT_LANG": {
+            "value": "zh-cn",
+            "description": "default language for new user, fall back language for string without a corresponding translation",
+            "required": false
+        },
+        "RSSBOT_ITEM_NUM": {
+            "value": "10",
+            "description": "Send up to `item_num` messages at a time",
+            "required": false
+        },
+        "RSSBOT_FETCH_GAP": {
+            "value": "5m",
+            "description": "fetch_gap can be set in how many minutes or hours. m for minute, h for hour for example, 5m means every 5 minutes, 1h means every 1 hour.",
+            "required": false
+        },
+        "NOTIFY_ERR_COUNT": {
+            "value": "5",
+            "description": "How many consecutive errors in one feed will a warning be issued",
+            "required": false
+        },
+        "RSSBOT_VIEW_ALL": {
+            "description": "whether enable `/viewall` command",
+            "required": false
+        },
+        "RSSBOT_UA": {
+            "description": "user-agent header of the bot , version in default value is fetch from pacakge.json",
+            "required": false
+        },
+        "RSSBOT_CONCURRENCY": {
+            "value": "200",
+            "description": "how many concurrency requests will be send in a batch",
+            "required": false
+        },
+        "PROXY_PROTOCOL": {
+            "description": "proxy protocol http/https/socks",
+            "required": false
+        },
+        "PROXY_HOST": {
+            "description": "proxy host",
+            "required": false
+        },
+        "PROXY_PORT": {
+            "description": "proxy port",
+            "required": false
+        },
+        "RSSBOT_RESP_TIMEOUT": {
+            "value": "40",
+            "description": "fetch request timeout",
+            "required": false
+        },
+        "RSSBOT_ALLOW_LIST": {
+            "description": "allow list by user id splited by comma. You can get your userid by @userinfobot or @getidsbot",
+            "required": false
+        }
+    }
+}
