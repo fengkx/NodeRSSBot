@@ -1,11 +1,11 @@
 import Telegraf from 'telegraf';
-import initTable from './database/init-tables';
 import { fork } from 'child_process';
 import { join } from 'path';
 import send from './utils/send';
 import logger from './utils/logger';
 import errors from './utils/errors';
 import i18n from './i18n';
+import { initDB } from './database';
 
 import { replyKeyboard, changeLangCallback } from './controlers/language';
 import {
@@ -42,10 +42,6 @@ import {
     Message
 } from './types/message';
 import { migrateUser } from './proxies/users';
-
-(async () => {
-    await initTable();
-})();
 
 const bot = new Telegraf(token, {
     telegram: {
@@ -237,7 +233,8 @@ bot.action(
 
 bot.launch();
 
-function startFetchProcess(restartTime: number): void {
+async function startFetchProcess(restartTime: number): Promise<void> {
+    await initDB();
     if (restartTime > 3) {
         logger.error('fetch process exit too much(3) times');
         process.exit(1);

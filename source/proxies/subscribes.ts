@@ -1,43 +1,25 @@
-import dbPool from '../database';
 import errors from '../utils/errors';
 import { Subscribe } from '../types/subscribe';
-import * as Database from 'better-sqlite3';
-
-// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-const placeHolder: any = { available: false, release() {} };
+import { db } from '../database';
 
 export async function getSubscribersByFeedId(
     feedId: number
 ): Promise<Subscribe[]> {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        return db
-            .prepare(
-                `SELECT *
-             FROM subscribes
-             WHERE feed_id = ?`
-            )
-            .all(feedId);
+        return await db<Subscribe>('subscribes')
+            .where('feed_id', feedId)
+            .select();
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function deleteSubscribersByUserId(
     userId: number
-): Promise<Database.RunResult> {
-    let db = placeHolder;
+): Promise<number> {
     try {
-        db = await dbPool.acquire();
-        return await db
-            .prepare('DELETE FROM "subscribes" WHERE user_id = ?')
-            .run(userId);
+        return await db('subscribes').where('user_id', userId).del();
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }

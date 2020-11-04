@@ -1,12 +1,8 @@
-import dbPool from '../database';
+import { db } from '../database';
 import errors from '../utils/errors';
-import { PoolConnection } from 'better-sqlite-pool';
-import * as Database from 'better-sqlite3';
 import { Feed } from '../types/feed';
+import { Subscribe } from '../types/subscribe';
 import { isSome, Option, Optional, Some } from '../types/option';
-
-// eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-const placeHolder: any = { available: false, release() {} };
 
 export async function sub(
     userId: number,
@@ -14,61 +10,46 @@ export async function sub(
     feedTitle: string
 ): Promise<string> {
     feedUrl = decodeURI(feedUrl);
-    const db = await dbPool.acquire();
-    const feed = db
-        .prepare(
-            `SELECT *
-             FROM rss_feed
-             WHERE url = ?`
-        )
-        .get([feedUrl]);
+    const feed = await db<Feed>('rss_feed').where('url', feedUrl).first();
     if (feed) {
-        const sql = `SELECT *
-                     FROM subscribes
-                     WHERE user_id = ?
-                       AND feed_id = ?`;
-        const res = db.prepare(sql).all([userId, feed.feed_id]);
+        const res = await db<Subscribe>('subscribes')
+            .where('user_id', userId)
+            .andWhere('feed_id', feed.feed_id)
+            .select();
         if (res.length === 0) {
-            db.prepare(
-                'INSERT INTO subscribes(feed_id, user_id) VALUES (?, ?)'
-            ).run([feed.feed_id, userId]);
-            db.release();
+            await db<Subscribe>('subscribes').insert(
+                {
+                    feed_id: feed.feed_id,
+                    user_id: userId
+                },
+                'subscribe_id'
+            );
             return 'ok';
         } else {
-            db.release();
             throw errors.newCtrlErr('ALREADY_SUB');
         }
     } else {
-        const info = db
-            .prepare(
-                `INSERT INTO rss_feed(url, feed_title)
-                 VALUES (?, ?);`
-            )
-            .run(feedUrl, feedTitle);
-        await db
-            .prepare('INSERT INTO subscribes(feed_id, user_id) VALUES (?, ?)')
-            .run([info.lastInsertRowid, userId]);
-        db.release();
+        const [feed_id] = await db('rss_feed').insert(
+            {
+                url: feedUrl,
+                feed_title: feedTitle
+            },
+            'feed_id'
+        );
+        await db('subscribes').insert(
+            { feed_id, user_id: userId },
+            'subscribe_id'
+        );
         return 'ok';
     }
 }
 
 export async function getFeedByUrl(feedUrl: string): Promise<Option<Feed>> {
-    let db: PoolConnection = placeHolder;
     try {
-        db = await dbPool.acquire();
-        const feed: Feed = db
-            .prepare(
-                `SELECT *
-                 FROM rss_feed
-                 WHERE url = ?`
-            )
-            .get([feedUrl]);
+        const feed = await db<Feed>('rss_feed').where('url', feedUrl).first();
         return Optional(feed);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
@@ -77,97 +58,57 @@ export async function getFeedByUrl(feedUrl: string): Promise<Option<Feed>> {
  * @param {number} id feed id
  */
 export async function getFeedById(id: number): Promise<Feed> {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        const feed: Feed = db
-            .prepare(
-                `SELECT *
-                 FROM rss_feed
-                 WHERE feed_id = ?`
-            )
-            .get([id]);
+        const feed: Feed = await db<Feed>('rss_feed')
+            .where('feed_id', id)
+            .first();
         return feed;
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
-export async function unsub(
-    userId: number,
-    feedId: number
-): Promise<Database.RunResult> {
-    let db = placeHolder;
+export async function unsub(userId: number, feedId: number): Promise<void> {
     try {
-        db = await dbPool.acquire();
-        return db
-            .prepare('DELETE FROM subscribes WHERE feed_id=? AND user_id=?')
-            .run([feedId, userId]);
+        await db('subscribes')
+            .where('feed_id', feedId)
+            .andWhere('user_id', userId)
+            .del();
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function getAllFeeds(): Promise<Feed[]> {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        const feeds = db
-            .prepare(
-                `SELECT rf.*
-                             FROM subscribes
-                                    LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
-                             GROUP BY rf.feed_id`
-            )
-            .all();
+        const feeds = await db('subscribes')
+            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
+            .groupBy('rf.feed_id')
+            .select(['rf.*']);
         return feeds;
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function updateHashList(
     feedId: number,
     hashList: string[]
-): Promise<Database.RunResult> {
-    let db = placeHolder;
+): Promise<void> {
     try {
-        db = await dbPool.acquire();
-        return db
-            .prepare(
-                `UPDATE rss_feed
-                 SET recent_hash_list=?
-                 where feed_id = ?`
-            )
-            .run(JSON.stringify(hashList), feedId);
+        return await db<Feed>('rss_feed')
+            .where('feed_id', feedId)
+            .update({ recent_hash_list: JSON.stringify(hashList) });
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function getFeedsByTitle(title: string): Promise<Feed[]> {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        return await db
-            .prepare(
-                `SELECT *
-                 FROM rss_feed
-                 WHERE feed_title = ?`
-            )
-            .all(title);
+        return await db<Feed>('rss_feed').where('feed_title', title).select();
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
@@ -179,93 +120,58 @@ export async function getSubscribedFeedsByUserId(
     if (page < 1) {
         page = 1;
     }
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        const sql = `
-          SELECT rf.feed_id, rf.feed_title, rf.url
-          FROM subscribes
-                 LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
-          WHERE subscribes.user_id = ? LIMIT ? OFFSET ?
-        `;
-        return db.prepare(sql).all(userId, limit, (page - 1) * limit);
+        return await db<Feed>('subscribes')
+            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
+            .where('subscribes.user_id', userId)
+            .limit(limit)
+            .offset((page - 1) * limit)
+            .select('rf.feed_title')
+            .select('rf.url')
+            .select('rf.feed_id');
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function getSubscribedCountByUserId(
     userId: number
 ): Promise<number> {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        const sql = `SELECT COUNT(rf.feed_id) count
-                     FROM subscribes
-                              LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
-                     WHERE subscribes.user_id = ?
-        `;
-        const result = db.prepare(sql).get(userId);
+        const result = await db('subscribes')
+            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
+            .where('subscribes.user_id', userId)
+            .count({ count: 'rf.feed_id' })
+            .first();
         return result.count;
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
-export async function updateFeed(feed: Feed): Promise<void> {
-    let db = placeHolder;
+export async function updateFeed(feed: Feed): Promise<number> {
     try {
-        db = await dbPool.acquire();
-        const { feed_title, error_count, url } = feed;
-        db.prepare(
-            `UPDATE rss_feed
-                 SET error_count=?,
-                     feed_title=?
-                 WHERE url = ?`
-        ).run(error_count, feed_title, url);
+        return await db('rss_feed').where('url', feed.url).update(feed);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
-export async function failAttempt(
-    feedUrl: string
-): Promise<Database.RunResult> {
-    let db = placeHolder;
+export async function failAttempt(feedUrl: string): Promise<number> {
     try {
-        db = await dbPool.acquire();
-        const sql = `UPDATE rss_feed
-                     SET error_count=error_count + 1
-                     WHERE url = ? `;
-        return db.prepare(sql).run(feedUrl);
+        return await db('rss_feed')
+            .where('url', feedUrl)
+            .increment('error_count', 1);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
-export async function unsubAll(userId: number): Promise<Database.RunResult> {
-    let db = placeHolder;
+export async function unsubAll(userId: number): Promise<number> {
     try {
-        db = await dbPool.acquire();
-        return db
-            .prepare(
-                `DELETE
-                 FROM subscribes
-                 WHERE user_id = ?`
-            )
-            .run(userId);
+        return await db('subscribes').where('user_id', userId).del();
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
@@ -273,138 +179,103 @@ export async function getAllFeedsWithCount(
     limit: number,
     page: number
 ): Promise<Feed[]> {
-    let db = placeHolder;
     if (page < 1) page = 1;
     try {
-        db = await dbPool.acquire();
-        return db
-            .prepare(
-                `SELECT subscribes.feed_id, COUNT(rf.feed_id) AS sub_count, rf.feed_title, rf.url
-                FROM subscribes
-                         LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id
-                GROUP BY subscribes.feed_id
-                ORDER BY sub_count DESC LIMIT ? OFFSET ?`
-            )
-            .all(limit, limit * (page - 1));
+        return await db<Feed>('subscribes')
+            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
+            .groupBy('subscribes.feed_id', 'rf.feed_title', 'rf.url')
+            .orderBy('sub_count', 'desc')
+            .limit(limit)
+            .offset(limit * (page - 1))
+            .select('subscribes.feed_id')
+            .count({ sub_count: 'rf.feed_id' })
+            .select('rf.feed_title')
+            .select('rf.url');
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function getAllFeedsCount(): Promise<number> {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        const result = db
-            .prepare(
-                `
-        SELECT COUNT(DISTINCT rf.feed_id) as count
-            FROM subscribes
-            LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id`
-            )
-            .get();
-        return result.count;
+        const result = await db('subscribes')
+            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
+            .countDistinct({ count: 'rf.feed_id' })
+            .first();
+        return parseInt(result.count);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
-
 export async function handleRedirect(
     url: string,
     realUrl: string
 ): Promise<void> {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
         const oldFeed: Option<Feed> = Optional(
-            db.prepare(`SELECT * FROM rss_feed WHERE url=?`).get(url)
+            await db<Feed>('rss_feed').where('url', url).first()
         );
         const realFeed: Option<Feed> = Optional(
-            db.prepare(`SELECT * FROM rss_feed WHERE url=?`).get(realUrl)
+            await db<Feed>('rss_feed').where('url', realUrl).first()
         );
         if (isSome(realFeed) && isSome(oldFeed)) {
-            const updateSubStm = db.prepare(
-                `UPDATE subscribes SET feed_id=? WHERE feed_id=?`
-            );
-            const delOldFeedStm = db.prepare(
-                `DELETE FROM rss_feed WHERE url=?`
-            );
-
-            const handleFeedRedirect = db.transaction(
-                (oldFeed: Feed, realFeed: Feed) => {
-                    updateSubStm.run(realFeed.feed_id, oldFeed.feed_id);
-                    delOldFeedStm.run(oldFeed.url);
-                }
-            );
-            handleFeedRedirect(oldFeed.value, realFeed.value);
+            await db.transaction(async (trx) => {
+                await trx('subscribes').where('url', oldFeed.value.url).del();
+                await trx('subscribes')
+                    .where('feed_id', oldFeed.value.feed_id)
+                    .update({ feed_id: realFeed.value.feed_id });
+            });
         } else {
-            db.prepare(`UPDATE rss_feed SET url=? WHERE url=?`).run(
-                (oldFeed as Some<Feed>).value.url,
-                realUrl
-            );
+            await db('rss_feed')
+                .where('url', (oldFeed as Some<Feed>).value.url)
+                .update({ url: realUrl });
         }
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function updateFeedUrl(
     oldUrl: string,
     newUrl: string
-): Promise<Database.RunResult> {
-    let db = placeHolder;
+): Promise<number> {
     try {
-        db = await dbPool.acquire();
-        const sql = `UPDATE rss_feed
-                 SET url=?
-                 WHERE url = ?`;
-        return db.prepare(sql).run(newUrl, oldUrl);
+        return await db('rss-feed')
+            .where('url', oldUrl)
+            .update({ url: newUrl });
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function getActiveFeedWithErrorCount(
     largerThan = -1
 ): Promise<Feed[]> {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        const result = db
-            .prepare(
-                `SELECT rf.feed_id, rf.feed_title, rf.url, rf.error_count FROM subscribes LEFT JOIN rss_feed rf on subscribes.feed_id = rf.feed_id WHERE error_count > ? GROUP BY rf.feed_id ORDER BY rf.error_count DESC;`
-            )
-            .all(largerThan);
-        return result;
+        return await db<Feed>('subscribes')
+            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
+            .where('error_count', '>', largerThan)
+            .groupBy('rf.feed_id')
+            .orderBy('rf.error_count', 'desc')
+            .select('rf.feed_id')
+            .select('rf.feed_title')
+            .select('rf.url')
+            .select('rf.error_count');
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }
 
 export async function batchUnsubByFeedIds(ids: number[]) {
-    let db = placeHolder;
     try {
-        db = await dbPool.acquire();
-        const unsubStm = db.prepare(`DELETE FROM subscribes WHERE feed_id=?`);
-        const unsubBatch = db.transaction((ids: number[]) => {
-            ids.forEach((id) => {
-                unsubStm.run(id);
-            });
+        await db.transaction(async (trx) => {
+            await Promise.all(
+                ids.map(async (id) =>
+                    trx('subscribes').where('feed_id', id).del()
+                )
+            );
         });
-        return unsubBatch(ids);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
-    } finally {
-        db.release();
     }
 }

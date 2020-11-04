@@ -1,11 +1,11 @@
 import fs from 'fs';
 import { config as cfg } from '../source/config';
-import initDB from '../source/database/init-tables';
-beforeAll(() => {
+import { initDB } from '../source/database';
+beforeAll(async () => {
     if (fs.existsSync(cfg.db_path)) {
         fs.unlinkSync(cfg.db_path);
     }
-    initDB();
+    await initDB();
 });
 
 import * as RSS from '../source/proxies/rss-feed';
@@ -65,7 +65,6 @@ test('USER new', async () => {
 });
 
 afterAll(() => {
-    // const cfg = require('../config');
     if (fs.existsSync(cfg.db_path)) {
         fs.unlinkSync(cfg.db_path);
     }
