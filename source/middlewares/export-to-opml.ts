@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import { MContext, Next } from '../types/ctx';
 import { Feed } from '../types/feed';
 import { config } from '../config';
+import { htmlEscape } from 'escape-goat';
 
 function readFilePromise(path: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -26,7 +27,10 @@ const render = async (feeds: Feed[]): Promise<string> => {
     const tpl = await readFilePromise(
         path.join(__dirname, '../template/opml.ejs')
     );
-    // console.log(tpl)
+    feeds.forEach((feed) => {
+        feed.feed_title = htmlEscape(feed.feed_title);
+        feed.url = htmlEscape(feed.url);
+    });
     return ejs.render(tpl, { feeds });
 };
 
