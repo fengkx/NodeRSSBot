@@ -287,7 +287,7 @@ async function startFetchProcess(restartTime: number): Promise<void> {
 
 startFetchProcess(0);
 
-logger.info(`Database file is in ${db_path}`);
+logger.info(`Database is located in ${db_path}`);
 logger.info(`Using Default language is ${lang}`);
 logger.info(`send the latest ${item_num} items for each feed`);
 logger.info('NodeRSSBot is ready');
