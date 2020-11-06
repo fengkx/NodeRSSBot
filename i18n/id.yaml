@@ -1,0 +1,53 @@
+FEED_URL_NOT_PARSE: Tidak dapat membuka url
+FETCH_ERROR: Terjadi kesalahan
+404: Terjadi kesalahan HTTP404 Tidak ditemukan
+403: Terjadi kesalahan HTTP403 Terlarang
+ALREADY_SUB: Anda sudah berlangganan feed ini
+DB_ERROR: Kesalahan pada SQL
+DID_NOT_SUB: Anda belum berlangganan feed ini
+SUB_USAGE: 'PENGGUNAAN： /sub <RSS URL> Otomatis mendeteksi URL yang didukung'
+UNSUB_USAGE: 'USAGE： /unsub <RSS URL>'
+ADMIN_ONLY: Only enable for admins
+UNSUBTHIS_USAGE: 'PENGGUNAAN：/unsubthis Balas pada pesan yang anda ingin batalkan langganannya'
+SAME_NAME: Terdapat feed dengan judul yang sama，Tolong gunakan /unsub
+PROCESSING: Memproses, tunggu sebentar
+SUB_SUCCESS: Berhasil berlangganan
+UNSUB_SUCCESS: Berhasil membatalkan langganan
+NOT_SUB: Belum ada langganan feed
+SUB_LIST: Langganan Anda
+ERROR_MANY_TIME: Terjadi kesalahan saat mengambil link berkali-kali, Anda mungkin ingin memberhentikan langganan
+OPML_PARSE_ERRO: Gagal mengurai opml
+NETWORK_ERROR: Kesalahan pada jaringan
+IMPORT_SUCCESS: Berhasil mengimpor
+FILESYSTEM_ERROR: Kesalahan pada filesystem
+UNSUB_ALL_SUCCESS: Berhasil membatalkan semua langganan
+EXPORT: 'PENGGUNAAN： /export Ekspor langganan ke format opml'
+SEND_FILE_IMPORT: Kirim file opml untuk mengimpor langganan
+RSS_USAGE: 'PENGGUNAAN： /rss Menampilkan seluruh langganan yang ada'
+VIEW_ALL_USAGE: /viewall Menampilkan seluruh langganan dan angka langganan
+USB_ALL_USAGE: 'PENGGUNAAN： /allunsub Batalkan semua langganan feed'
+IMPORT_USAGE: 'PENGGUNAAN： /import Kirim file opml di pesan pribadi atau balas langsung pesan ini'
+WELCOME: Selamat datang di [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: Apakah anda ingin melanjutkan?
+PRIVATE_CHAT_ONLY: Hanya bisa digunakan di PM
+ALL_FEED: Semua langganan
+COMMAND_NOT_ENABLED: Perintah tidak di aktifkan
+NUMBER_OF_SUBSCRIBER: Banyaknya langganan
+CHANNEL_NOT_FOUND: Channel tidak ditemukan
+CHANNEL_ADMIN_REQUIRE: Anda harus menambahkan bot ini menjadi Admin Channel dan memberikannya akses
+YES: YA
+NO: TIDAK
+CANCEL: Dibatalkan
+PAGE_PRE: Halaman sebelumnya
+PAGE_NEXT: Halaman berikutnya
+FOUND_FEED_MORE_THAN_ONE: Ditemukan feed lebih dari 1
+FOUND_FEEDS: Feed ditemukan
+FEED_CHANGE_TO: Feed diubah menjadi
+CHOOSE_LANG: Pilih bahasa
+SET_LANG_TO: Bahasa diubah menjadi
+LANG_USAGE: 'PENGGUNAAN: /lang ganti bahasa'
+CHOOSE_UNSUB: Pilih yang ingin anda batalkan langganannya
+ACTIVE_FEED_COUNT_WITH_ERROR: Banyaknya feed aktif yang error
+TOTAL_ACTIVE_FEED_COUNT: Banyaknya feed yang aktif
+CREATOR_ONLY: Hanya pemilik bot
+ALLOW_LIST_NOT_INCLUDE: Bot ini telah mengaktifkan daftar yang diijinkan dan anda diblok
