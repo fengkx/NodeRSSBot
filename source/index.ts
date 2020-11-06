@@ -159,18 +159,18 @@ bot.action(/^CHANGE_LANG[\w_]+/, changeLangCallback);
 
 bot.hears(
     /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
-    async (ctx: MContext, next) => {
-        if (!ctx.message.text.startsWith('/')) {
-            await next();
-        }
-    },
-    sendError,
     async (ctx: MContext, next: Next) => {
         ctx.state.chat = await ctx.getChat();
         if (ctx.state.chat.type === 'private') {
             await next();
         }
     },
+    async (ctx: MContext, next) => {
+        if (!ctx.message.text.startsWith('/')) {
+            await next();
+        }
+    },
+    sendError,
     subMultiUrl
 );
 
