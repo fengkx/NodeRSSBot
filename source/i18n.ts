@@ -9,19 +9,32 @@ const baseStr = fs.readFileSync(path.join(localeDir, 'en.yaml'), {
     encoding: 'utf8'
 });
 
-fs.readdirSync(localeDir)
+const codes = fs
+    .readdirSync(localeDir)
     .filter((i) => i.endsWith('.yaml'))
     .map((i) => {
-        const code = i.substr(0, i.length - 5);
-        result[code] = Object.assign(
-            yaml.safeLoad(baseStr),
-            yaml.safeLoad(
-                fs.readFileSync(path.join(localeDir, `${code}.yaml`), {
-                    encoding: 'utf8'
-                })
-            )
-        ) as I18nLang;
-        return code;
+        return i.substr(0, i.length - 5);
     });
 
+const cache = new Map<string, I18nLang>();
+for (const code of codes) {
+    Object.defineProperty(result, code, {
+        enumerable: true,
+        get(): I18nLang {
+            if (!cache.has(code)) {
+                const translation = Object.assign(
+                    yaml.safeLoad(baseStr),
+                    yaml.safeLoad(
+                        fs.readFileSync(path.join(localeDir, `${code}.yaml`), {
+                            encoding: 'utf8'
+                        })
+                    )
+                ) as I18nLang;
+
+                cache.set(code, translation);
+            }
+            return cache.get(code);
+        }
+    });
+}
 export default result;
