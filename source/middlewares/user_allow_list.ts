@@ -7,12 +7,11 @@ import { isSome } from '../types/option';
 export default async (ctx: MContext, next: Next) => {
     let id: number;
     switch (ctx.updateType) {
-        case 'message':
-            id = ctx.message.chat.id;
-            break;
         case 'callback_query':
             id = ctx.callbackQuery.from.id;
             break;
+        default:
+            id = ctx.chat.id;
     }
     const user = await getUserById(id);
     if (isSome(user)) ctx.state.lang = user.value.lang;

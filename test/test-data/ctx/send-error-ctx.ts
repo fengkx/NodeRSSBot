@@ -1,4 +1,4 @@
-export const messageCtx = {
+const messageCtx: any = {
     state: {}, // wait for data
     updateType: 'message',
     updateSubTypes: ['text'],
@@ -48,3 +48,20 @@ export const messageCtx = {
         text: 'Processing, please wait for a while'
     })
 };
+
+// https://github.com/telegraf/telegraf/blob/master/context.js#L123
+Object.defineProperty(messageCtx, 'chat', {
+    get(): any {
+        return (
+            (messageCtx.message && messageCtx.message.chat) ||
+            (messageCtx.editedMessage && messageCtx.editedMessage.chat) ||
+            (messageCtx.callbackQuery &&
+                messageCtx.callbackQuery.message &&
+                messageCtx.callbackQuery.message.chat) ||
+            (messageCtx.channelPost && messageCtx.channelPost.chat) ||
+            (messageCtx.editedChannelPost && messageCtx.editedChannelPost.chat)
+        );
+    }
+});
+
+export { messageCtx };
