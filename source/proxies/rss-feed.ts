@@ -81,10 +81,9 @@ export async function unsub(userId: number, feedId: number): Promise<void> {
 
 export async function getAllFeeds(): Promise<Feed[]> {
     try {
-        const feeds = await db('subscribes')
-            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
-            .groupBy('rf.feed_id')
-            .select(['rf.*']);
+        const feeds = await db('rss_feed')
+            .whereIn('feed_id', db('subscribes').distinct('feed_id'))
+            .orderByRaw('random()');
         return feeds;
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);

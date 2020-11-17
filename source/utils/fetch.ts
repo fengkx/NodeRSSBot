@@ -1,6 +1,5 @@
 import got from '../utils/got';
-import Parser from 'rss-parser';
-import pMap from 'p-map';
+import fastQueue from 'fastq';
 import hashFeed from './hash-feed';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import logger, { logHttpError } from './logger';
@@ -8,7 +7,7 @@ import { findFeed } from './feed';
 import { config } from '../config';
 import { Feed, FeedItem } from '../types/feed';
 import { Optional, Option, isNone, none, isSome, Some } from '../types/option';
-
+import { parseString } from '../parser/parse';
 import {
     getAllFeeds,
     updateHashList,
@@ -24,7 +23,7 @@ import {
     ErrorMaxTimeMessage,
     ChangeFeedUrlMessage
 } from '../types/message';
-const { notify_error_count, item_num, fetch_gap, concurrency } = config;
+const { notify_error_count, item_num, concurrency, fetch_gap } = config;
 
 async function handleErr(e: Messager, feed: Feed): Promise<void> {
     logger.info(`${feed.feed_title} ${feed.url}`, 'ERROR_MANY_TIME');
@@ -38,6 +37,8 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
     const { origin } = new URL(feed.url);
     const res = await got(origin);
     const newUrl = await findFeed(res.body, origin);
+    delete res.body;
+    delete res.rawBody;
     if (newUrl.length > 0) {
         updateFeedUrl(feed.url, newUrl[0]);
         const message: ChangeFeedUrlMessage = {
@@ -51,25 +52,24 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
     }
 }
 
-async function fetch(feedModal: Feed): Promise<Option<FeedItem[]>> {
+async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     const feedUrl = feedModal.url;
     try {
         logger.debug(`fetching ${feedUrl}`);
         const res = await got.get(encodeURI(feedUrl));
-        // handle redirect
         if (encodeURI(feedUrl) !== res.url && Object.is(res.statusCode, 301)) {
             await handleRedirect(feedUrl, decodeURI(res.url));
         }
-        const parser = new Parser();
-        const feed = await parser.parseString(res.body);
+        const feed = await parseString(res.body);
+
         const items = feed.items.slice(0, item_num);
         feedModal.error_count = 0;
         feedModal.feed_title = feed.title;
         await updateFeed(feedModal);
         return Optional(
             items.map((item) => {
-                const { link, title, content, guid, id } = item;
-                return { link, title, content, guid, id };
+                const { link, title, id } = item;
+                return { link, title, id };
             })
         );
     } catch (e) {
@@ -86,61 +86,65 @@ async function fetch(feedModal: Feed): Promise<Option<FeedItem[]>> {
             }
         }
     }
-    return Optional();
+    return none;
 }
 
 const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
-
     const allFeeds = await getAllFeeds();
-    await pMap(
-        allFeeds,
-        async (eachFeed: Feed) => {
-            const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-            let fetchedItems: Option<FeedItem[]>, sendItems: FeedItem[];
-            try {
-                fetchedItems = await fetch(eachFeed);
-                if (isNone(fetchedItems)) {
-                    logger.debug(eachFeed.url, 'Error');
-                } else {
-                    const newHashList: string[] = await Promise.all(
-                        fetchedItems.value.map(
-                            async (item: FeedItem): Promise<string> => {
-                                return await hashFeed(item);
-                            }
-                        )
-                    );
-                    const newItems = await Promise.all(
-                        fetchedItems.value.map(
-                            async (
-                                item: FeedItem
-                            ): Promise<Option<FeedItem>> => {
-                                const hash = await hashFeed(item);
-                                if (oldHashList.indexOf(hash) === -1)
-                                    return Optional(item);
-                                else return none;
-                            }
-                        )
-                    );
-                    sendItems = newItems
-                        .filter(isSome)
-                        .map((some: Some<FeedItem>) => some.value);
-                    if (sendItems.length > 0) {
-                        await updateHashList(eachFeed.feed_id, newHashList);
-                    }
+    const queue = fastQueue(async (eachFeed: Feed, cb) => {
+        const oldHashList = JSON.parse(eachFeed.recent_hash_list);
+        let fetchedItems: Option<FeedItem[]>, sendItems: FeedItem[];
+        try {
+            fetchedItems = await fetch(eachFeed);
+            if (isNone(fetchedItems)) {
+                cb(new Error('fetch failed ' + eachFeed.url));
+            } else {
+                const newHashList: string[] = await Promise.all(
+                    fetchedItems.value.map(
+                        async (item: FeedItem): Promise<string> => {
+                            return await hashFeed(item);
+                        }
+                    )
+                );
+                const newItems = await Promise.all(
+                    fetchedItems.value.map(
+                        async (item: FeedItem): Promise<Option<FeedItem>> => {
+                            const hash = await hashFeed(item);
+                            if (oldHashList.indexOf(hash) === -1)
+                                return Optional(item);
+                            else return none;
+                        }
+                    )
+                );
+                sendItems = newItems
+                    .filter(isSome)
+                    .map((some: Some<FeedItem>) => some.value);
+                if (sendItems.length > 0) {
+                    await updateHashList(eachFeed.feed_id, newHashList);
                 }
-            } catch (e) {
-                logger.debug(e);
+                cb(null, sendItems);
             }
-            process.send &&
-                sendItems &&
-                process.send({
-                    success: true,
-                    sendItems,
-                    feed: eachFeed
-                } as SuccessMessage);
-        },
-        { concurrency }
+        } catch (e) {
+            cb(e, undefined);
+        }
+    }, concurrency);
+    allFeeds.forEach((feed) =>
+        queue.push(feed, (err, sendItems) => {
+            if (err) {
+                logger.error(err);
+            } else {
+                if (sendItems) {
+                    process.send &&
+                        sendItems &&
+                        process.send({
+                            success: true,
+                            sendItems,
+                            feed: feed
+                        } as SuccessMessage);
+                }
+            }
+        })
     );
 };
 
@@ -154,7 +158,22 @@ function run() {
         logger.debug(e);
     }
 }
-
+function gc() {
+    const beforeGC = process.memoryUsage();
+    const gcStartTime = process.hrtime.bigint();
+    global.gc();
+    const afterGC = process.memoryUsage();
+    const gcEndTime = process.hrtime.bigint();
+    logger.info(
+        `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${
+            afterGC.heapUsed
+        } rssBefore: ${beforeGC.rss} rssAfater: ${afterGC.rss} costed ${
+            gcEndTime - gcStartTime
+        }`
+    );
+    setTimeout(gc, 3 * 60 * 1000);
+}
+gc();
 run();
 const rule = new RecurrenceRule();
 const unit = fetch_gap.substring(fetch_gap.length - 1);

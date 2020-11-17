@@ -4,8 +4,3 @@ export interface Outline {
     xmlUrl?: string;
     outline?: XmlOutline;
 }
-
-export interface XmlOutline {
-    $: Outline;
-    outline?: XmlOutline[];
-}

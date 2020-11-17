@@ -1,24 +1,20 @@
-import { Outline, XmlOutline } from '../types/outline';
+import { Outline } from '../types/outline';
 import got from '../utils/got';
-import { Parser } from 'xml2js';
+import { transform } from 'camaro';
 import errors from '../utils/errors';
 import { sub } from '../proxies/rss-feed';
 import i18n from '../i18n';
 import { MContext, Next } from '../types/ctx';
-function parseOutlines(outlines: XmlOutline[], lst: Outline[]) {
-    outlines.forEach((outline) => {
-        if (outline.$?.type === 'rss') lst.push(outline.$);
-        else if (outline.outline) parseOutlines(outline.outline, lst);
-    });
-}
 
 const getOutlines = async function (data: string): Promise<Outline[]> {
-    const parser = new Parser();
-    const res = await parser.parseStringPromise(data);
-    const { opml } = res;
-    const ret: Outline[] = [];
-    parseOutlines(opml.body[0].outline, ret);
-    return ret;
+    return await transform(data, [
+        '//outline[@type="rss"]',
+        {
+            xmlUrl: '@xmlUrl',
+            type: '@type',
+            text: '@text'
+        }
+    ]);
 };
 
 // eslint-disable-line

@@ -240,11 +240,12 @@ async function startFetchProcess(restartTime: number): Promise<void> {
         process.exit(1);
     }
     const fetchJS = join(__dirname, `utils/fetch.js`);
-    const child = process.env.NODE_PRODUTION
-        ? fork(fetchJS)
-        : fork(fetchJS, [], {
-              execArgv: ['--inspect-brk=46209']
-          });
+    const execArgv = process.env.NODE_PRODUTION
+        ? ['--expose-gc']
+        : ['--inspect-brk=46209', '--expose-gc'];
+    const child = fork(fetchJS, [], {
+        execArgv
+    });
     child.on('message', function (message: Message | string) {
         if (typeof message === 'string') logger.info(message);
         else if (isSuccess(message)) {

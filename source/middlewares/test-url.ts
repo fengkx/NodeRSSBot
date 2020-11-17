@@ -1,11 +1,11 @@
 import got from '../utils/got';
 import { findFeed, isFeedValid } from '../utils/feed';
 import errors from '../utils/errors';
-import Parser from 'rss-parser';
 import i18n from '../i18n';
 import { getFeedByUrl } from '../proxies/rss-feed';
 import { MContext, Next } from '../types/ctx';
 import { isNone, isSome } from '../types/option';
+import { parseString } from '../parser/parse';
 
 export default async (ctx: MContext, next: Next) => {
     const url = encodeURI(ctx.state.feedUrl);
@@ -24,13 +24,12 @@ export default async (ctx: MContext, next: Next) => {
                 ctx.state.feedUrls = await findFeed(res.body, res.url);
                 ctx.state.feedUrls = ctx.state.feedUrls.map(decodeURI);
                 /* eslint no-case-declarations: 0*/
-                const parser = new Parser();
                 switch (ctx.state.feedUrls.length) {
                     case 0:
                         throw errors.newCtrlErr('FETCH_ERROR');
                     case 1:
                         const res = await got(encodeURI(ctx.state.feedUrls[0]));
-                        const realFeed = await parser.parseString(res.body);
+                        const realFeed = await parseString(res.body);
                         ctx.state.feed = {
                             url: ctx.state.feedUrls[0],
                             feed_title: realFeed.title

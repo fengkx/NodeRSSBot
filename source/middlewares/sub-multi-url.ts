@@ -1,11 +1,11 @@
 import errors from '../utils/errors';
 import got from '../utils/got';
-import Parser from 'rss-parser';
 import { getFeedByUrl, sub } from '../proxies/rss-feed';
 import i18n from '../i18n';
 import { MContext, Next } from '../types/ctx';
 import { isSome } from '../types/option';
 import { Feed } from '../types/feed';
+import { parseString } from '../parser/parse';
 
 export default async (ctx: MContext, next: Next) => {
     const urls = ctx.message.text.match(
@@ -21,9 +21,9 @@ export default async (ctx: MContext, next: Next) => {
                     return feed.value;
                 } else {
                     try {
-                        const parser = new Parser();
                         const res = await got.get(encodeURI(url));
-                        const rssFeed = await parser.parseString(res.body);
+                        const rssFeed = await parseString(res.body);
+                        // const rssFeed = await parser.parseString(res.body);
                         return {
                             feed_title: rssFeed.title,
                             url
