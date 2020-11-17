@@ -276,8 +276,8 @@ async function startFetchProcess(restartTime: number): Promise<void> {
     });
 
     child.on('exit', function (code, signal) {
-        logger.error(`child process exit`);
         logger.error({
+            message: `child process exit`,
             code,
             signal
         });

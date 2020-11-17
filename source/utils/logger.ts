@@ -39,4 +39,10 @@ logger.add(
         )
     })
 );
+export function logHttpError(url: string, error: any) {
+    logger.error({ type: 'http', url, error });
+}
+export function logDBError(error: any) {
+    logger.error({ type: 'db', error });
+}
 export default logger;

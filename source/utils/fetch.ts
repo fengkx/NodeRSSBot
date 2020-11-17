@@ -3,7 +3,7 @@ import Parser from 'rss-parser';
 import pMap from 'p-map';
 import hashFeed from './hash-feed';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
-import logger from './logger';
+import logger, { logHttpError } from './logger';
 import { findFeed } from './feed';
 import { config } from '../config';
 import { Feed, FeedItem } from '../types/feed';
@@ -73,7 +73,7 @@ async function fetch(feedModal: Feed): Promise<Option<FeedItem[]>> {
             })
         );
     } catch (e) {
-        logger.error(`${feedUrl} ${e.stack || e.message}`);
+        logHttpError(feedUrl, e);
         await failAttempt(feedUrl);
         const feed = await getFeedByUrl(feedUrl);
         if (isSome(feed)) {
