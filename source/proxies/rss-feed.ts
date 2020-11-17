@@ -240,7 +240,7 @@ export async function updateFeedUrl(
     newUrl: string
 ): Promise<number> {
     try {
-        return await db('rss-feed')
+        return await db('rss_feed')
             .where('url', oldUrl)
             .update({ url: newUrl });
     } catch (e) {
