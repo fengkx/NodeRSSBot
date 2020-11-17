@@ -25,6 +25,9 @@ const knexConfig: Config = {
         directory: join(__dirname, 'migrations')
     },
     pool: {
+        min: 1,
+        max: client === 'sqlite' ? 2 : 4,
+        acquireTimeoutMillis: 1000 * 5 * 60, // timeout 5 minutes
         afterCreate: (conn, done) => {
             if (client === 'sqlite') {
                 conn.run('PRAGMA foreign_keys = ON;', function (err) {
