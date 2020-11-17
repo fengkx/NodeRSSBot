@@ -6,7 +6,7 @@ import logger from './utils/logger';
 import errors from './utils/errors';
 import i18n from './i18n';
 import { initDB } from './database';
-
+import cleanStack from 'clean-stack';
 import { replyKeyboard, changeLangCallback } from './controlers/language';
 import {
     getUrlById,
@@ -50,7 +50,7 @@ const bot = new Telegraf(token, {
     }
 });
 
-bot.catch((err: Error) => logger.error(err.stack || err.message));
+bot.catch((err: Error) => logger.error(cleanStack(err.stack) || err.message));
 
 // for handling command form group
 bot.telegram.getMe().then((botInfo) => {

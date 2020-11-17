@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/fengkx/NodeRSSBot#readme",
   "dependencies": {
+    "clean-stack": "^3.0.0",
     "cross-env": "^7.0.2",
     "ejs": "^3.1.5",
     "escape-goat": "^3.0.0",

@@ -1,5 +1,6 @@
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
+import cleanStack from 'clean-stack';
 const logger = winston.createLogger({
     level: process.env.NODE_PRODUTION ? 'info' : 'debug',
     format: winston.format.combine(
@@ -40,9 +41,15 @@ logger.add(
     })
 );
 export function logHttpError(url: string, error: any) {
+    if (error.stack) {
+        error = cleanStack(error.stack);
+    }
     logger.error({ type: 'http', url, error });
 }
 export function logDBError(error: any) {
+    if (error.stack) {
+        error = cleanStack(error.stack);
+    }
     logger.error({ type: 'db', error });
 }
 export default logger;
