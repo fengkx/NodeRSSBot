@@ -13,6 +13,7 @@ yarn-debug.log*
 yarn-error.log*
 *.log.gz
 *-audit.json
+logs/*.json
 
 # Runtime data
 pids

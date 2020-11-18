@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import got from '../utils/got';
 import fastQueue from 'fastq';
 import hashFeed from './hash-feed';
@@ -33,7 +35,7 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
         err: { message: e.message },
         feed
     };
-    process.send(message);
+    process.send && process.send(message);
     const { origin } = new URL(feed.url);
     const res = await got(origin);
     const newUrl = await findFeed(res.body, origin);
@@ -89,60 +91,57 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     return none;
 }
 
+const queue = fastQueue(async (eachFeed: Feed, cb) => {
+    const oldHashList = JSON.parse(eachFeed.recent_hash_list);
+    let fetchedItems: Option<FeedItem[]>, sendItems: FeedItem[];
+    try {
+        fetchedItems = await fetch(eachFeed);
+        if (isNone(fetchedItems)) {
+            cb(undefined, undefined);
+        } else {
+            const newHashList: string[] = await Promise.all(
+                fetchedItems.value.map(
+                    async (item: FeedItem): Promise<string> => {
+                        return await hashFeed(item);
+                    }
+                )
+            );
+            const newItems = await Promise.all(
+                fetchedItems.value.map(
+                    async (item: FeedItem): Promise<Option<FeedItem>> => {
+                        const hash = await hashFeed(item);
+                        if (oldHashList.indexOf(hash) === -1)
+                            return Optional(item);
+                        else return none;
+                    }
+                )
+            );
+            sendItems = newItems
+                .filter(isSome)
+                .map((some: Some<FeedItem>) => some.value);
+            if (sendItems.length > 0) {
+                await updateHashList(eachFeed.feed_id, newHashList);
+            }
+            cb(null, sendItems);
+        }
+    } catch (e) {
+        cb(e, undefined);
+    }
+}, concurrency);
+
 const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
     const allFeeds = await getAllFeeds();
-    const queue = fastQueue(async (eachFeed: Feed, cb) => {
-        const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-        let fetchedItems: Option<FeedItem[]>, sendItems: FeedItem[];
-        try {
-            fetchedItems = await fetch(eachFeed);
-            if (isNone(fetchedItems)) {
-                cb(new Error('fetch failed ' + eachFeed.url));
-            } else {
-                const newHashList: string[] = await Promise.all(
-                    fetchedItems.value.map(
-                        async (item: FeedItem): Promise<string> => {
-                            return await hashFeed(item);
-                        }
-                    )
-                );
-                const newItems = await Promise.all(
-                    fetchedItems.value.map(
-                        async (item: FeedItem): Promise<Option<FeedItem>> => {
-                            const hash = await hashFeed(item);
-                            if (oldHashList.indexOf(hash) === -1)
-                                return Optional(item);
-                            else return none;
-                        }
-                    )
-                );
-                sendItems = newItems
-                    .filter(isSome)
-                    .map((some: Some<FeedItem>) => some.value);
-                if (sendItems.length > 0) {
-                    await updateHashList(eachFeed.feed_id, newHashList);
-                }
-                cb(null, sendItems);
-            }
-        } catch (e) {
-            cb(e, undefined);
-        }
-    }, concurrency);
     allFeeds.forEach((feed) =>
         queue.push(feed, (err, sendItems) => {
-            if (err) {
-                logger.error(err);
-            } else {
-                if (sendItems) {
-                    process.send &&
-                        sendItems &&
-                        process.send({
-                            success: true,
-                            sendItems,
-                            feed: feed
-                        } as SuccessMessage);
-                }
+            if (sendItems && !err) {
+                process.send &&
+                    sendItems &&
+                    process.send({
+                        success: true,
+                        sendItems,
+                        feed: feed
+                    } as SuccessMessage);
             }
         })
     );
@@ -196,3 +195,13 @@ switch (unit) {
 }
 
 scheduleJob(rule, run);
+process.on('SIGUSR2', () => {
+    const theQueue = queue.getQueue();
+    if (!process.env.NODE_PRODUTION) {
+        fs.writeFileSync(
+            path.join(config['PKG_ROOT'], 'logs', 'theQueue.json'),
+            JSON.stringify(theQueue)
+        );
+    }
+    logger.info(`worker queue length: ${queue.length()}`);
+});

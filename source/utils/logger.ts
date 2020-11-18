@@ -36,7 +36,7 @@ logger.add(
         format: winston.format.combine(
             winston.format.colorize(),
             winston.format.timestamp(),
-            winston.format.simple()
+            winston.format.json()
         )
     })
 );

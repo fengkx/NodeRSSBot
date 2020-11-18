@@ -9,7 +9,7 @@ export const atomTpl = {
             id: 'id',
             title: 'title',
             publishedAt: 'published',
-            link: 'link'
+            link: 'link/@href'
         }
     ]
 };
