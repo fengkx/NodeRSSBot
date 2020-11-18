@@ -33,7 +33,7 @@
   "homepage": "https://github.com/fengkx/NodeRSSBot#readme",
   "dependencies": {
     "camaro": "^6.0.4",
-    "clean-stack": "^3.0.0",
+    "clean-stack": "^3.0.1",
     "cross-env": "^7.0.2",
     "ejs": "^3.1.5",
     "escape-goat": "^3.0.0",
