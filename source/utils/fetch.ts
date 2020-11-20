@@ -93,7 +93,8 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
 
 const queue = fastQueue(async (eachFeed: Feed, cb) => {
     const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-    let fetchedItems: Option<FeedItem[]>, sendItems: FeedItem[];
+    let fetchedItems: Option<FeedItem[]>;
+    const sendItems: FeedItem[] = [];
     try {
         fetchedItems = await fetch(eachFeed);
         if (isNone(fetchedItems)) {
