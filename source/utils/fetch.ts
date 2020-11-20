@@ -8,7 +8,7 @@ import logger, { logHttpError } from './logger';
 import { findFeed } from './feed';
 import { config } from '../config';
 import { Feed, FeedItem } from '../types/feed';
-import { Optional, Option, isNone, none, isSome, Some } from '../types/option';
+import { Optional, Option, isNone, none, isSome } from '../types/option';
 import { parseString } from '../parser/parse';
 import {
     getAllFeeds,
@@ -106,19 +106,14 @@ const queue = fastQueue(async (eachFeed: Feed, cb) => {
                     }
                 )
             );
-            const newItems = await Promise.all(
-                fetchedItems.value.map(
-                    async (item: FeedItem): Promise<Option<FeedItem>> => {
-                        const hash = await hashFeed(item);
-                        if (oldHashList.indexOf(hash) === -1)
-                            return Optional(item);
-                        else return none;
-                    }
-                )
-            );
-            sendItems = newItems
-                .filter(isSome)
-                .map((some: Some<FeedItem>) => some.value);
+            for (let i = 0; i < fetchedItems.value.length; i++) {
+                const item = fetchedItems.value[i];
+                if (!oldHashList.includes(newHashList[i])) {
+                    sendItems.push(item);
+                } else {
+                    break; // ignore the following items
+                }
+            }
             if (sendItems.length > 0) {
                 await updateHashList(eachFeed.feed_id, newHashList);
             }

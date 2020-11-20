@@ -18,7 +18,7 @@ import { isNone } from '../types/option';
  */
 async function handlerSendError(e: any, userId: number): Promise<boolean> {
     // bot was blocked or chat is deleted
-    logger.error(e.description);
+    logger.error(e);
     const re = new RegExp(
         'chat not found|bot was blocked by the user|bot was kicked'
     );
