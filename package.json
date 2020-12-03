@@ -34,7 +34,7 @@
   "dependencies": {
     "camaro": "^6.0.4",
     "clean-stack": "^3.0.1",
-    "cross-env": "^7.0.2",
+    "cross-env": "^7.0.3",
     "ejs": "^3.1.5",
     "escape-goat": "^3.0.0",
     "fastq": "^1.9.0",
