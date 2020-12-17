@@ -265,7 +265,7 @@ export async function getActiveFeedWithErrorCount(
     }
 }
 
-export async function batchUnsubByFeedIds(ids: number[]) {
+export async function batchUnsubByFeedIds(ids: number[]): Promise<void> {
     try {
         await db.transaction(async (trx) => {
             await Promise.all(

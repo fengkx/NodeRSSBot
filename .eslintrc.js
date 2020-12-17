@@ -28,6 +28,6 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/ban-ts-ignore': 'warn'
+        '@typescript-eslint/ban-ts-comment': 'warn'
     }
 };

@@ -4,7 +4,7 @@ import { MContext, Next } from '../types/ctx';
 import { config } from '../config';
 import { isSome } from '../types/option';
 
-export default async (ctx: MContext, next?: Next) => {
+export default async (ctx: MContext, next?: Next): Promise<void> => {
     const user = await getUserById(ctx.message.chat.id);
     if (isSome(user)) ctx.state.lang = user.value.lang;
     const lang = ctx.state.lang || config.lang;

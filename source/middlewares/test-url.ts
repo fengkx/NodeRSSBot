@@ -7,7 +7,7 @@ import { MContext, Next } from '../types/ctx';
 import { isNone, isSome } from '../types/option';
 import { parseString } from '../parser/parse';
 
-export default async (ctx: MContext, next: Next) => {
+export default async (ctx: MContext, next: Next): Promise<void> => {
     const url = encodeURI(ctx.state.feedUrl);
     const feedOption = await getFeedByUrl(url);
     if (isSome(feedOption)) {

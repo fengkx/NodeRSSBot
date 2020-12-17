@@ -19,7 +19,7 @@ const getOutlines = async function (data: string): Promise<Outline[]> {
 
 // eslint-disable-line
 export const _getOutlines = getOutlines;
-export default async (ctx: MContext, next: Next) => {
+export default async (ctx: MContext, next: Next): Promise<void> => {
     const { fileLink, lang } = ctx.state;
 
     try {

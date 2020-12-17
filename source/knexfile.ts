@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
 import { config } from './config';
 import { parse } from 'url';
 import { Config } from 'knex';
@@ -28,7 +29,7 @@ const knexConfig: Config = {
         min: 1,
         max: client === 'sqlite' ? 4 : 4,
         acquireTimeoutMillis: 1000 * 5 * 60, // timeout 5 minutes
-        afterCreate: (conn, done) => {
+        afterCreate: (conn: any, done: (err: Error, conn: any) => void) => {
             if (client === 'sqlite') {
                 conn.run('PRAGMA foreign_keys = ON;', function (err) {
                     done(err, conn);

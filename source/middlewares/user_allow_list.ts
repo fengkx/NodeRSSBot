@@ -4,7 +4,7 @@ import { MContext, Next } from '../types/ctx';
 import { getUserById } from '../proxies/users';
 import { isSome } from '../types/option';
 
-export default async (ctx: MContext, next: Next) => {
+export default async (ctx: MContext, next: Next): Promise<void> => {
     let id: number;
     switch (ctx.updateType) {
         case 'callback_query':

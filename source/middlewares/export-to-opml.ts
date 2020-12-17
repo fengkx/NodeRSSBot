@@ -43,7 +43,7 @@ function remove(path: string): Promise<void> {
     });
 }
 
-export default async (ctx: MContext, next: Next) => {
+export default async (ctx: MContext, next: Next): Promise<void> => {
     const chat = ctx.state.chat;
     const feeds = await getSubscribedFeedsByUserId(chat.id);
     if (feeds.length === 0) {

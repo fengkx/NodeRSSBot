@@ -10,7 +10,7 @@ const chunk = (input: any[], size: number) => {
     }, []);
 };
 
-export async function replyKeyboard(ctx: MContext, next: Next) {
+export async function replyKeyboard(ctx: MContext, next: Next): Promise<void> {
     const kbs = Object.keys(i18n).map((i) => {
         return {
             text: i,
@@ -31,7 +31,10 @@ export async function replyKeyboard(ctx: MContext, next: Next) {
     await next();
 }
 
-export async function changeLangCallback(ctx: MContext, next: Next) {
+export async function changeLangCallback(
+    ctx: MContext,
+    next: Next
+): Promise<void> {
     const cb = ctx.callbackQuery;
     const data = cb.data.split('_');
     const lang = data[data.length - 2];

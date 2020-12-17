@@ -2,7 +2,7 @@ import { MContext, Next } from '../types/ctx';
 
 import { getFeedsByTitle } from '../proxies/rss-feed';
 import errors from '../utils/errors';
-export default async (ctx: MContext, next: Next) => {
+export default async (ctx: MContext, next: Next): Promise<void> => {
     const me = await ctx.telegram.getMe();
     const myId = me.id;
     const replyToMessage = ctx.message.reply_to_message;

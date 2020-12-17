@@ -3,7 +3,7 @@ import logger from '../utils/logger';
 import errors from '../utils/errors';
 import { MContext, Next } from '../types/ctx';
 
-export default async (ctx: MContext, next: Next) => {
+export default async (ctx: MContext, next: Next): Promise<void> => {
     const { lang } = ctx.state;
     const m = await ctx.reply(i18n[lang]['PROCESSING'], {
         reply_markup: {

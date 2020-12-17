@@ -19,7 +19,7 @@ function checkChannelId(text: string): boolean {
     return false;
 }
 
-export default async (ctx: MContext, next: Next) => {
+export default async (ctx: MContext, next: Next): Promise<void> => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
     let user: Option<DBUser> | DBUser = await getUserById(chat.id);

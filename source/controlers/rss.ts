@@ -5,7 +5,7 @@ import errors from '../utils/errors';
 import { MContext, Next } from '../types/ctx';
 import { isNone } from '../types/option';
 
-export async function sub(ctx: MContext, next: Next) {
+export async function sub(ctx: MContext, next: Next): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
     const feedTitle = ctx.state.feed.feed_title;
     const userId = chat.id;
@@ -22,7 +22,7 @@ export async function sub(ctx: MContext, next: Next) {
     await next();
 }
 
-export async function unsub(ctx: MContext, next: Next) {
+export async function unsub(ctx: MContext, next: Next): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
     const userId = chat.id;
     try {
@@ -50,7 +50,7 @@ export async function unsub(ctx: MContext, next: Next) {
     await next();
 }
 
-export async function rss(ctx: MContext, next: Next) {
+export async function rss(ctx: MContext, next: Next): Promise<void> {
     const limit = 50;
     const page = ctx.state.rssPage || 1;
     const hasRaw = ctx.message?.text.split(/\s/)[1] === 'raw';
@@ -99,7 +99,7 @@ export async function rss(ctx: MContext, next: Next) {
     await twoKeyReply(kbs, builder.join('\n'))(ctx, next);
 }
 
-export async function unsubAll(ctx: MContext, next: Next) {
+export async function unsubAll(ctx: MContext, next: Next): Promise<void> {
     const userId = ctx.state.chat.id;
     const lang = ctx.state.lang;
     await RSS.unsubAll(userId);
@@ -114,7 +114,7 @@ export async function unsubAll(ctx: MContext, next: Next) {
     await next();
 }
 
-export async function viewAll(ctx: MContext, next: Next) {
+export async function viewAll(ctx: MContext, next: Next): Promise<void> {
     const limit = 50;
     const page = ctx.state.viewallPage || 1;
     const count = await RSS.getAllFeedsCount();
@@ -150,7 +150,7 @@ export async function viewAll(ctx: MContext, next: Next) {
     await twoKeyReply(kbs)(ctx, next);
 }
 
-export async function getUrlById(ctx: MContext, next: Next) {
+export async function getUrlById(ctx: MContext, next: Next): Promise<void> {
     const { text } = ctx.message;
     const feed_id = text.match(/^\[(\d+)] (.+)/)[1];
     const feed = await RSS.getFeedById(parseInt(feed_id));
@@ -158,7 +158,10 @@ export async function getUrlById(ctx: MContext, next: Next) {
     await next();
 }
 
-export async function getActiveFeedWithErrorCount(ctx: MContext, next: Next) {
+export async function getActiveFeedWithErrorCount(
+    ctx: MContext,
+    next: Next
+): Promise<void> {
     const feedsWithErrorCount = await RSS.getActiveFeedWithErrorCount();
     const count = feedsWithErrorCount.reduce((acc, cur) => {
         if (cur.error_count > 1000) {
@@ -177,7 +180,10 @@ export async function getActiveFeedWithErrorCount(ctx: MContext, next: Next) {
     await next();
 }
 
-export async function cleanUpErrorFeed(ctx: MContext, next: Next) {
+export async function cleanUpErrorFeed(
+    ctx: MContext,
+    next: Next
+): Promise<void> {
     const feedToCleanUp = await RSS.getActiveFeedWithErrorCount(10);
     await RSS.batchUnsubByFeedIds(feedToCleanUp.map((f) => f.feed_id));
     ctx.reply('Clean up');

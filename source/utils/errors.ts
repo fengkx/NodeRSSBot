@@ -16,7 +16,7 @@ export class ControllableError extends Error {
         }
     }
 
-    toString(lang: string) {
+    toString(lang: string): string {
         if (!lang) {
             lang = config.lang;
         }
@@ -24,7 +24,8 @@ export class ControllableError extends Error {
     }
 }
 
-export function newCtrlErr(code: string, e?: any) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function newCtrlErr(code: string, e?: any): Error {
     if (e && e.response) {
         switch (e.response.statusCode) {
             case 404:

@@ -1,7 +1,7 @@
 import errors from '../utils/errors';
 import { MContext, Next } from '../types/ctx';
 
-export default async (ctx: MContext, next: Next) => {
+export default async (ctx: MContext, next: Next): Promise<void> => {
     const fileId = ctx.message.document.file_id;
     const fileName = ctx.message.document.file_name;
     if (fileName.search(/(@\w+)|(-\d+)/) !== -1) {

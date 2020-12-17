@@ -45,7 +45,7 @@ const send = async (
     bot: Telegraf<Context>,
     toSend: NonNullable<string | FeedItem[]>,
     feed: Feed
-) => {
+): Promise<void> => {
     const subscribers = await getSubscribersByFeedId(feed.feed_id);
     if (typeof toSend === 'string') {
         subscribers.map(async (subscribe) => {
