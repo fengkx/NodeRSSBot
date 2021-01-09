@@ -23,8 +23,8 @@ for (const code of codes) {
         get(): I18nLang {
             if (!cache.has(code)) {
                 const translation = Object.assign(
-                    yaml.safeLoad(baseStr),
-                    yaml.safeLoad(
+                    yaml.load(baseStr),
+                    yaml.load(
                         fs.readFileSync(path.join(localeDir, `${code}.yaml`), {
                             encoding: 'utf8'
                         })
