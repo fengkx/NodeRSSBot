@@ -42,6 +42,9 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
         outlines.forEach((outline) => {
             text += `\n<a href="${outline.xmlUrl}">${outline.text}</a>`;
         });
+        if (text.length > 4096) {
+            text = "<strong>${i18n[lang]['IMPORT_SUCCESS']}</strong>\n";
+        }
         ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMsgId);
         ctx.state.processMsgId = null;
         ctx.replyWithHTML(text);
