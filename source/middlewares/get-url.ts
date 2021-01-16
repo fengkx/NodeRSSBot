@@ -2,6 +2,7 @@ import errors from '../utils/errors';
 import { getSubscribedFeedsByUserId } from '../proxies/rss-feed';
 import i18n from '../i18n';
 import { MContext, Next } from '../types/ctx';
+import { decodeUrl } from '../utils/decodeUrl';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const { lang } = ctx.state;
@@ -41,6 +42,6 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
     } else if (!url.startsWith('http') && !url.startsWith('https')) {
         throw errors.newCtrlErr('FEED_URL_NOT_PARSE');
     }
-    ctx.state.feedUrl = decodeURI(url);
+    ctx.state.feedUrl = decodeUrl(url);
     await next();
 };

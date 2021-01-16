@@ -6,6 +6,7 @@ import { getFeedByUrl } from '../proxies/rss-feed';
 import { MContext, Next } from '../types/ctx';
 import { isNone, isSome } from '../types/option';
 import { parseString } from '../parser/parse';
+import { decodeUrl } from '../utils/decodeUrl';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const url = encodeURI(ctx.state.feedUrl);
@@ -17,12 +18,12 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
     } else {
         try {
             const res = await got(url);
-            ctx.state.feedUrl = decodeURI(res.url); // handle redirect
+            ctx.state.feedUrl = decodeUrl(res.url); // handle redirect
             const feedOption = await isFeedValid(res.body);
             if (isNone(feedOption)) {
                 // feed is NOT valid, try to find feed by link tag with type contain rss/atom
                 ctx.state.feedUrls = await findFeed(res.body, res.url);
-                ctx.state.feedUrls = ctx.state.feedUrls.map(decodeURI);
+                ctx.state.feedUrls = ctx.state.feedUrls.map(decodeUrl);
                 /* eslint no-case-declarations: 0*/
                 switch (ctx.state.feedUrls.length) {
                     case 0:

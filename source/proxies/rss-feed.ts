@@ -3,13 +3,14 @@ import errors from '../utils/errors';
 import { Feed } from '../types/feed';
 import { Subscribe } from '../types/subscribe';
 import { isSome, Option, Optional, Some } from '../types/option';
+import { decodeUrl } from '../utils/decodeUrl';
 
 export async function sub(
     userId: number,
     feedUrl: string,
     feedTitle: string
 ): Promise<string> {
-    feedUrl = decodeURI(feedUrl);
+    feedUrl = decodeUrl(feedUrl);
     const feed = await db<Feed>('rss_feed').where('url', feedUrl).first();
     if (feed) {
         const res = await db<Subscribe>('subscribes')
@@ -211,6 +212,7 @@ export async function handleRedirect(
     realUrl: string
 ): Promise<void> {
     try {
+        realUrl = decodeUrl(realUrl);
         const oldFeed: Option<Feed> = Optional(
             await db<Feed>('rss_feed').where('url', url).first()
         );

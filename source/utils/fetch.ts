@@ -60,7 +60,7 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
         logger.debug(`fetching ${feedUrl}`);
         const res = await got.get(encodeURI(feedUrl));
         if (encodeURI(feedUrl) !== res.url && Object.is(res.statusCode, 301)) {
-            await handleRedirect(feedUrl, decodeURI(res.url));
+            await handleRedirect(feedUrl, res.url);
         }
         const feed = await parseString(res.body);
 

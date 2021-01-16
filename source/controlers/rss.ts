@@ -4,6 +4,7 @@ import twoKeyReply from '../utils/two-key-reply';
 import errors from '../utils/errors';
 import { MContext, Next } from '../types/ctx';
 import { isNone } from '../types/option';
+import { decodeUrl } from '../utils/decodeUrl';
 
 export async function sub(ctx: MContext, next: Next): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
@@ -84,7 +85,7 @@ export async function rss(ctx: MContext, next: Next): Promise<void> {
             builder.push(
                 `${feed.feed_title.trim()}: <a href="${encodeURI(
                     feed.url.trim()
-                )}">${decodeURI(feed.url.trim())}</a>`
+                )}">${decodeUrl(feed.url.trim())}</a>`
             );
         });
     } else {
@@ -154,7 +155,7 @@ export async function getUrlById(ctx: MContext, next: Next): Promise<void> {
     const { text } = ctx.message;
     const feed_id = text.match(/^\[(\d+)] (.+)/)[1];
     const feed = await RSS.getFeedById(parseInt(feed_id));
-    ctx.state.feedUrl = decodeURI(feed.url);
+    ctx.state.feedUrl = decodeUrl(feed.url);
     await next();
 }
 

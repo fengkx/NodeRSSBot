@@ -6,6 +6,7 @@ import { MContext, Next } from '../types/ctx';
 import { isSome } from '../types/option';
 import { Feed } from '../types/feed';
 import { parseString } from '../parser/parse';
+import { decodeUrl } from '../utils/decodeUrl';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const urls = ctx.message.text.match(
@@ -15,7 +16,7 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
     const feedsReady = await Promise.all(
         urls.map(
             async (url): Promise<Partial<Feed>> => {
-                url = decodeURI(url); // idempotent operation just do it first
+                url = decodeUrl(url); // decode first
                 const feed = await getFeedByUrl(url);
                 if (isSome(feed)) {
                     return feed.value;
