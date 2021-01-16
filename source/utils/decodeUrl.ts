@@ -1,4 +1,4 @@
-export function decodeUrl(url) {
+export function decodeUrl(url: string): string {
     while (url !== decodeURIComponent(url)) {
         url = decodeURIComponent(url);
     }
