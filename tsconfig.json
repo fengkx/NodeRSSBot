@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "outDir": "dist",
-        "target": "es2018", // Node.js 10
+        "target": "es2019", // Node.js 12
         "module": "commonjs",
         "moduleResolution": "node",
         "resolveJsonModule": true,
@@ -15,8 +15,7 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noEmitOnError": true,
-        // Disabled because of TS bugs: https://github.com/sindresorhus/tsconfig/issues/7
-        // "useDefineForClassFields": true,
+        "useDefineForClassFields": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
         "esModuleInterop": true

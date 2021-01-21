@@ -3,6 +3,9 @@
   "version": "0.8.3",
   "description": "Another Telegram RSSBot in Node.js",
   "main": "dist/source",
+  "engines": {
+    "node": ">=12.13"
+  },
   "scripts": {
     "build": "del-cli dist && tsc && cpy source/template dist/source/template && cpy i18n dist/i18n",
     "start": "cross-env NODE_PRODUTION=true node dist/source/index.js",
