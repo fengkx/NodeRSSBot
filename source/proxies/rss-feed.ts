@@ -149,7 +149,7 @@ export async function getSubscribedCountByUserId(
     }
 }
 
-export async function updateFeed(feed: Feed): Promise<number> {
+export async function updateFeed(feed: Partial<Feed>): Promise<number> {
     try {
         return await db('rss_feed').where('url', feed.url).update(feed);
     } catch (e) {
