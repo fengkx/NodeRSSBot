@@ -65,14 +65,19 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
         const feed = await parseString(res.body);
 
         const items = feed.items.slice(0, item_num);
-        const updatedFeedModal: Partial<Feed> = {
+        const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
             feed_id: feedModal.feed_id,
             error_count: 0
         };
-        if (feed.title !== feedModal.feed_title) {
-            updatedFeedModal.feed_title = feed.title;
+        if (
+            feedModal.error_count !== 0 ||
+            feed.title !== feedModal.feed_title
+        ) {
+            if (feed.title !== feedModal.feed_title) {
+                updatedFeedModal.feed_title = feed.title;
+            }
+            await updateFeed(updatedFeedModal);
         }
-        await updateFeed(updatedFeedModal);
         return Optional(
             items.map((item) => {
                 const { link, title, id } = item;
