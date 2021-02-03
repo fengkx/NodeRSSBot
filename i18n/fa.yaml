@@ -1,0 +1,53 @@
+FEED_URL_NOT_PARSE: خطا در تجزیه آدرس(URL)
+FETCH_ERROR: خطا در دریافت اطلاعات
+404: خطای دریافت اطلاعات -> 404 صفحه یافت نشد
+403: خطای دریافت اطلاعات -> 403 منع دسترسی به صفحه
+ALREADY_SUB: شما قبلا مشترک این فید شده اید
+DB_ERROR: خطا در کوئری به دیتابیس
+DID_NOT_SUB: شما مشترک این فید نشده اید
+SUB_USAGE: 'نحوه استفاده： /sub <RSS URL> تشخیص خودکار فید هم پشتیبانی می‌شود'
+UNSUB_USAGE: 'نحوه استفاده： /unsub <RSS URL>'
+ADMIN_ONLY: فقط برای مدیر فعال است
+UNSUBTHIS_USAGE: 'نحوه استفاده：/unsubthis مستقیم روی پیام از فیدی که میخواید لغواشتراک کنید ازش، ریپلای کنید'
+SAME_NAME: چند فید با عنوان یکسان وجود دارد، لطفا از /unsub استفاده کنید
+PROCESSING: در حال پردازش, لطفا مدتی صبرکنید...
+SUB_SUCCESS: با موفقیت مشترک شدید
+UNSUB_SUCCESS: لغو اشتراک با موفقیت انجام شد
+NOT_SUB: فیدی را مشترک نشده‌اید
+SUB_LIST: اشتراک‌ها
+ERROR_MANY_TIME: خطا در دریافت اطلاعات برای چندبار، شاید بخواهید لغواشتراک کنید
+OPML_PARSE_ERRO: خطا در تجزیه opml
+NETWORK_ERROR: خطای شبکه
+IMPORT_SUCCESS: با موفقیت وارد شد
+FILESYSTEM_ERROR: خطای FileSystem
+UNSUB_ALL_SUCCESS: اشتراک شما با موفقیت از همه فیدها لغو شد
+EXPORT: 'نحوه استفاده： /export خروجی گرفتن اشتراک ها به فرمت opml'
+SEND_FILE_IMPORT: یک فایل opml برای وارد کردن اشتراک‌ها ارسال کنید
+RSS_USAGE: 'نحوه استفاده： /rss لیست اشتراک ها رو نشان می‌دهد، برای نمایش لینک "raw" را به دستور اضافه کنید'
+VIEW_ALL_USAGE: /viewall نمایش همه اشتراک‌ها و تعداد مشترکان، برای نمایش لینک فید کلمه "raw" را به دستور اضافه کنید
+USB_ALL_USAGE: 'نحوه استفاده： /allunsub لغواشتراک از همه فیدها'
+IMPORT_USAGE: 'نحوه استفاده： /import فایل opml را مستقیم به چت خصوصی ارسال کنید یا روی همین پیام ریپلای کنید'
+WELCOME: خوش اومدید به [NodeRSSBot](https://github.com/fengkx/NodeRSSBot)
+CONFIRM: می‌خواهید به عملیات ادامه دهید
+PRIVATE_CHAT_ONLY: فقط می‌تواند در چت شخصی استفاده شود
+ALL_FEED: با موفقیت مشترک تمام فیدها شدید
+COMMAND_NOT_ENABLED: کامند فعال نیست
+NUMBER_OF_SUBSCRIBER: تعداد مشترکان
+CHANNEL_NOT_FOUND: کانال یافت نشد
+CHANNEL_ADMIN_REQUIRE: شما باید این ربات را به مدیران کانال اضافه کنید و دسترسی های لازم را بدهید
+YES: بله
+NO: نه
+CANCEL: لغو شد
+PAGE_PRE: صفحه قبل
+PAGE_NEXT: صفحه بعد
+FOUND_FEED_MORE_THAN_ONE: بیش از یک فید پیدا شد
+FOUND_FEEDS: فیدهای پیدا شده
+FEED_CHANGE_TO: تغییر فید به
+CHOOSE_LANG: زبان را انتخاب کنید
+SET_LANG_TO: تنظیم زبان به
+LANG_USAGE: 'نحوه استفاده： /lang تغییر زبان'
+CHOOSE_UNSUB: اشتراکی که قصد لغو کردنش را دارید انتخاب کنید
+ACTIVE_FEED_COUNT_WITH_ERROR: تعداد فیدهای فعال با خطا
+TOTAL_ACTIVE_FEED_COUNT: تعداد فیدهای فعال
+CREATOR_ONLY: فقط سازنده ربات
+ALLOW_LIST_NOT_INCLUDE: این ربات لیست مجاز را فعال کرده است و شما مسدود شده اید
