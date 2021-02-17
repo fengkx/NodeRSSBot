@@ -57,7 +57,7 @@
   "devDependencies": {
     "@types/better-sqlite3": "^5.4.1",
     "@types/charset": "^1.0.2",
-    "@types/ejs": "^3.0.5",
+    "@types/ejs": "^3.0.6",
     "@types/jest": "^26.0.20",
     "@types/js-yaml": "^4.0.0",
     "@types/lodash.pick": "^4.4.6",
