@@ -1,5 +1,6 @@
 import { InlineKeyboardButton } from 'telegraf/typings/telegram-types';
 import { MContext, Next } from '../types/ctx';
+import sanitize from './sanitize';
 
 interface Middleware {
     (ctx: MContext, next?: Next): any;
@@ -16,7 +17,7 @@ export default (kbs: InlineKeyboardButton[], text?: string): Middleware => {
         }
         await ctx.telegram.sendMessage(
             ctx.chat.id,
-            text || ctx.state.replyText,
+            sanitize(text || ctx.state.replyText),
             {
                 parse_mode: 'HTML',
                 disable_web_page_preview: true,
