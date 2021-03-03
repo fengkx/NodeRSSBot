@@ -5,6 +5,7 @@ import errors from '../utils/errors';
 import { MContext, Next } from '../types/ctx';
 import { isNone } from '../types/option';
 import { decodeUrl } from '../utils/decodeUrl';
+import sanitize from '../utils/sanitize';
 
 export async function sub(ctx: MContext, next: Next): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
@@ -83,7 +84,7 @@ export async function rss(ctx: MContext, next: Next): Promise<void> {
     if (raw) {
         feeds.forEach((feed) => {
             builder.push(
-                `${feed.feed_title.trim()}: <a href="${encodeURI(
+                `${sanitize(feed.feed_title)}: <a href="${encodeURI(
                     feed.url.trim()
                 )}">${decodeUrl(feed.url.trim())}</a>`
             );
@@ -91,9 +92,9 @@ export async function rss(ctx: MContext, next: Next): Promise<void> {
     } else {
         feeds.forEach((feed) => {
             builder.push(
-                `<a href="${encodeURI(
-                    feed.url.trim()
-                )}">${feed.feed_title.trim()}</a>`
+                `<a href="${encodeURI(feed.url.trim())}">${sanitize(
+                    feed.feed_title
+                )}</a>`
             );
         });
     }
@@ -140,7 +141,7 @@ export async function viewAll(ctx: MContext, next: Next): Promise<void> {
     builder.push(`<strong>${i18n[lang]['ALL_FEED']}</strong>`);
     feeds.forEach((feed) => {
         const url = feed.url.trim();
-        const title = feed.feed_title.trim();
+        const title = sanitize(feed.feed_title);
         builder.push(
             `<a href="${encodeURI(url)}">${title}</a>  ${
                 i18n[lang]['NUMBER_OF_SUBSCRIBER']
