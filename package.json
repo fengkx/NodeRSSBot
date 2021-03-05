@@ -67,7 +67,7 @@
     "@typescript-eslint/parser": "^4.15.2",
     "cpy-cli": "^3.1.1",
     "del-cli": "^3.0.1",
-    "eslint": "^7.20.0",
+    "eslint": "^7.21.0",
     "jest": "^26.6.3",
     "lockfile-lint": "^4.6.1",
     "nock": "^13.0.8",
