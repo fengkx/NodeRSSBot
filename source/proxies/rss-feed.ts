@@ -229,11 +229,16 @@ export async function handleRedirect(
             await db<Feed>('rss_feed').where('url', realUrl).first()
         );
         if (isSome(realFeed) && isSome(oldFeed)) {
+            // we have feed entry for both url
+            // update the subscribes entry to new real url one
+            // then del the subscribes entry with old url
             await db.transaction(async (trx) => {
-                await trx('subscribes').where('url', oldFeed.value.url).del();
                 await trx('subscribes')
                     .where('feed_id', oldFeed.value.feed_id)
                     .update({ feed_id: realFeed.value.feed_id });
+                await trx('subscribes')
+                    .where('feed_id', oldFeed.value.feed_id)
+                    .del();
             });
         } else {
             await db('rss_feed')

@@ -11,12 +11,14 @@ beforeAll(async () => {
 import * as RSS from '../source/proxies/rss-feed';
 import * as USERS from '../source/proxies/users';
 import * as SUBSCRIBES from '../source/proxies/subscribes';
-import { isSome, Some } from '../source/types/option';
+import { isNone, isSome, Some } from '../source/types/option';
 import { Feed } from '../source/types/feed';
+import { getFeedByUrl, handleRedirect } from '../source/proxies/rss-feed';
+import { getSubscribersByFeedId } from '../source/proxies/subscribes';
 
 const [userId, feedUrl, feedTitle] = [
     233233233,
-    'http://test.test',
+    'http://test.test/',
     'test-title'
 ];
 
@@ -33,12 +35,12 @@ test('RSS sub', async () => {
 
 test('RSS getAllFeeds', async () => {
     const allFeeds = await RSS.getAllFeeds();
-    const feed = (await RSS.getFeedByUrl('http://test.test')) as Some<Feed>;
+    const feed = (await RSS.getFeedByUrl(feedUrl)) as Some<Feed>;
     expect(allFeeds).toEqual(expect.arrayContaining([feed.value]));
 });
 
 test('RSS updateFeed', async () => {
-    const feed = (await RSS.getFeedByUrl('http://test.test')) as Some<Feed>;
+    const feed = (await RSS.getFeedByUrl(feedUrl)) as Some<Feed>;
     RSS.updateFeed({
         feed_id: feed.value.feed_id,
         next_fetch_time: '3000-01-01'
@@ -50,6 +52,30 @@ test('RSS getAllFeeds ttl', async () => {
     const feeds = await RSS.getAllFeeds(false);
     expect(feeds.length).toBeGreaterThan(0);
 });
+
+test('RSS handleRedirect', async () => {
+    const [userId, title, url] = [123, 'title123', 'http://old'];
+    const newUrl = 'http://new';
+    await RSS.sub(userId, url, title);
+    const feedOption = await getFeedByUrl(url);
+    expect(isSome(feedOption)).toBe(true);
+    const feedId = (feedOption as Some<Feed>).value.feed_id;
+    await handleRedirect(url, newUrl);
+    const feed = await RSS.getFeedById(feedId);
+    expect(feed.url).toBe(newUrl);
+    expect(isNone(await RSS.getFeedByUrl(url))).toBe(true);
+    await RSS.sub(userId + 1, url, title);
+    const oldUrlFeedOption = await RSS.getFeedByUrl(url);
+    expect(isSome(oldUrlFeedOption)).toBe(true);
+    await handleRedirect(url, newUrl);
+    expect(await getSubscribersByFeedId(feedId)).toHaveLength(2);
+    expect(
+        await getSubscribersByFeedId(
+            (oldUrlFeedOption as Some<Feed>).value.feed_id
+        )
+    ).toHaveLength(0);
+});
+
 test('RSS updateHashList', async () => {
     const id = 1;
     const hashList = ['abcdefg'];
