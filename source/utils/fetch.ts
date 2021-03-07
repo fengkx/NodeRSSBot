@@ -63,21 +63,15 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
             await handleRedirect(feedUrl, res.url);
         }
         const feed = await parseString(res.body);
-        console.log(feed);
-
         const items = feed.items.slice(0, item_num);
-        console.log(feed);
+        const ttlMinutes =
+            typeof feed.ttl === 'number' && !Number.isNaN(feed.ttl)
+                ? feed.ttl
+                : config['GAP_MINUTES'];
         const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
             feed_id: feedModal.feed_id,
             error_count: 0,
-            next_fetch_time: new Date(
-                Date.now() +
-                    (typeof feed.ttl === 'number'
-                        ? feed.ttl
-                        : config['GAP_MINUTES']) *
-                        60 *
-                        1000
-            )
+            next_fetch_time: new Date(Date.now() + ttlMinutes * 60 * 1000)
         };
 
         if (feed.title !== feedModal.feed_title) {
