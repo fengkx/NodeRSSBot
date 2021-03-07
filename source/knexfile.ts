@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
 import { config } from './config';
 import { parse } from 'url';
-import { Config } from 'knex';
+import { Knex } from 'knex';
 import { join } from 'path';
 import logger from './utils/logger';
 
@@ -17,7 +17,7 @@ if (protocol === null || isDriveLetter) {
     client = protocol;
 }
 // console.log(config.db_path);
-const knexConfig: Config = {
+const knexConfig: Knex.Config = {
     client,
     connection: config.db_path,
     migrations: {
