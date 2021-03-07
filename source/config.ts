@@ -21,7 +21,9 @@ export const config: Config = {
     lang: process.env.RSSBOT_LANG || 'zh-cn',
     item_num: parseInt(process.env.RSSBOT_ITEM_NUM) || 10,
     fetch_gap: process.env.RSSBOT_FETCH_GAP || '5m',
-    strict_ttl: !!process.env.RSSBOT_STRICT_TTL || true,
+    strict_ttl:
+        process.env.RSSBOT_STRICT_TTL !== '0' &&
+        process.env.RSSBOT_STRICT_TTL !== 'false',
     notify_error_count: parseInt(process.env.NOTIFY_ERR_COUNT) || 5,
     view_all: !!process.env.RSSBOT_VIEW_ALL || false,
     UA:
@@ -29,12 +31,15 @@ export const config: Config = {
         `Mozilla/5.0  NodeRSSBot v${version}(https://github.com/fengkx/NodeRSSBot)`,
     not_send: !!process.env.NOT_SEND || false, // just for debug use
     concurrency: parseInt(process.env.RSSBOT_CONCURRENCY) || 200,
-    delete_on_err_send: !!process.env.DELETE_ON_ERR_SEND || true, // block and chat not found
+    delete_on_err_send:
+        process.env.DELETE_ON_ERR_SEND !== '0' &&
+        process.env.DELETE_ON_ERR_SEND !== 'false', // block and chat not found
     resp_timeout: parseInt(process.env.RSSBOT_RESP_TIMEOUT) || 40,
     allow_list: process.env.RSSBOT_ALLOW_LIST
         ? process.env.RSSBOT_ALLOW_LIST.split(',').map((id) => Number(id))
         : null,
-    auto_migrate: !!process.env.AUTO_MIGRATE || true
+    auto_migrate:
+        process.env.AUTO_MIGRATE !== '0' && process.env.AUTO_MIGRATE !== 'false'
 };
 Object.defineProperty(config, 'PKG_ROOT', {
     enumerable: false,
