@@ -159,7 +159,8 @@ export async function updateFeed(
     feed: Partial<Feed> & { feed_id: number }
 ): Promise<number> {
     try {
-        return await db('rss_feed').where('feed_id', feed.feed_id).update(feed);
+        const { feed_id, ...rest } = feed;
+        return await db('rss_feed').where('feed_id', feed_id).update(rest);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     }

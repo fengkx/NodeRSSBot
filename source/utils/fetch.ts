@@ -71,7 +71,12 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
             feed_id: feedModal.feed_id,
             error_count: 0,
             next_fetch_time: new Date(
-                Date.now() + (feed.ttl ?? config['GAP_MINUTES']) * 60 * 1000
+                Date.now() +
+                    (typeof feed.ttl === 'number'
+                        ? feed.ttl
+                        : config['GAP_MINUTES']) *
+                        60 *
+                        1000
             )
         };
 
