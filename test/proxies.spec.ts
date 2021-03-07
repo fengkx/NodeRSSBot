@@ -37,6 +37,19 @@ test('RSS getAllFeeds', async () => {
     expect(allFeeds).toEqual(expect.arrayContaining([feed.value]));
 });
 
+test('RSS updateFeed', async () => {
+    const feed = (await RSS.getFeedByUrl('http://test.test')) as Some<Feed>;
+    RSS.updateFeed({
+        feed_id: feed.value.feed_id,
+        next_fetch_time: '3000-01-01'
+    });
+});
+test('RSS getAllFeeds ttl', async () => {
+    const allFeeds = await RSS.getAllFeeds();
+    expect(allFeeds).toHaveLength(0);
+    const feeds = await RSS.getAllFeeds(false);
+    expect(feeds.length).toBeGreaterThan(0);
+});
 test('RSS updateHashList', async () => {
     const id = 1;
     const hashList = ['abcdefg'];

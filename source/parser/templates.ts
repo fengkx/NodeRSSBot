@@ -34,6 +34,7 @@ export const rss2Tpl = {
     title: 'rss/channel/title',
     link: 'rss/channel/link|rss/channel/atom:link',
     updatedAt: 'rss/channel/lastBuildDate',
+    ttl: 'number(rss/channel/ttl)',
     items: [
         '//item',
         {

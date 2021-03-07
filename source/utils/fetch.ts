@@ -63,21 +63,23 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
             await handleRedirect(feedUrl, res.url);
         }
         const feed = await parseString(res.body);
+        console.log(feed);
 
         const items = feed.items.slice(0, item_num);
+        console.log(feed);
         const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
             feed_id: feedModal.feed_id,
-            error_count: 0
+            error_count: 0,
+            next_fetch_time: new Date(
+                Date.now() + (feed.ttl ?? config['GAP_MINUTES']) * 60 * 1000
+            )
         };
-        if (
-            feedModal.error_count !== 0 ||
-            feed.title !== feedModal.feed_title
-        ) {
-            if (feed.title !== feedModal.feed_title) {
-                updatedFeedModal.feed_title = feed.title;
-            }
-            await updateFeed(updatedFeedModal);
+
+        if (feed.title !== feedModal.feed_title) {
+            updatedFeedModal.feed_title = feed.title;
         }
+
+        await updateFeed(updatedFeedModal);
         return Optional(
             items.map((item) => {
                 const { link, title, id } = item;
@@ -137,7 +139,7 @@ const queue = fastQueue(async (eachFeed: Feed, cb) => {
 
 const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
-    const allFeeds = await getAllFeeds();
+    const allFeeds = await getAllFeeds(config.strict_ttl);
     allFeeds.forEach((feed) =>
         queue.push(feed, (err, sendItems) => {
             if (sendItems && !err) {

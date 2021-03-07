@@ -4,6 +4,7 @@ export interface Feed {
     feed_title: string;
     recent_hash_list: string;
     error_count: number;
+    next_fetch_time?: number | string | Date;
     sub_count?: number;
 }
 

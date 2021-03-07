@@ -21,6 +21,7 @@ export const config: Config = {
     lang: process.env.RSSBOT_LANG || 'zh-cn',
     item_num: parseInt(process.env.RSSBOT_ITEM_NUM) || 10,
     fetch_gap: process.env.RSSBOT_FETCH_GAP || '5m',
+    strict_ttl: !!process.env.RSSBOT_STRICT_TTL || true,
     notify_error_count: parseInt(process.env.NOTIFY_ERR_COUNT) || 5,
     view_all: !!process.env.RSSBOT_VIEW_ALL || false,
     UA:
@@ -39,4 +40,22 @@ Object.defineProperty(config, 'PKG_ROOT', {
     enumerable: false,
     writable: false,
     value: PKGROOT
+});
+
+let GAP_MINUTES: number;
+const { fetch_gap } = config;
+const gapNum = parseInt(fetch_gap.substring(0, fetch_gap.length - 1));
+const unit = fetch_gap[fetch_gap.length - 1];
+switch (unit) {
+    case 'h':
+        GAP_MINUTES = gapNum * 60;
+        break;
+    case 'm':
+    default:
+        GAP_MINUTES = gapNum;
+}
+Object.defineProperty(config, 'GAP_MINUTES', {
+    enumerable: false,
+    writable: false,
+    value: GAP_MINUTES
 });

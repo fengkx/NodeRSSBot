@@ -6,6 +6,7 @@ export type TRSS = {
     title: string;
     link: string;
     updatedAt?: string;
+    ttl?: number;
     items: RSSItem[];
 };
 export type RSSItem = {

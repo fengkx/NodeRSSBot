@@ -80,11 +80,17 @@ export async function unsub(userId: number, feedId: number): Promise<void> {
     }
 }
 
-export async function getAllFeeds(): Promise<Feed[]> {
+export async function getAllFeeds(ttl = true): Promise<Feed[]> {
     try {
-        const feeds = await db('rss_feed')
-            .whereIn('feed_id', db('subscribes').distinct('feed_id'))
-            .orderByRaw('random()');
+        let query = db('rss_feed').whereIn(
+            'feed_id',
+            db('subscribes').distinct('feed_id')
+        );
+        if (ttl) {
+            query = query.where('next_fetch_time', '<', db.fn.now());
+        }
+        const feeds = await query.orderByRaw('random()').select();
+
         return feeds;
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);

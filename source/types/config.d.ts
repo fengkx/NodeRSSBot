@@ -9,6 +9,7 @@ export type Config = {
     lang: string;
     item_num: number;
     fetch_gap: string;
+    strict_ttl: boolean;
     notify_error_count: number;
     view_all: boolean;
     UA: string;
