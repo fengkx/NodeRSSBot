@@ -46,7 +46,7 @@
     "knex": "^0.95.1",
     "node-schedule": "^2.0.0",
     "pg": "^8.5.1",
-    "quick-lru": "^5.1.1",
+    "quick-lru": "^6.0.0",
     "socks-proxy-agent": "^5.0.0",
     "sqlite3": "^5.0.2",
     "telegraf": "^3.38.0",
