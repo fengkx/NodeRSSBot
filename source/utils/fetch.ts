@@ -58,7 +58,24 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     const feedUrl = feedModal.url;
     try {
         logger.debug(`fetching ${feedUrl}`);
-        const res = await got.get(encodeURI(feedUrl));
+        const res = await got.get(encodeURI(feedUrl)).on('request', (req) => {
+            req.prependOnceListener(
+                'cacheableResponse',
+                (cacheableResponse) => {
+                    const fix = () => {
+                        if (!cacheableResponse.req) {
+                            return;
+                        }
+
+                        cacheableResponse.complete =
+                            cacheableResponse.req.res.complete;
+                    };
+
+                    cacheableResponse.prependOnceListener('end', fix);
+                    fix();
+                }
+            );
+        });
         if (encodeURI(feedUrl) !== res.url && Object.is(res.statusCode, 301)) {
             await handleRedirect(feedUrl, res.url);
         }
