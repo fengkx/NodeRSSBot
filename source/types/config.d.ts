@@ -10,6 +10,7 @@ export type Config = {
     item_num: number;
     fetch_gap: string;
     strict_ttl: boolean;
+    http_cache: boolean;
     notify_error_count: number;
     view_all: boolean;
     UA: string;
