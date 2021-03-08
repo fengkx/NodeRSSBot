@@ -25,9 +25,8 @@ export const config: Config = {
         process.env.RSSBOT_STRICT_TTL !== '0' &&
         process.env.RSSBOT_STRICT_TTL !== 'false',
     http_cache:
-        (process.env.RSSBOT_HTTP_CACHE !== '0' &&
-            process.env.RSSBOT_HTTP_CACHE !== 'fasle') ||
-        true,
+        process.env.RSSBOT_HTTP_CACHE !== '0' &&
+        process.env.RSSBOT_HTTP_CACHE !== 'fasle',
     notify_error_count: parseInt(process.env.NOTIFY_ERR_COUNT) || 5,
     view_all: !!process.env.RSSBOT_VIEW_ALL || false,
     UA:
