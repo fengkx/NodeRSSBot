@@ -8,7 +8,8 @@ import { decodeUrl } from '../utils/decodeUrl';
 export async function sub(
     userId: number,
     feedUrl: string,
-    feedTitle: string
+    feedTitle: string,
+    ttl = 0
 ): Promise<string> {
     feedUrl = decodeUrl(feedUrl);
     const feed = await db<Feed>('rss_feed').where('url', feedUrl).first();
@@ -33,7 +34,8 @@ export async function sub(
         const [feed_id] = await db('rss_feed').insert(
             {
                 url: feedUrl,
-                feed_title: feedTitle
+                feed_title: feedTitle,
+                ttl: ttl
             },
             'feed_id'
         );
