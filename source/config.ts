@@ -1,46 +1,47 @@
 import * as path from 'path';
 import { Config } from './types/config';
 import { version } from '../package.json';
+import env from 'env-var';
 
 const PKGROOT = path.join(
     __dirname,
     __dirname.includes('dist') ? '../..' : '..'
 );
 export const config: Config = {
-    token: process.env.RSSBOT_TOKEN || '',
+    token: env.get('RSSBOT_TOKEN').required().asString(),
     proxy: {
-        protocol: process.env.PROXY_PROTOCOL || null,
-        host: process.env.PROXY_HOST || null,
-        port: process.env.PROXY_PORT || null
+        protocol: env.get('PROXY_PROTOCOL').asString(),
+        host: env.get('PROXY_HOST').asString(),
+        port: env.get('PROXY_PORT').asString()
     },
     db_path:
         (process.env.DYNO // heroku
             ? process.env.DATABASE_URL
             : process.env.RSSBOT_DB_PATH) ||
         path.join(PKGROOT, 'data', 'database.db'), // /dist/source/config.js -> /data/
-    lang: process.env.RSSBOT_LANG || 'zh-cn',
-    item_num: parseInt(process.env.RSSBOT_ITEM_NUM) || 10,
-    fetch_gap: process.env.RSSBOT_FETCH_GAP || '5m',
-    strict_ttl:
-        process.env.RSSBOT_STRICT_TTL !== '0' &&
-        process.env.RSSBOT_STRICT_TTL !== 'false',
-    http_cache: !!process.env.RSSBOT_HTTP_CACHE || false,
-    notify_error_count: parseInt(process.env.NOTIFY_ERR_COUNT) || 5,
-    view_all: !!process.env.RSSBOT_VIEW_ALL || false,
-    UA:
-        process.env.RSSBOT_UA ||
-        `Mozilla/5.0  NodeRSSBot v${version}(https://github.com/fengkx/NodeRSSBot)`,
-    not_send: !!process.env.NOT_SEND || false, // just for debug use
-    concurrency: parseInt(process.env.RSSBOT_CONCURRENCY) || 200,
-    delete_on_err_send:
-        process.env.DELETE_ON_ERR_SEND !== '0' &&
-        process.env.DELETE_ON_ERR_SEND !== 'false', // block and chat not found
-    resp_timeout: parseInt(process.env.RSSBOT_RESP_TIMEOUT) || 40,
-    allow_list: process.env.RSSBOT_ALLOW_LIST
-        ? process.env.RSSBOT_ALLOW_LIST.split(',').map((id) => Number(id))
-        : null,
-    auto_migrate:
-        process.env.AUTO_MIGRATE !== '0' && process.env.AUTO_MIGRATE !== 'false'
+    lang: env.get('RSSBOT_LANG').default('zh-cn').asString(),
+    item_num: env.get('RSSBOT_ITEM_NUM').default(10).asIntPositive(),
+    fetch_gap: env.get('RSSBOT_FETCH_GAP').default('5m').asString(),
+    strict_ttl: env.get('RSSBOT_STRICT_TTL').default(1).asBool(),
+    http_cache: env.get('RSSBOT_HTTP_CACHE').default(0).asBool(),
+    notify_error_count: env.get('NOTIFY_ERR_COUNT').default(5).asIntPositive(),
+    view_all: env.get('RSSBOT_VIEW_ALL').default(0).asBool(),
+    UA: env
+        .get('RSSBOT_UA')
+        .default(
+            `Mozilla/5.0  NodeRSSBot v${version}(https://github.com/fengkx/NodeRSSBot)`
+        )
+        .asString(),
+    not_send: env.get('NOT_SEND').default(0).asBool(), // just for debug use
+    concurrency: env.get('RSSBOT_CONCURRENCY').default(200).asIntPositive(),
+    delete_on_err_send: env.get('DELETE_ON_ERR_SEND').default(1).asBool(), // block and chat not found
+    resp_timeout: env.get('RSSBOT_RESP_TIMEOUT').default(40).asIntPositive(),
+    allow_list: env
+        .get('RSSBOT_ALLOW_LIST')
+        .default('')
+        .asArray(',')
+        .map((id) => Number(id)),
+    auto_migrate: env.get('AUTO_MIGRATE').default(1).asBool()
 };
 Object.defineProperty(config, 'PKG_ROOT', {
     enumerable: false,
