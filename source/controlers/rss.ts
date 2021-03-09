@@ -10,9 +10,10 @@ import sanitize from '../utils/sanitize';
 export async function sub(ctx: MContext, next: Next): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
     const feedTitle = ctx.state.feed.feed_title;
+    const ttl = Number.isNaN(ctx.state.feed.ttl) ? 0 : ctx.state.feed.ttl;
     const userId = chat.id;
     try {
-        await RSS.sub(userId, feedUrl, feedTitle);
+        await RSS.sub(userId, feedUrl, feedTitle, ttl);
         await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
         ctx.state.processMsgId = null;
         ctx.replyWithMarkdown(`

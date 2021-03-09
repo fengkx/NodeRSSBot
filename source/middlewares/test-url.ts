@@ -51,7 +51,10 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
                 }
             } else {
                 // new feed is valid sub it in next middleware
-                ctx.state.feed = { feed_title: feedOption.value.title };
+                ctx.state.feed = {
+                    feed_title: feedOption.value.title,
+                    ttl: feedOption.value.ttl
+                };
                 await next();
             }
         } catch (e) {

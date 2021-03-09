@@ -27,7 +27,8 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
                         // const rssFeed = await parser.parseString(res.body);
                         return {
                             feed_title: rssFeed.title,
-                            url
+                            url,
+                            ttl: Number.isNaN(rssFeed.ttl) ? 0 : rssFeed.ttl
                         };
                     } catch (e) {
                         ctx.reply(`${url} ${i18n[lang]['FETCH_ERROR']}`);
@@ -41,9 +42,13 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
     const builder = [i18n[lang]['SUB_SUCCESS']];
     feedsReady
         .filter((i) => i !== undefined)
-        .forEach(function (feed: { feed_title: string; url: string }) {
+        .forEach(function (feed: {
+            feed_title: string;
+            url: string;
+            ttl: number;
+        }) {
             try {
-                sub(ctx.state.chat.id, feed.url, feed.feed_title);
+                sub(ctx.state.chat.id, feed.url, feed.feed_title, feed.ttl);
             } catch (e) {
                 if (e.message !== 'ALREADY_SUB')
                     throw errors.newCtrlErr('DB_ERROR');

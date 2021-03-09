@@ -27,6 +27,25 @@ import {
 } from '../types/message';
 const { notify_error_count, item_num, concurrency, fetch_gap } = config;
 
+function nextFetchTimeStr(minutes: number) {
+    // SQLite and Postgres
+    // SQLite need ISO 8601 format and we should use UTC timezone
+    return new Date(Date.now() + minutes * 60 * 1000).toISOString();
+}
+
+function gotBugWorkaround(req) {
+    req.prependOnceListener('cacheableResponse', (cacheableResponse) => {
+        const fix = () => {
+            if (!cacheableResponse.req) {
+                return;
+            }
+            cacheableResponse.complete = cacheableResponse.req.res.complete;
+        };
+        cacheableResponse.prependOnceListener('end', fix);
+        fix();
+    });
+}
+
 async function handleErr(e: Messager, feed: Feed): Promise<void> {
     logger.info(`${feed.feed_title} ${feed.url}`, 'ERROR_MANY_TIME');
     const message: ErrorMaxTimeMessage = {
@@ -58,25 +77,26 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     const feedUrl = feedModal.url;
     try {
         logger.debug(`fetching ${feedUrl}`);
-        const res = await got.get(encodeURI(feedUrl)).on('request', (req) => {
-            req.prependOnceListener(
-                'cacheableResponse',
-                (cacheableResponse) => {
-                    const fix = () => {
-                        if (!cacheableResponse.req) {
-                            return;
-                        }
-
-                        cacheableResponse.complete =
-                            cacheableResponse.req.res.complete;
-                    };
-
-                    cacheableResponse.prependOnceListener('end', fix);
-                    fix();
+        const res = await got
+            .get(encodeURI(feedUrl), {
+                headers: {
+                    'If-None-Match': feedModal.etag_header,
+                    'If-Modified-Since': feedModal.last_modified_header
                 }
-            );
-        });
-        if (encodeURI(feedUrl) !== res.url && Object.is(res.statusCode, 301)) {
+            })
+            .on('request', gotBugWorkaround);
+        if (res.statusCode === 304) {
+            const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
+                feed_id: feedModal.feed_id,
+                error_count: 0,
+                next_fetch_time: nextFetchTimeStr(
+                    feedModal.ttl || config['GAP_MINUTES']
+                )
+            };
+            updateFeed(updatedFeedModal);
+            return none;
+        }
+        if (encodeURI(feedUrl) !== res.url && res.statusCode === 301) {
             await handleRedirect(feedUrl, res.url);
         }
         const feed = await parseString(res.body);
@@ -88,13 +108,18 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
         const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
             feed_id: feedModal.feed_id,
             error_count: 0,
-            next_fetch_time: new Date(Date.now() + ttlMinutes * 60 * 1000)
+            next_fetch_time: nextFetchTimeStr(ttlMinutes),
+            last_modified_header: res.headers['last-modified'],
+            etag_header: Array.isArray(res.headers['etag'])
+                ? res.headers['etag'][0]
+                : res.headers['etag']
         };
-
         if (feed.title !== feedModal.feed_title) {
             updatedFeedModal.feed_title = feed.title;
         }
-
+        if (!Number.isNaN(feed.ttl) && feed.ttl !== feedModal.ttl) {
+            updatedFeedModal.ttl = feed.ttl;
+        }
         await updateFeed(updatedFeedModal);
         return Optional(
             items.map((item) => {

@@ -6,6 +6,9 @@ export interface Feed {
     error_count: number;
     next_fetch_time?: number | string | Date;
     sub_count?: number;
+    etag_header: string;
+    last_modified_header: string;
+    ttl: number;
 }
 
 export interface FeedItem {
