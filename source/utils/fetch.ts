@@ -80,14 +80,16 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     const feedUrl = feedModal.url;
     try {
         logger.debug(`fetching ${feedUrl}`);
-        const res = await got
-            .get(encodeURI(feedUrl), {
-                headers: {
-                    'If-None-Match': feedModal.etag_header,
-                    'If-Modified-Since': feedModal.last_modified_header
-                }
-            })
-            .on('request', gotBugWorkaround);
+        const request = got.get(encodeURI(feedUrl), {
+            headers: {
+                'If-None-Match': feedModal.etag_header,
+                'If-Modified-Since': feedModal.last_modified_header
+            }
+        });
+        if (config.http_cache) {
+            request.on('request', gotBugWorkaround);
+        }
+        const res = await request;
         if (res.statusCode === 304) {
             const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
                 feed_id: feedModal.feed_id,
