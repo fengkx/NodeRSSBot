@@ -113,17 +113,23 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
         const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
             feed_id: feedModal.feed_id,
             error_count: 0,
-            next_fetch_time: nextFetchTimeStr(ttlMinutes),
-            last_modified_header: res.headers['last-modified'],
-            etag_header: Array.isArray(res.headers['etag'])
-                ? res.headers['etag'][0]
-                : res.headers['etag']
+            next_fetch_time: nextFetchTimeStr(ttlMinutes)
         };
         if (feed.title !== feedModal.feed_title) {
             updatedFeedModal.feed_title = feed.title;
         }
         if (!Number.isNaN(feed.ttl) && feed.ttl !== feedModal.ttl) {
             updatedFeedModal.ttl = feed.ttl;
+        }
+        if (res.headers['last-modified'] !== feedModal.last_modified_header) {
+            updatedFeedModal.last_modified_header =
+                res.headers['last-modified'];
+        }
+        const etag = Array.isArray(res.headers['etag'])
+            ? res.headers['etag'][0]
+            : res.headers['etag'];
+        if (etag !== feedModal.etag_header) {
+            updatedFeedModal.etag_header = etag || '';
         }
         await updateFeed(updatedFeedModal);
         return Optional(
