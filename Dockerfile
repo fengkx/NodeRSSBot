@@ -7,7 +7,7 @@ FROM node:lts-alpine as dep-builder
 WORKDIR /app
 COPY package.json clean-nm.sh /app/
 RUN apk add --no-cache --update build-base python2
-RUN npm install --production && sh /app/clean-nm.sh
+RUN npm i -g npm && npm install --production && sh /app/clean-nm.sh
 
 FROM node:lts-alpine as app
 WORKDIR /app
