@@ -28,9 +28,12 @@ import {
 const { notify_error_count, item_num, concurrency, fetch_gap } = config;
 
 function nextFetchTimeStr(minutes: number) {
-    // SQLite and Postgres
-    // SQLite need ISO 8601 format and we should use UTC timezone
-    return new Date(Date.now() + minutes * 60 * 1000).toISOString();
+    // use SQLite CURRENT_TIMESTAMP return format like `2021-03-09 06:23:43`
+    // It should use the UTC timezone
+    return new Date(Date.now() + minutes * 60 * 1000)
+        .toISOString()
+        .split('.')[0]
+        .replace('T', ' ');
 }
 
 function gotBugWorkaround(req) {
