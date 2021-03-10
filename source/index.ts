@@ -216,7 +216,7 @@ bot.action(
 bot.action(
     /^RSS_(RAW_)*(\d+)/,
     sendError,
-    onlyPrivateChat,
+    isAdmin,
     async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
         const splitedStr = cb.data.split('_');
