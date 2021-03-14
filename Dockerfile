@@ -1,4 +1,4 @@
-FROM node:lts-alpine as ts-builder
+FROM node:lts-slim as ts-builder
 WORKDIR /app
 COPY . /app
 RUN npm i -g npm && npm ci --ignore-scripts && npm run build
@@ -7,11 +7,11 @@ FROM node:lts-alpine as dep-builder
 WORKDIR /app
 COPY package.json package-lock.json /app/
 COPY tools /app/tools
-RUN apk add --no-cache --update build-base python2
+RUN apt-get update && apt-get install -yq python build-essential --no-install-recommends 
 COPY --from=ts-builder /app/dist /app/dist
 RUN npm i -g npm && npm ci && node tools/minify-docker.js && sh tools/clean-nm.sh
 
-FROM node:lts-alpine as app
+FROM node:lts-slim as app
 WORKDIR /app
 ENV NODE_PRODUTION true
 COPY data /app/data
