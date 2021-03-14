@@ -19,18 +19,18 @@ jobs:
         shell: bash
         id: docker-tag
         run: |    
+          unset BRANCH_NAME
           BRANCH_NAME=`echo $GITHUB_REF | cut -d '/' -f3 -`
           echo "BRANCH_NAME: $BRANCH_NAME"
           unset IMG_TAGS ; if [[ $BRANCH_NAME == "master" ]]; then IMG_TAGS='latest' ; else IMG_TAGS="$BRANCH_NAME"; fi
           SHA_TAG=`echo $GITHUB_SHA | head -c 6`
           echo "SHA_TAG: $SHA_TAG"
-          IMG_TAGS="$IMG_TAGS,$SHA_TAG"
-          echo "IMAG_TAGS: $IMG_TAGS"
-          echo ::set-output name=DOCKER_TAGS::${IMG_TAGS}
+          echo ::set-output name=DOCKER_BRANCH_TAG::${IMG_TAGS}
+          echo ::set-output name=DOCKER_SHA_TAG::${SHA_TAG}
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
           push: true
-          tags: fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_TAGS}}
+          tags: fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_BRANCH_TAG}},fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_SHA_TAG}}
