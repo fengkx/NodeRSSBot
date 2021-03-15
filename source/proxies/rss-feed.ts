@@ -192,16 +192,30 @@ export async function getAllFeedsWithCount(
 ): Promise<Feed[]> {
     if (page < 1) page = 1;
     try {
-        return await db<Feed>('subscribes')
-            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
-            .groupBy('subscribes.feed_id', 'rf.feed_title', 'rf.url')
+        const feedIdCountTable = db('subscribes')
+            .groupBy('feed_id')
             .orderBy('sub_count', 'desc')
             .limit(limit)
             .offset(limit * (page - 1))
-            .select('subscribes.feed_id')
-            .count({ sub_count: 'rf.feed_id' })
-            .select('rf.feed_title')
-            .select('rf.url');
+            .select('feed_id')
+            .as('feed_id_count')
+            .count({ sub_count: '*' });
+        const rssFeedTable = db('rss_feed')
+            .select('feed_title')
+            .select('url')
+            .select('feed_id')
+            .as('rss_feed_t');
+
+        const rt = db(feedIdCountTable)
+            .innerJoin(
+                rssFeedTable,
+                'feed_id_count.feed_id',
+                'rss_feed_t.feed_id'
+            )
+            .select('sub_count')
+            .select('url')
+            .select('feed_title');
+        return await rt;
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     }
@@ -210,8 +224,7 @@ export async function getAllFeedsWithCount(
 export async function getAllFeedsCount(): Promise<number> {
     try {
         const result = await db('subscribes')
-            .leftJoin('rss_feed as rf', 'subscribes.feed_id', 'rf.feed_id')
-            .countDistinct({ count: 'rf.feed_id' })
+            .countDistinct({ count: 'feed_id' })
             .first();
         return parseInt(result.count);
     } catch (e) {
