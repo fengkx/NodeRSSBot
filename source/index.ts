@@ -42,6 +42,7 @@ import {
     Message
 } from './types/message';
 import { migrateUser } from './proxies/users';
+import { encodeUrl } from './utils/urlencode';
 
 const bot = new Telegraf(token, {
     telegram: {
@@ -264,7 +265,7 @@ async function startFetchProcess(restartTime: number): Promise<void> {
                 const { feed, new_feed } = message;
                 const builder = [];
                 builder.push(
-                    `${feed.feed_title}: <a href="${encodeURI(
+                    `${feed.feed_title}: <a href="${encodeUrl(
                         feed.url
                     )}"></a> ${i18n[lang]['ERROR_MANY_TIME']}`
                 ); // feed is from database which not urlencoded

@@ -4,7 +4,7 @@ import twoKeyReply from '../utils/two-key-reply';
 import errors from '../utils/errors';
 import { MContext, Next } from '../types/ctx';
 import { isNone } from '../types/option';
-import { decodeUrl } from '../utils/decodeUrl';
+import { decodeUrl, encodeUrl } from '../utils/urlencode';
 import sanitize from '../utils/sanitize';
 
 export async function sub(ctx: MContext, next: Next): Promise<void> {
@@ -17,7 +17,9 @@ export async function sub(ctx: MContext, next: Next): Promise<void> {
         await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
         ctx.state.processMsgId = null;
         ctx.replyWithMarkdown(`
-        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.feed_title}](${ctx.state.feedUrl})`);
+        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.feed_title}](${encodeUrl(
+            ctx.state.feedUrl
+        )})`);
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
@@ -37,7 +39,7 @@ export async function unsub(ctx: MContext, next: Next): Promise<void> {
         ctx.state.processMsgId = null;
         ctx.replyWithMarkdown(
             `
-        ${i18n[lang]['UNSUB_SUCCESS']} [${feed.value.feed_title}](${encodeURI(
+        ${i18n[lang]['UNSUB_SUCCESS']} [${feed.value.feed_title}](${encodeUrl(
                 ctx.state.feedUrl
             )})`,
             {
@@ -85,7 +87,7 @@ export async function rss(ctx: MContext, next: Next): Promise<void> {
     if (raw) {
         feeds.forEach((feed) => {
             builder.push(
-                `${sanitize(feed.feed_title)}: <a href="${encodeURI(
+                `${sanitize(feed.feed_title)}: <a href="${encodeUrl(
                     feed.url.trim()
                 )}">${decodeUrl(feed.url.trim())}</a>`
             );
@@ -93,7 +95,7 @@ export async function rss(ctx: MContext, next: Next): Promise<void> {
     } else {
         feeds.forEach((feed) => {
             builder.push(
-                `<a href="${encodeURI(feed.url.trim())}">${sanitize(
+                `<a href="${encodeUrl(feed.url.trim())}">${sanitize(
                     feed.feed_title
                 )}</a>`
             );
@@ -144,7 +146,7 @@ export async function viewAll(ctx: MContext, next: Next): Promise<void> {
         const url = feed.url.trim();
         const title = sanitize(feed.feed_title);
         builder.push(
-            `<a href="${encodeURI(url)}">${title}</a>  ${
+            `<a href="${encodeUrl(url)}">${title}</a>  ${
                 i18n[lang]['NUMBER_OF_SUBSCRIBER']
             }: ${feed.sub_count}`
         );

@@ -6,10 +6,10 @@ import { getFeedByUrl } from '../proxies/rss-feed';
 import { MContext, Next } from '../types/ctx';
 import { isNone, isSome } from '../types/option';
 import { parseString } from '../parser/parse';
-import { decodeUrl } from '../utils/decodeUrl';
+import { decodeUrl, encodeUrl } from '../utils/urlencode';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
-    const url = encodeURI(ctx.state.feedUrl);
+    const url = encodeUrl(ctx.state.feedUrl);
     const feedOption = await getFeedByUrl(url);
     if (isSome(feedOption)) {
         // feed is in database;
@@ -29,7 +29,7 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
                     case 0:
                         throw errors.newCtrlErr('FETCH_ERROR');
                     case 1:
-                        const res = await got(encodeURI(ctx.state.feedUrls[0]));
+                        const res = await got(encodeUrl(ctx.state.feedUrls[0]));
                         const realFeed = await parseString(res.body);
                         ctx.state.feed = {
                             url: ctx.state.feedUrls[0],

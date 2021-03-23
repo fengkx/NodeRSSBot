@@ -2,7 +2,7 @@ import errors from '../utils/errors';
 import { getSubscribedFeedsByUserId } from '../proxies/rss-feed';
 import i18n from '../i18n';
 import { MContext, Next } from '../types/ctx';
-import { decodeUrl } from '../utils/decodeUrl';
+import { decodeUrl } from '../utils/urlencode';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const { lang } = ctx.state;

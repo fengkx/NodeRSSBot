@@ -2,7 +2,7 @@ import { MContext, Next } from '../types/ctx';
 
 import { getFeedsByTitle } from '../proxies/rss-feed';
 import errors from '../utils/errors';
-import { decodeUrl } from '../utils/decodeUrl';
+import { decodeUrl } from '../utils/urlencode';
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const me = await ctx.telegram.getMe();
     const myId = me.id;

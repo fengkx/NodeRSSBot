@@ -24,6 +24,7 @@ import {
     ErrorMaxTimeMessage,
     ChangeFeedUrlMessage
 } from '../types/message';
+import { encodeUrl } from './urlencode';
 const { notify_error_count, item_num, concurrency, fetch_gap } = config;
 
 function nextFetchTimeStr(minutes: number) {
@@ -79,7 +80,8 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     const feedUrl = feedModal.url;
     try {
         logger.debug(`fetching ${feedUrl}`);
-        const request = got.get(encodeURI(feedUrl), {
+        const requestUrl = encodeUrl(feedUrl);
+        const request = got.get(requestUrl, {
             headers: {
                 'If-None-Match': feedModal.etag_header,
                 'If-Modified-Since': feedModal.last_modified_header
@@ -100,7 +102,7 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
             updateFeed(updatedFeedModal);
             return none;
         }
-        if (encodeURI(feedUrl) !== res.url && res.statusCode === 301) {
+        if (requestUrl !== res.url && res.statusCode === 301) {
             await handleRedirect(feedUrl, res.url);
         }
         const feed = await parseString(res.body);

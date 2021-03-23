@@ -3,7 +3,7 @@ import errors from '../utils/errors';
 import { Feed } from '../types/feed';
 import { Subscribe } from '../types/subscribe';
 import { isSome, Option, Optional, Some } from '../types/option';
-import { decodeUrl } from '../utils/decodeUrl';
+import { decodeUrl } from '../utils/urlencode';
 
 export async function sub(
     userId: number,

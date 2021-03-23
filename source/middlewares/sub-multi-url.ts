@@ -6,7 +6,7 @@ import { MContext, Next } from '../types/ctx';
 import { isSome } from '../types/option';
 import { Feed } from '../types/feed';
 import { parseString } from '../parser/parse';
-import { decodeUrl } from '../utils/decodeUrl';
+import { decodeUrl, encodeUrl } from '../utils/urlencode';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const urls = ctx.message.text.match(
@@ -22,7 +22,7 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
                     return feed.value;
                 } else {
                     try {
-                        const res = await got.get(encodeURI(url));
+                        const res = await got.get(encodeUrl(url));
                         const rssFeed = await parseString(res.body);
                         // const rssFeed = await parser.parseString(res.body);
                         return {
@@ -55,7 +55,7 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
             }
             // encodeURL because it is decoded
             builder.push(
-                `<a href="${encodeURI(feed.url)}">${feed.feed_title}</a>`
+                `<a href="${encodeUrl(feed.url)}">${feed.feed_title}</a>`
             );
         });
     if (builder.length > 1) {
