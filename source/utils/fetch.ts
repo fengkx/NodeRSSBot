@@ -2,10 +2,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import got from '../utils/got';
 import fastQueue from 'fastq';
-import hashFeed from './hash-feed';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import logger, { logHttpError } from './logger';
-import { findFeed } from './feed';
+import { findFeed, getNewItems } from './feed';
 import { config } from '../config';
 import { Feed, FeedItem } from '../types/feed';
 import { Optional, Option, isNone, none, isSome } from '../types/option';
@@ -105,7 +104,7 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
             await handleRedirect(feedUrl, res.url);
         }
         const feed = await parseString(res.body);
-        const items = feed.items.slice(0, item_num);
+        const items = feed.items;
         const ttlMinutes =
             typeof feed.ttl === 'number' && !Number.isNaN(feed.ttl)
                 ? feed.ttl
@@ -158,27 +157,15 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
 const queue = fastQueue(async (eachFeed: Feed, cb) => {
     const oldHashList = JSON.parse(eachFeed.recent_hash_list);
     let fetchedItems: Option<FeedItem[]>;
-    const sendItems: FeedItem[] = [];
     try {
         fetchedItems = await fetch(eachFeed);
         if (isNone(fetchedItems)) {
             cb(undefined, undefined);
         } else {
-            const newHashList: string[] = await Promise.all(
-                fetchedItems.value.map(
-                    async (item: FeedItem): Promise<string> => {
-                        return await hashFeed(item);
-                    }
-                )
+            const [sendItems, newHashList] = await getNewItems(
+                oldHashList,
+                fetchedItems.value
             );
-            for (let i = 0; i < fetchedItems.value.length; i++) {
-                const item = fetchedItems.value[i];
-                if (!oldHashList.includes(newHashList[i])) {
-                    sendItems.push(item);
-                } else {
-                    break; // ignore the following items
-                }
-            }
             if (sendItems.length > 0) {
                 await updateHashList(eachFeed.feed_id, newHashList);
             }
@@ -199,7 +186,7 @@ const fetchAll = async (): Promise<void> => {
                     sendItems &&
                     process.send({
                         success: true,
-                        sendItems,
+                        sendItems: sendItems.slice(0, item_num),
                         feed: feed
                     } as SuccessMessage);
             }
