@@ -104,7 +104,25 @@ bot.command('export', sendError, isAdmin, exportToOpml);
 
 bot.command('import', importReply);
 
-bot.on('document', sendError, isAdmin, getFileLink, importFromOpml);
+bot.on(
+    'document',
+    async (ctx: MContext, next) => {
+        ctx.state.chat = await ctx.getChat();
+        if (ctx.state.chat.type === 'private') {
+            await next();
+        } else {
+            const replyFromId = ctx.message?.reply_to_message?.from.id;
+            const me = await ctx.telegram.getMe();
+            if (replyFromId && replyFromId === me.id) {
+                await next();
+            }
+        }
+    },
+    sendError,
+    isAdmin,
+    getFileLink,
+    importFromOpml
+);
 
 bot.on('migrate_to_chat_id', (ctx) => {
     const from = ctx.update.message.chat.id;
