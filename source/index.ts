@@ -1,6 +1,7 @@
 import Telegraf from 'telegraf';
 import { fork } from 'child_process';
 import { join } from 'path';
+import * as pkg from '../package.json';
 import send from './utils/send';
 import logger from './utils/logger';
 import errors from './utils/errors';
@@ -249,6 +250,10 @@ bot.action(
     },
     rss
 );
+
+bot.command('version', async (ctx) => {
+    ctx.reply(`${pkg.version}`);
+});
 
 bot.launch();
 
