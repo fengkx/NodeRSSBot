@@ -19,8 +19,7 @@ import { isNone } from '../types/option';
 async function handlerSendError(e: any, userId: number): Promise<boolean> {
     // bot was blocked or chat is deleted
     logger.error(e);
-    const re = /chat not found|bot was blocked by the user|bot was kicked|user is deactivated/;
-    if (config.delete_on_err_send && re.test(e.description)) {
+    if (config.delete_on_err_send && isChatUnAvailable(e.description)) {
         logger.error(`delete all subscribes for user ${userId}`);
         deleteSubscribersByUserId(userId);
     }
@@ -89,5 +88,10 @@ const send = async (
         });
     }
 };
+
+function isChatUnAvailable(description: string): boolean {
+    const re = /chat not found|bot was blocked by the user|bot was kicked|user is deactivated|have no rights|need administrator rights/;
+    return re.test(description);
+}
 
 export default send;
