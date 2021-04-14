@@ -43,7 +43,7 @@
     "escape-goat": "^3.0.0",
     "fastq": "^1.11.0",
     "got-iconv": "^2.1.0",
-    "js-yaml": "^4.0.0",
+    "js-yaml": "^4.1.0",
     "knex": "^0.95.4",
     "node-schedule": "^2.0.0",
     "pg": "^8.5.1",
