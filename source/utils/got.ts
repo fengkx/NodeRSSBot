@@ -12,7 +12,11 @@ const custom = ((got as unknown) as Got).extend({
         accept: AcceptHeader
     },
     timeout: {
-        response: config.resp_timeout * 1000
+        response: config.resp_timeout * 1000,
+        lookup: config.before_resp_timeout * 1000,
+        connect: config.before_resp_timeout * 1000,
+        secureConnect: config.before_resp_timeout * 1000,
+        socket: config.before_resp_timeout * 1000
     },
     agent: agent,
     cache: config.http_cache ? new QuickLru({ maxSize: 1000 }) : false
