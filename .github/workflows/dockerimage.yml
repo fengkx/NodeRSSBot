@@ -31,6 +31,8 @@ jobs:
           echo "SHA_TAG: $SHA_TAG"
           echo ::set-output name=DOCKER_BRANCH_TAG::${IMG_TAGS}
           echo ::set-output name=DOCKER_SHA_TAG::${SHA_TAG}
+          echo echo ${{ github.event.workflow_run.event }}
+          echo ${{ github.event.workflow_run.event != 'pull_request' }}
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
