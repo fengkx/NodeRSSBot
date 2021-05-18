@@ -39,7 +39,7 @@
     "clean-stack": "^3.0.1",
     "cross-env": "^7.0.3",
     "ejs": "^3.1.6",
-    "env-var": "^7.0.0",
+    "env-var": "^7.0.1",
     "escape-goat": "3.0.0",
     "fastq": "^1.11.0",
     "got-iconv": "^2.1.0",
