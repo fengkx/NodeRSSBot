@@ -25,13 +25,11 @@ jest.mock('../source/utils/got', () => {
 });
 
 test('import from opml', async () => {
-    await importFromOpml((ctx as unknown) as MContext, jest.fn());
+    await importFromOpml(ctx as unknown as MContext, jest.fn());
     const feeds = testFeeds;
-    feeds.map(
-        (item: Feed): Outline => {
-            return { type: 'rss', text: item.feed_title, xmlUrl: item.url };
-        }
-    );
+    feeds.map((item: Feed): Outline => {
+        return { type: 'rss', text: item.feed_title, xmlUrl: item.url };
+    });
     expect(ctx).toHaveProperty('state.outlines');
     expect(ctx).toHaveProperty('state.processMsgId');
 });

@@ -15,28 +15,28 @@ jest.mock('../source/proxies/rss-feed', () => ({
 
 test('get-url@only_sub', async () => {
     const ctx = testCtx('/sub');
-    await expect(
-        getUrl((ctx as unknown) as MContext, () => {})
-    ).rejects.toThrow(ControllableError);
+    await expect(getUrl(ctx as unknown as MContext, () => {})).rejects.toThrow(
+        ControllableError
+    );
 });
 
 test('get-url@only_unsub', async () => {
     const ctx = testCtx('/unsub');
     await expect(
-        getUrl((ctx as unknown) as MContext, () => {})
+        getUrl(ctx as unknown as MContext, () => {})
     ).resolves.not.toThrow();
 });
 
 test('get-url@sub_with_url', async () => {
     const url = 'https://www.fengkx.top/atom.xml';
-    const ctx = (testCtx(`/sub ${url}`) as unknown) as MContext;
+    const ctx = testCtx(`/sub ${url}`) as unknown as MContext;
     await expect(getUrl(ctx, () => {}));
     expect(ctx).toHaveProperty('state.feedUrl', url);
 });
 
 test('get-url@sub_with_url_need_escape', async () => {
     const url = 'https://www.fengkx.top/测试.xml';
-    const ctx = (testCtx(`/sub ${url}`) as unknown) as MContext;
+    const ctx = testCtx(`/sub ${url}`) as unknown as MContext;
     await expect(getUrl(ctx, () => {}));
     expect(ctx).toHaveProperty('state.feedUrl', url);
 });

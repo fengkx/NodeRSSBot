@@ -14,29 +14,27 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
     );
     const { lang } = ctx.state;
     const feedsReady = await Promise.all(
-        urls.map(
-            async (url): Promise<Partial<Feed>> => {
-                url = decodeUrl(url); // decode first
-                const feed = await getFeedByUrl(url);
-                if (isSome(feed)) {
-                    return feed.value;
-                } else {
-                    try {
-                        const res = await got.get(encodeUrl(url));
-                        const rssFeed = await parseString(res.body);
-                        // const rssFeed = await parser.parseString(res.body);
-                        return {
-                            feed_title: rssFeed.title,
-                            url,
-                            ttl: Number.isNaN(rssFeed.ttl) ? 0 : rssFeed.ttl
-                        };
-                    } catch (e) {
-                        ctx.reply(`${url} ${i18n[lang]['FETCH_ERROR']}`);
-                        return undefined;
-                    }
+        urls.map(async (url): Promise<Partial<Feed>> => {
+            url = decodeUrl(url); // decode first
+            const feed = await getFeedByUrl(url);
+            if (isSome(feed)) {
+                return feed.value;
+            } else {
+                try {
+                    const res = await got.get(encodeUrl(url));
+                    const rssFeed = await parseString(res.body);
+                    // const rssFeed = await parser.parseString(res.body);
+                    return {
+                        feed_title: rssFeed.title,
+                        url,
+                        ttl: Number.isNaN(rssFeed.ttl) ? 0 : rssFeed.ttl
+                    };
+                } catch (e) {
+                    ctx.reply(`${url} ${i18n[lang]['FETCH_ERROR']}`);
+                    return undefined;
                 }
             }
-        )
+        })
     );
 
     const builder = [i18n[lang]['SUB_SUCCESS']];

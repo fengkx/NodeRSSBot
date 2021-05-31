@@ -56,14 +56,12 @@ if (proxy.protocol && proxy.host && proxy.port) {
         case 'socks':
             agent = {
                 http: new SocksProxyAgent(proxyUrl),
-                https: (new SocksProxyAgent(
-                    proxyUrl
-                ) as HttpAgent) as HttpsAgent
+                https: new SocksProxyAgent(proxyUrl) as HttpAgent as HttpsAgent
             };
             break;
     }
-    ((agent.http as unknown) as Partial<AgentOptions>).keepAlive = true;
-    ((agent.https as unknown) as Partial<AgentOptions>).keepAlive = true;
+    (agent.http as unknown as Partial<AgentOptions>).keepAlive = true;
+    (agent.https as unknown as Partial<AgentOptions>).keepAlive = true;
 }
 
 export default agent;

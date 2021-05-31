@@ -90,7 +90,8 @@ const send = async (
 };
 
 function isChatUnAvailable(description: string): boolean {
-    const re = /chat not found|bot was blocked by the user|bot was kicked|user is deactivated|have no rights|need administrator rights/;
+    const re =
+        /chat not found|bot was blocked by the user|bot was kicked|user is deactivated|have no rights|need administrator rights/;
     return re.test(description);
 }
 

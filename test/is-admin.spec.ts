@@ -20,7 +20,7 @@ jest.mock('../source/proxies/users', () => ({
 test('sub channel with @', async () => {
     const channelId = 666;
     const ctx = pass('/sub @testChannel http://test.test', 666);
-    await isAdmin((ctx as unknown) as MContext, () => {});
+    await isAdmin(ctx as unknown as MContext, () => {});
     expect(ctx).toHaveProperty('state.chat.id', channelId);
     expect(ctx.message.text).not.toMatch(/@\w+/);
 });
@@ -28,7 +28,7 @@ test('sub channel with @', async () => {
 test('sub channel without @', async () => {
     const channelId = 666;
     const ctx = pass('/sub -123456 http://test.test', channelId);
-    await isAdmin((ctx as unknown) as MContext, () => {});
+    await isAdmin(ctx as unknown as MContext, () => {});
     expect(ctx).toHaveProperty('state.chat.id', channelId);
     expect(ctx.message.text).not.toMatch(/-\d+/);
 });
@@ -45,6 +45,6 @@ test('url contain -', async () => {
         '/sub http://ip-243-184bpo123.com/kuaidi100/141abc',
         channelId
     );
-    await isAdmin((ctx as unknown) as MContext, () => {});
+    await isAdmin(ctx as unknown as MContext, () => {});
     expect(ctx).toHaveProperty('state.chat.id', 233233233);
 });

@@ -6,7 +6,7 @@ import QuickLru from 'quick-lru';
 const AcceptHeader =
     'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 ';
 
-const custom = ((got as unknown) as Got).extend({
+const custom = (got as unknown as Got).extend({
     headers: {
         'user-agent': config.UA,
         accept: AcceptHeader
