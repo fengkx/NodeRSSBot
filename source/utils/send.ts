@@ -8,7 +8,9 @@ import { config } from '../config';
 import Telegraf, { Context } from 'telegraf';
 import { Feed, FeedItem } from '../types/feed';
 import { getUserById, migrateUser } from '../proxies/users';
-import { isNone } from '../types/option';
+import { isNone, isSome } from '../types/option';
+import * as ejs from 'ejs';
+import i18n from '../i18n';
 
 /**
  * handle send error log or delete user or migrate user
@@ -47,9 +49,16 @@ const send = async (
 ): Promise<void> => {
     const subscribers = await getSubscribersByFeedId(feed.feed_id);
     if (typeof toSend === 'string') {
+        const tpl = toSend;
         subscribers.map(async (subscribe) => {
             const userId = subscribe.user_id;
             try {
+                const user = await getUserById(userId);
+                let lang = config.lang;
+                if (isSome(user)) {
+                    lang = user.value.lang;
+                }
+                toSend = ejs.render(tpl, { i18n: i18n[lang] });
                 await bot.telegram.sendMessage(userId, toSend, {
                     parse_mode: 'HTML',
                     disable_web_page_preview: true
@@ -59,10 +68,11 @@ const send = async (
             }
         });
     } else {
+        const feedItems = toSend;
         subscribers.map(async (subscribe) => {
             const userId = subscribe.user_id;
             let text = `<b>${sanitize(feed.feed_title)}</b>`;
-            toSend.forEach(function (item) {
+            feedItems.forEach(function (item) {
                 text += `\n<a href="${item.link.trim()}">${sanitize(
                     item.title
                 )}</a>`;

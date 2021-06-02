@@ -280,7 +280,7 @@ async function startFetchProcess(restartTime: number): Promise<void> {
                 const { feed, err } = message;
                 send(
                     bot,
-                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> ${i18n[lang]['ERROR_MANY_TIME']} ${err.message}`,
+                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> <%=i18n['ERROR_MANY_TIME']%> ${err.message}`,
                     feed
                 );
             }
@@ -290,11 +290,11 @@ async function startFetchProcess(restartTime: number): Promise<void> {
                 builder.push(
                     `${feed.feed_title}: <a href="${encodeUrl(
                         feed.url
-                    )}"></a> ${i18n[lang]['ERROR_MANY_TIME']}`
+                    )}"></a> <%=i18n['ERROR_MANY_TIME']%>`
                 ); // feed is from database which not urlencoded
-                builder.push(`<b>${i18n[lang]['FOUND_FEEDS']}</b>:`);
+                builder.push(`<b><%=i18n['FOUND_FEEDS']%></b>:`);
                 builder.push(...new_feed);
-                builder.push(`${i18n[lang]['FEED_CHANGE_TO']} ${new_feed[0]}`);
+                builder.push(`<%=i18n['FEED_CHANGE_TO']%> ${new_feed[0]}`);
                 send(bot, builder.join('\n'), feed);
             }
         }
@@ -316,3 +316,4 @@ logger.info(`Database is located in ${db_path}`);
 logger.info(`Using Default language is ${lang}`);
 logger.info(`send the latest ${item_num} items for each feed`);
 logger.info('NodeRSSBot is ready');
+process.on('uncaughtException', logger.error);
