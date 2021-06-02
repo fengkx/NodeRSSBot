@@ -27,6 +27,6 @@ jobs:
                   npm cache clean --force
                   npm ci
                   npm run build
-                  npm test
+                  npm test -- --forceExit #https://github.com/facebook/jest/issues/9982#issuecomment-758110298
               env:
                   CI: true
