@@ -81,6 +81,11 @@
             "description": "proxy port",
             "required": false
         },
+        "PGSSLMODE": {
+            "description": "fix PostgreSQL connection error on Heroku https://github.com/fengkx/NodeRSSBot/issues/363",
+            "value": "no-verify",
+            "rqeuired": false
+        },
         "RSSBOT_RESP_TIMEOUT": {
             "value": "40",
             "description": "fetch request timeout",
