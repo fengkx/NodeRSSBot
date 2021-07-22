@@ -81,6 +81,10 @@
             "description": "proxy port",
             "required": false
         },
+        "PGSSLMODE": {
+            "description": "fix PostgreSQL connection error on Heroku",
+            "value": no-verify
+        },
         "RSSBOT_RESP_TIMEOUT": {
             "value": "40",
             "description": "fetch request timeout",
