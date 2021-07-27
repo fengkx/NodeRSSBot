@@ -46,7 +46,7 @@
     "js-yaml": "^4.1.0",
     "knex": "^0.95.8",
     "node-schedule": "^2.0.0",
-    "pg": "^8.6.0",
+    "pg": "^8.7.0",
     "quick-lru": "^5.1.1",
     "socks-proxy-agent": "^5.0.0",
     "sqlite3": "^5.0.2",
