@@ -1,4 +1,4 @@
-import { config } from '../config';
+import { config } from '../config.js';
 const { proxy } = config;
 import {
     httpOverHttp,
@@ -6,9 +6,10 @@ import {
     httpsOverHttp,
     httpsOverHttps
 } from 'tunnel';
-import { SocksProxyAgent } from 'socks-proxy-agent';
+import * as SocksProxyAgentNs from 'socks-proxy-agent';
 import { Agent as HttpAgent, AgentOptions } from 'http';
 import { Agent as HttpsAgent } from 'https';
+const { SocksProxyAgent } = SocksProxyAgentNs;
 type Agent = {
     http: HttpAgent;
     https: HttpsAgent;

@@ -1,6 +1,6 @@
-import errors from '../utils/errors';
+import errors from '../utils/errors.js';
 import { Subscribe } from '../types/subscribe';
-import { db } from '../database';
+import { db } from '../database/index.js';
 
 export async function getSubscribersByFeedId(
     feedId: number

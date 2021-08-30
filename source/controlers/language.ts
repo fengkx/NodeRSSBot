@@ -1,5 +1,5 @@
-import { setLangById } from '../proxies/users';
-import i18n from '../i18n';
+import { setLangById } from '../proxies/users.js';
+import i18n from '../i18n.js';
 import { MContext, Next } from '../types/ctx';
 
 const chunk = (input: any[], size: number) => {

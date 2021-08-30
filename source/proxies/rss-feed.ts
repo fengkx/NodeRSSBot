@@ -1,9 +1,9 @@
-import { db } from '../database';
-import errors from '../utils/errors';
+import { db } from '../database/index.js';
+import errors from '../utils/errors.js';
 import { Feed } from '../types/feed';
 import { Subscribe } from '../types/subscribe';
-import { isSome, Option, Optional, Some } from '../types/option';
-import { decodeUrl } from '../utils/urlencode';
+import { isSome, Option, Optional, Some } from '../types/option.js';
+import { decodeUrl } from '../utils/urlencode.js';
 
 export async function sub(
     userId: number,

@@ -1,8 +1,8 @@
-import errors from '../utils/errors';
+import errors from '../utils/errors.js';
 import { User } from '../types/user';
-import { Option, Optional } from '../types/option';
-import logger from '../utils/logger';
-import { db } from '../database';
+import { Option, Optional } from '../types/option.js';
+import logger from '../utils/logger.js';
+import { db } from '../database/index.js';
 
 export async function getUserById(id: number): Promise<Option<User>> {
     try {

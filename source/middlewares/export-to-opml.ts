@@ -1,12 +1,13 @@
-import { getSubscribedFeedsByUserId } from '../proxies/rss-feed';
-import errors from '../utils/errors';
 import * as path from 'path';
-import * as ejs from 'ejs';
 import * as fs from 'fs';
+import * as ejs from 'ejs';
+import { htmlEscape } from 'escape-goat';
+
+import { getSubscribedFeedsByUserId } from '../proxies/rss-feed.js';
+import errors from '../utils/errors.js';
+import { config } from '../config.js';
 import { MContext, Next } from '../types/ctx';
 import { Feed } from '../types/feed';
-import { config } from '../config';
-import { htmlEscape } from 'escape-goat';
 
 function readFilePromise(path: string): Promise<string> {
     return new Promise((resolve, reject) => {

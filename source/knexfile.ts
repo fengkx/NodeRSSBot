@@ -1,9 +1,8 @@
 /* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
-import { config } from './config';
-import { parse } from 'url';
+import { config } from './config.js';
+import { parse, fileURLToPath } from 'url';
 import { Knex } from 'knex';
-import { join } from 'path';
-import logger from './utils/logger';
+import logger from './utils/logger.js';
 
 const parsed = parse(config.db_path);
 const isWindows = process && process.platform && process.platform === 'win32';
@@ -21,9 +20,11 @@ const knexConfig: Knex.Config = {
     client,
     connection: config.db_path,
     migrations: {
+        // @ts-expect-error esm
+        esm: true,
         tableName: 'knex_migrations',
         extension: 'ts',
-        directory: join(__dirname, 'migrations')
+        directory: fileURLToPath(new URL('migrations', import.meta.url))
     },
     pool: {
         min: 1,

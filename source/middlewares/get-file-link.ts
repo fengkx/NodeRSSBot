@@ -1,4 +1,4 @@
-import errors from '../utils/errors';
+import errors from '../utils/errors.js';
 import { MContext, Next } from '../types/ctx';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {

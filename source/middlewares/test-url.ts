@@ -1,12 +1,12 @@
-import got from '../utils/got';
-import { findFeed, isFeedValid } from '../utils/feed';
-import errors from '../utils/errors';
-import i18n from '../i18n';
-import { getFeedByUrl } from '../proxies/rss-feed';
+import got from '../utils/got.js';
+import { findFeed, isFeedValid } from '../utils/feed.js';
+import errors from '../utils/errors.js';
+import i18n from '../i18n.js';
+import { getFeedByUrl } from '../proxies/rss-feed.js';
 import { MContext, Next } from '../types/ctx';
-import { isNone, isSome } from '../types/option';
-import { parseString } from '../parser/parse';
-import { decodeUrl, encodeUrl } from '../utils/urlencode';
+import { isNone, isSome } from '../types/option.js';
+import { parseString } from '../parser/parse.js';
+import { decodeUrl, encodeUrl } from '../utils/urlencode.js';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const url = encodeUrl(ctx.state.feedUrl);

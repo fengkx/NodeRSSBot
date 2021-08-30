@@ -1,8 +1,8 @@
-import errors from '../utils/errors';
-import { getSubscribedFeedsByUserId } from '../proxies/rss-feed';
-import i18n from '../i18n';
+import errors from '../utils/errors.js';
+import { getSubscribedFeedsByUserId } from '../proxies/rss-feed.js';
+import i18n from '../i18n.js';
 import { MContext, Next } from '../types/ctx';
-import { decodeUrl } from '../utils/urlencode';
+import { decodeUrl } from '../utils/urlencode.js';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const { lang } = ctx.state;

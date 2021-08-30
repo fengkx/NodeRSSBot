@@ -1,7 +1,6 @@
-import got from 'got-iconv';
-import { Got } from 'got-iconv';
-import { config } from '../config';
-import agent from './agent';
+import got, { Got } from 'got-iconv';
+import { config } from '../config.js';
+import agent from './agent.js';
 import QuickLru from 'quick-lru';
 const AcceptHeader =
     'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8 ';
