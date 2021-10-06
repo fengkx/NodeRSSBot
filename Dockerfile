@@ -18,5 +18,5 @@ COPY data /app/data
 COPY logs /app/logs
 COPY package.json /app/package.json
 COPY --from=ts-builder /app/dist /app/dist
-COPY --from=dep-builder /app/node_modules /app/node_modules
+COPY --from=dep-builder /app/node_modules-minimal/node_modules /app/node_modules
 CMD npm run start-withsnapshot
