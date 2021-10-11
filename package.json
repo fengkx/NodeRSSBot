@@ -67,7 +67,7 @@
     "cpy": "^8.1.2",
     "cpy-cli": "^3.1.1",
     "del-cli": "^4.0.1",
-    "eslint": "^7.32.0",
+    "eslint": "^8.0.0",
     "eslint-plugin-import": "^2.24.2",
     "jest": "^27.2.4",
     "lockfile-lint": "^4.6.1",
