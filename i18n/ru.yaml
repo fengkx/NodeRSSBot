@@ -47,3 +47,7 @@ CHOOSE_LANG: Выбрать языки
 SET_LANG_TO: Установить язык
 LANG_USAGE: 'USAGE: /lang изменить язык'
 CHOOSE_UNSUB: Выберите подписку, которую хотите отменить
+ACTIVE_FEED_COUNT_WITH_ERROR: Число активных каналов с ошибкой
+TOTAL_ACTIVE_FEED_COUNT: Число активных каналов
+CREATOR_ONLY: Только для создателя бота
+ALLOW_LIST_NOT_INCLUDE: У этого бота включён лист разрешенных и вы в него не входите
