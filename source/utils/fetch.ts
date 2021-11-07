@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import got from '../utils/got';
-import fastQueue from 'fastq';
+import { DiskFastq } from 'disk-fastq';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import logger, { logHttpError } from './logger';
 import { findFeed, getNewItems } from './feed';
@@ -156,27 +156,31 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     return none;
 }
 
-const queue = fastQueue(async (eachFeed: Feed, cb) => {
-    const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-    let fetchedItems: Option<FeedItem[]>;
-    try {
-        fetchedItems = await fetch(eachFeed);
-        if (isNone(fetchedItems)) {
-            cb(undefined, undefined);
-        } else {
-            const [sendItems, newHashList] = await getNewItems(
-                oldHashList,
-                fetchedItems.value
-            );
-            if (sendItems.length > 0) {
-                await updateHashList(eachFeed.feed_id, newHashList);
+const queue = new DiskFastq(
+    async (eachFeed: Feed, cb) => {
+        const oldHashList = JSON.parse(eachFeed.recent_hash_list);
+        let fetchedItems: Option<FeedItem[]>;
+        try {
+            fetchedItems = await fetch(eachFeed);
+            if (isNone(fetchedItems)) {
+                cb(undefined, undefined);
+            } else {
+                const [sendItems, newHashList] = await getNewItems(
+                    oldHashList,
+                    fetchedItems.value
+                );
+                if (sendItems.length > 0) {
+                    await updateHashList(eachFeed.feed_id, newHashList);
+                }
+                cb(null, sendItems);
             }
-            cb(null, sendItems);
+        } catch (e) {
+            cb(e, undefined);
         }
-    } catch (e) {
-        cb(e, undefined);
-    }
-}, concurrency);
+    },
+    concurrency,
+    { filePath: path.join(config['PKG_ROOT'], 'data', 'job-queue') }
+);
 
 const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
@@ -189,7 +193,7 @@ const fetchAll = async (): Promise<void> => {
                     process.send({
                         success: true,
                         sendItems: sendItems.slice(0, item_num),
-                        feed: feed
+                        feed
                     } as SuccessMessage);
             }
         })
