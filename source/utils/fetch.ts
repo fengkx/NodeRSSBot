@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import got from '../utils/got';
 import { DiskFastq } from 'disk-fastq';
@@ -248,13 +247,3 @@ switch (unit) {
 }
 
 scheduleJob(rule, run);
-process.on('SIGUSR2', () => {
-    const theQueue = queue.getQueue();
-    if (!process.env.NODE_PRODUTION) {
-        fs.writeFileSync(
-            path.join(config['PKG_ROOT'], 'logs', 'theQueue.json'),
-            JSON.stringify(theQueue)
-        );
-    }
-    logger.info(`worker queue length: ${queue.length()}`);
-});
