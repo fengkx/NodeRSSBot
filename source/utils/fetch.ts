@@ -184,6 +184,9 @@ const queue = new DiskFastq(
 const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
     const allFeeds = await getAllFeeds(config.strict_ttl);
+    if (queue.length > allFeeds.length * 3) {
+        queue.reset();
+    }
     allFeeds.forEach((feed) =>
         queue.push(feed, (err, sendItems) => {
             if (sendItems && !err) {
