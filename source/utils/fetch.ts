@@ -157,18 +157,12 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
 
 const queue = new DiskFastq(
     async (eachFeed: Feed, cb) => {
-        let timeOuted = false;
-        const timeoutId = setTimeout(() => {
-            timeOuted = true;
-            cb(new Error('TASK TIMOUT'));
-        }, (config.resp_timeout + config.before_resp_timeout) * 1000);
         const oldHashList = JSON.parse(eachFeed.recent_hash_list);
         let fetchedItems: Option<FeedItem[]>;
         try {
             fetchedItems = await fetch(eachFeed);
             if (isNone(fetchedItems)) {
-                clearTimeout(timeoutId);
-                !timeOuted && cb(undefined, undefined);
+                cb(undefined, undefined);
             } else {
                 const [sendItems, newHashList] = await getNewItems(
                     oldHashList,
@@ -177,12 +171,12 @@ const queue = new DiskFastq(
                 if (sendItems.length > 0) {
                     await updateHashList(eachFeed.feed_id, newHashList);
                 }
-                clearTimeout(timeoutId);
-                !timeOuted && cb(null, sendItems);
+                cb(null, sendItems);
             }
         } catch (e) {
-            clearTimeout(timeoutId);
-            !timeOuted && cb(e, undefined);
+            cb(e, undefined);
+        } finally {
+            cb(undefined);
         }
     },
     concurrency,
@@ -262,6 +256,6 @@ process.on('SIGUSR2', () => {
     logger.info(
         `worker queue length: ${queue.fastq.length()}, ${
             queue.queue.remainCount
-        } => ${queue.length} ${(queue.fastq as any).running()}`
+        } => ${queue.length} Running: ${(queue.fastq as any).running()}`
     );
 });
