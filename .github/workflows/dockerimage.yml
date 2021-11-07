@@ -1,40 +1,39 @@
 name: Publish Docker
 on:
-  - push
-  - pull_request_target
-    
+    - push
+    - pull_request_target
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        if: ${{ github.ref == 'refs/heads/master' }}
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: output-docker-tag
-        shell: bash
-        id: docker-tag
-        run: |    
-          unset BRANCH_NAME
-          BRANCH_NAME=`echo $GITHUB_REF | cut -d '/' -f3 -`
-          echo "BRANCH_NAME: $BRANCH_NAME"
-          unset IMG_TAGS ; if [[ $BRANCH_NAME == "master" ]]; then IMG_TAGS='latest' ; else IMG_TAGS="$BRANCH_NAME"; fi
-          SHA_TAG=`echo $GITHUB_SHA | head -c 6`
-          echo "SHA_TAG: $SHA_TAG"
-          echo ::set-output name=DOCKER_BRANCH_TAG::${IMG_TAGS}
-          echo ::set-output name=DOCKER_SHA_TAG::${SHA_TAG}
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
-          push: ${{ github.ref == 'refs/heads/master' }}
-          tags: fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_BRANCH_TAG}},fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_SHA_TAG}}
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v1
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v1
+            - name: Login to DockerHub
+              uses: docker/login-action@v1
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+            - name: output-docker-tag
+              shell: bash
+              id: docker-tag
+              run: |
+                  unset BRANCH_NAME
+                  BRANCH_NAME=`echo $GITHUB_REF | cut -d '/' -f3 -`
+                  echo "BRANCH_NAME: $BRANCH_NAME"
+                  unset IMG_TAGS ; if [[ $BRANCH_NAME == "master" ]]; then IMG_TAGS='latest' ; else IMG_TAGS="$BRANCH_NAME"; fi
+                  SHA_TAG=`echo $GITHUB_SHA | head -c 6`
+                  echo "SHA_TAG: $SHA_TAG"
+                  echo ::set-output name=DOCKER_BRANCH_TAG::${IMG_TAGS}
+                  echo ::set-output name=DOCKER_SHA_TAG::${SHA_TAG}
+            - name: Build and push
+              uses: docker/build-push-action@v2
+              with:
+                  context: .
+                  platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+                  push: true
+                  tags: fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_BRANCH_TAG}},fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_SHA_TAG}}
