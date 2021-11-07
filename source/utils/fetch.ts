@@ -250,3 +250,10 @@ switch (unit) {
 }
 
 scheduleJob(rule, run);
+process.on('SIGUSR2', () => {
+    logger.info(
+        `worker queue length: ${queue.fastq.length()}, ${
+            queue.queue.remainCount
+        } => ${queue.length}`
+    );
+});
