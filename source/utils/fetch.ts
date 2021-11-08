@@ -155,7 +155,7 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     return none;
 }
 
-const queue = new DiskFastq(
+const queue = new DiskFastq<never, Feed>(
     async (eachFeed: Feed, cb) => {
         const oldHashList = JSON.parse(eachFeed.recent_hash_list);
         let fetchedItems: Option<FeedItem[]>;
@@ -175,12 +175,21 @@ const queue = new DiskFastq(
             }
         } catch (e) {
             cb(e, undefined);
-        } finally {
-            cb(undefined);
         }
     },
     concurrency,
-    { filePath: path.join(config['PKG_ROOT'], 'data', 'job-queue') }
+    { filePath: path.join(config['PKG_ROOT'], 'data', 'job-queue') },
+    (err, sendItems, feed) => {
+        if (sendItems && !err) {
+            process.send &&
+                sendItems &&
+                process.send({
+                    success: true,
+                    sendItems: sendItems.slice(0, item_num),
+                    feed
+                } as SuccessMessage);
+        }
+    }
 );
 
 const fetchAll = async (): Promise<void> => {
@@ -189,19 +198,7 @@ const fetchAll = async (): Promise<void> => {
     if (queue.length > allFeeds.length * 3) {
         queue.reset();
     }
-    allFeeds.forEach((feed) =>
-        queue.push(feed, (err, sendItems) => {
-            if (sendItems && !err) {
-                process.send &&
-                    sendItems &&
-                    process.send({
-                        success: true,
-                        sendItems: sendItems.slice(0, item_num),
-                        feed
-                    } as SuccessMessage);
-            }
-        })
-    );
+    allFeeds.forEach((feed) => queue.push(feed));
 };
 
 function run() {

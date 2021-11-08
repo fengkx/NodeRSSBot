@@ -5,6 +5,7 @@ dist
 #data
 database.db
 db
+data/job-queue
 # Logs
 error*.log
 combined*.log
