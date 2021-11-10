@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "outDir": "dist",
-        "target": "es2019", // Node.js 12
-        "module": "commonjs",
+        "outDir": "dist/source",
+        "target": "es2020", // Node.js 12
+        "module": "esnext",
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "declaration": false,
@@ -18,7 +18,8 @@
         "useDefineForClassFields": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
     },
     "include": ["source"]
 }

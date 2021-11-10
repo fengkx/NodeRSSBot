@@ -1,7 +1,7 @@
-import { none, Option, Optional } from '../types/option';
-import { parseString, TRSS } from '../parser/parse';
+import { none, Option, Optional } from '../types/option.js';
+import { parseString, TRSS } from '../parser/parse.js';
 import { FeedItem } from '../types/feed';
-import hashFeed from './hash-feed';
+import hashFeed from './hash-feed.js';
 
 export async function isFeedValid(feedStr: string): Promise<Option<TRSS>> {
     try {

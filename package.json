@@ -2,12 +2,13 @@
   "name": "noderssbot",
   "version": "0.10.1",
   "description": "Another Telegram RSSBot in Node.js",
-  "main": "dist/source",
+  "exports": "./dist/source/index.js",
   "engines": {
-    "node": ">=12.13"
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
+  "type": "module",
   "scripts": {
-    "build": "del-cli dist && tsc && cpy source/template dist/source/template && cpy i18n dist/i18n",
+    "build": "del-cli dist && tsc && cpy source/template dist/source/template && cpy i18n dist/i18n && cpy package.json dist",
     "start": "cross-env NODE_PRODUTION=true node dist/source/index.js",
     "start-withsnapshot": "cross-env NODE_PRODUTION=true node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "start-docker": "node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",

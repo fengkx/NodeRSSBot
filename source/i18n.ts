@@ -2,9 +2,12 @@ import * as yaml from 'js-yaml';
 import * as fs from 'fs';
 import * as path from 'path';
 import { I18n, I18nLang } from './types/i18n';
+import { fileURLToPath } from 'url';
 
+const __dirname = fileURLToPath(new URL('../i18n', import.meta.url));
 const result: I18n = {};
 const localeDir = path.join(__dirname, '../i18n'); // /dist/source/i18n -> /dist/[i18n]
+console.log(__dirname, localeDir);
 const baseStr = fs.readFileSync(path.join(localeDir, 'en.yaml'), {
     encoding: 'utf8'
 });

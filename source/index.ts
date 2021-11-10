@@ -1,14 +1,13 @@
 import Telegraf from 'telegraf';
 import { fork } from 'child_process';
 import { join } from 'path';
-import * as pkg from '../package.json';
-import send from './utils/send';
-import logger from './utils/logger';
-import errors from './utils/errors';
-import i18n from './i18n';
-import { initDB } from './database';
+import send from './utils/send.js';
+import logger from './utils/logger.js';
+import errors from './utils/errors.js';
+import i18n from './i18n.js';
+import { initDB } from './database/index.js';
 import cleanStack from 'clean-stack';
-import { replyKeyboard, changeLangCallback } from './controlers/language';
+import { replyKeyboard, changeLangCallback } from './controlers/language.js';
 import {
     getUrlById,
     rss,
@@ -17,33 +16,36 @@ import {
     unsubAll,
     viewAll,
     getActiveFeedWithErrorCount
-} from './controlers/rss';
-import importReply from './controlers/import-reply';
-import { config } from './config';
-import agent from './utils/agent';
+} from './controlers/rss.js';
+import importReply from './controlers/import-reply.js';
+import { config } from './config.js';
+import agent from './utils/agent.js';
 const { token, view_all, lang, item_num, db_path, not_send } = config;
 
-import getUrl from './middlewares/get-url';
-import getUrlByTitle from './middlewares/get-url-by-title';
-import getFileLink from './middlewares/get-file-link';
-import sendError from './middlewares/send-error';
-import testUrl from './middlewares/test-url';
-import isAdmin from './middlewares/is-admin';
-import onlyPrivateChat from './middlewares/only-private-chat';
-import subMultiUrl from './middlewares/sub-multi-url';
-import exportToOpml from './middlewares/export-to-opml';
-import importFromOpml from './middlewares/import-from-opml';
-import userAllowList from './middlewares/user_allow_list';
+import getUrl from './middlewares/get-url.js';
+import getUrlByTitle from './middlewares/get-url-by-title.js';
+import getFileLink from './middlewares/get-file-link.js';
+import sendError from './middlewares/send-error.js';
+import testUrl from './middlewares/test-url.js';
+import isAdmin from './middlewares/is-admin.js';
+import onlyPrivateChat from './middlewares/only-private-chat.js';
+import subMultiUrl from './middlewares/sub-multi-url.js';
+import exportToOpml from './middlewares/export-to-opml.js';
+import importFromOpml from './middlewares/import-from-opml.js';
+import userAllowList from './middlewares/user_allow_list.js';
 import { MContext, Next } from './types/ctx';
-import twoKeyReply from './utils/two-key-reply';
+import twoKeyReply from './utils/two-key-reply.js';
 import {
     isChangeFeedUrl,
     isErrorMaxTime,
     isSuccess,
     Message
-} from './types/message';
-import { migrateUser } from './proxies/users';
-import { encodeUrl } from './utils/urlencode';
+} from './types/message.js';
+import { migrateUser } from './proxies/users.js';
+import { encodeUrl } from './utils/urlencode.js';
+import { createRequire } from 'module';
+const cjsRequire = createRequire(import.meta.url);
+const pkg = cjsRequire('../package.json');
 
 const bot = new Telegraf(token, {
     telegram: {

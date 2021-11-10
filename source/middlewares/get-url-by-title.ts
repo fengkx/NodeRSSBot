@@ -1,8 +1,8 @@
 import { MContext, Next } from '../types/ctx';
 
-import { getFeedsByTitle } from '../proxies/rss-feed';
-import errors from '../utils/errors';
-import { decodeUrl } from '../utils/urlencode';
+import { getFeedsByTitle } from '../proxies/rss-feed.js';
+import errors from '../utils/errors.js';
+import { decodeUrl } from '../utils/urlencode.js';
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const me = await ctx.telegram.getMe();
     const myId = me.id;

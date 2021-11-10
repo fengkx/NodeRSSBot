@@ -1,9 +1,9 @@
 import { Outline } from '../types/outline';
-import got from '../utils/got';
+import got from '../utils/got.js';
 import { transform } from 'camaro';
-import errors from '../utils/errors';
-import { sub } from '../proxies/rss-feed';
-import i18n from '../i18n';
+import errors from '../utils/errors.js';
+import { sub } from '../proxies/rss-feed.js';
+import i18n from '../i18n.js';
 import { MContext, Next } from '../types/ctx';
 
 const getOutlines = async function (data: string): Promise<Outline[]> {

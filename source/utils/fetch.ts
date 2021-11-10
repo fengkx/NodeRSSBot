@@ -1,14 +1,14 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import got from '../utils/got';
+import got from '../utils/got.js';
 import fastQueue from 'fastq';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import logger, { logHttpError } from './logger';
-import { findFeed, getNewItems } from './feed';
-import { config } from '../config';
+import { findFeed, getNewItems } from './feed.js';
+import { config } from '../config.js';
 import { Feed, FeedItem } from '../types/feed';
-import { Optional, Option, isNone, none, isSome } from '../types/option';
-import { parseString } from '../parser/parse';
+import { Optional, Option, isNone, none, isSome } from '../types/option.js';
+import { parseString } from '../parser/parse.js';
 import {
     getAllFeeds,
     updateHashList,

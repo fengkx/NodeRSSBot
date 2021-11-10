@@ -1,12 +1,14 @@
 import * as path from 'path';
 import { Config } from './types/config';
-import { version } from '../package.json';
 import env from 'env-var';
+import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
 
-const PKGROOT = path.join(
-    __dirname,
-    __dirname.includes('dist') ? '../..' : '..'
-);
+const cjsRequire = createRequire(import.meta.url);
+const { version } = cjsRequire('../package.json');
+
+const PKGROOT = fileURLToPath(new URL('../..', import.meta.url));
+console.log(PKGROOT);
 export const config: Config = {
     token: env.get('RSSBOT_TOKEN').required().asString(),
     proxy: {

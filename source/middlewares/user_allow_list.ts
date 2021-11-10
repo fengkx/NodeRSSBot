@@ -1,8 +1,8 @@
-import { config } from '../config';
-import i18n from '../i18n';
+import { config } from '../config.js';
+import i18n from '../i18n.js';
 import { MContext, Next } from '../types/ctx';
-import { getUserById } from '../proxies/users';
-import { isSome } from '../types/option';
+import { getUserById } from '../proxies/users.js';
+import { isSome } from '../types/option.js';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     let id: number;

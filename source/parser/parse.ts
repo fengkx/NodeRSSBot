@@ -1,6 +1,6 @@
-import { detectFeed } from './detect-feed';
+import { detectFeed } from './detect-feed.js';
 import { transform } from 'camaro';
-import { atomTpl, rdfTpl, rss2Tpl } from './templates';
+import { atomTpl, rdfTpl, rss2Tpl } from './templates.js';
 export type TRSS = {
     version: string;
     title: string;

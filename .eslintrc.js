@@ -10,10 +10,11 @@ module.exports = {
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended'
+        'plugin:@typescript-eslint/recommended',
+        'plugin:import/typescript'
     ],
     parserOptions: {
-        ecmaVersion: 2018
+        ecmaVersion: 2020
     },
     rules: {
         camelcase: 'off',

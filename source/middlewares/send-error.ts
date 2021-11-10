@@ -1,6 +1,6 @@
-import i18n from '../i18n';
-import logger from '../utils/logger';
-import errors from '../utils/errors';
+import i18n from '../i18n.js';
+import logger from '../utils/logger.js';
+import errors from '../utils/errors.js';
 import { MContext, Next } from '../types/ctx';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {

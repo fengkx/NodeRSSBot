@@ -1,6 +1,6 @@
-import i18n from '../i18n';
-import logger, { logDBError } from './logger';
-import { config } from '../config';
+import i18n from '../i18n.js';
+import logger, { logDBError } from './logger.js';
+import { config } from '../config.js';
 
 export class ControllableError extends Error {
     code: string;

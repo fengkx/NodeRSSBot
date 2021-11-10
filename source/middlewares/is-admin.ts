@@ -1,9 +1,9 @@
-import { config } from '../config';
-import errors from '../utils/errors';
-import { getUserById, newUser } from '../proxies/users';
+import { config } from '../config.js';
+import errors from '../utils/errors.js';
+import { getUserById, newUser } from '../proxies/users.js';
 import { MContext, Next } from '../types/ctx';
 import { User } from 'telegraf/typings/telegram-types';
-import { isNone, Option } from '../types/option';
+import { isNone, Option } from '../types/option.js';
 import { User as DBUser } from '../types/user';
 
 /**

@@ -1,12 +1,12 @@
-import errors from '../utils/errors';
-import got from '../utils/got';
-import { getFeedByUrl, sub } from '../proxies/rss-feed';
-import i18n from '../i18n';
+import errors from '../utils/errors.js';
+import got from '../utils/got.js';
+import { getFeedByUrl, sub } from '../proxies/rss-feed.js';
+import i18n from '../i18n.js';
 import { MContext, Next } from '../types/ctx';
-import { isSome } from '../types/option';
+import { isSome } from '../types/option.js';
 import { Feed } from '../types/feed';
-import { parseString } from '../parser/parse';
-import { decodeUrl, encodeUrl } from '../utils/urlencode';
+import { parseString } from '../parser/parse.js';
+import { decodeUrl, encodeUrl } from '../utils/urlencode.js';
 
 export default async (ctx: MContext, next: Next): Promise<void> => {
     const urls = ctx.message.text.match(

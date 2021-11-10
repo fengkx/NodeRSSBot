@@ -1,16 +1,16 @@
 import {
     getSubscribersByFeedId,
     deleteSubscribersByUserId
-} from '../proxies/subscribes';
-import logger from './logger';
-import sanitize from './sanitize';
-import { config } from '../config';
+} from '../proxies/subscribes.js';
+import logger from './logger.js';
+import sanitize from './sanitize.js';
+import { config } from '../config.js';
 import Telegraf, { Context } from 'telegraf';
 import { Feed, FeedItem } from '../types/feed';
-import { getUserById, migrateUser } from '../proxies/users';
-import { isNone, isSome } from '../types/option';
+import { getUserById, migrateUser } from '../proxies/users.js';
+import { isNone, isSome } from '../types/option.js';
 import * as ejs from 'ejs';
-import i18n from '../i18n';
+import i18n from '../i18n.js';
 
 /**
  * handle send error log or delete user or migrate user

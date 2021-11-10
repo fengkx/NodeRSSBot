@@ -1,7 +1,7 @@
 import knex from 'knex';
-import { config } from '../config';
-import knexConfig from '../knexfile';
-import logger from '../utils/logger';
+import { config } from '../config.js';
+import knexConfig from '../knexfile.js';
+import logger from '../utils/logger.js';
 export const db = knex({
     ...knexConfig,
     debug: process.env.NODE_ENV === 'development'

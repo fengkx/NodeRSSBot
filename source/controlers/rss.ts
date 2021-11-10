@@ -1,11 +1,11 @@
-import * as RSS from '../proxies/rss-feed';
-import i18n from '../i18n';
-import twoKeyReply from '../utils/two-key-reply';
-import errors from '../utils/errors';
+import * as RSS from '../proxies/rss-feed.js';
+import i18n from '../i18n.js';
+import twoKeyReply from '../utils/two-key-reply.js';
+import errors from '../utils/errors.js';
 import { MContext, Next } from '../types/ctx';
-import { isNone } from '../types/option';
-import { decodeUrl, encodeUrl } from '../utils/urlencode';
-import sanitize from '../utils/sanitize';
+import { isNone } from '../types/option.js';
+import { decodeUrl, encodeUrl } from '../utils/urlencode.js';
+import sanitize from '../utils/sanitize.js';
 
 export async function sub(ctx: MContext, next: Next): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
