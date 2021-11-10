@@ -44,7 +44,7 @@
     "env-var": "^7.0.1",
     "escape-goat": "3.0.0",
     "fastq": "^1.13.0",
-    "got-iconv": "^2.1.0",
+    "got-iconv": "^3.0.0-beta.0",
     "js-yaml": "^4.1.0",
     "knex": "^0.95.11",
     "node-schedule": "^2.0.0",
