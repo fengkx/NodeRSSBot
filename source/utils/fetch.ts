@@ -202,14 +202,14 @@ const fetchAll = async (): Promise<void> => {
 };
 
 function run() {
-    try {
-        fetchAll().then(() => logger.info('fetch a round'));
-    } catch (e) {
-        logger.error(
-            `[Catch in all ${e.name}] ${e.url} ${e.statusCode} ${e.statusMessage}`
-        );
-        logger.debug(e);
-    }
+    fetchAll()
+        .then(() => logger.info('fetch a round'))
+        .catch((e) => {
+            logger.error(
+                `[Catch in all ${e.name}] ${e.url} ${e.statusCode} ${e.statusMessage}`
+            );
+            logger.debug(e);
+        });
 }
 function gc() {
     const beforeGC = process.memoryUsage();
