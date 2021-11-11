@@ -1,7 +1,6 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import got from '../utils/got';
-import fastQueue from 'fastq';
+import { DiskFastq } from 'disk-fastq';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import logger, { logHttpError } from './logger';
 import { findFeed, getNewItems } from './feed';
@@ -156,55 +155,61 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     return none;
 }
 
-const queue = fastQueue(async (eachFeed: Feed, cb) => {
-    const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-    let fetchedItems: Option<FeedItem[]>;
-    try {
-        fetchedItems = await fetch(eachFeed);
-        if (isNone(fetchedItems)) {
-            cb(undefined, undefined);
-        } else {
-            const [sendItems, newHashList] = await getNewItems(
-                oldHashList,
-                fetchedItems.value
-            );
-            if (sendItems.length > 0) {
-                await updateHashList(eachFeed.feed_id, newHashList);
+const queue = new DiskFastq<never, Feed>(
+    async (eachFeed: Feed, cb) => {
+        const oldHashList = JSON.parse(eachFeed.recent_hash_list);
+        let fetchedItems: Option<FeedItem[]>;
+        try {
+            fetchedItems = await fetch(eachFeed);
+            if (isNone(fetchedItems)) {
+                cb(undefined, undefined);
+            } else {
+                const [sendItems, newHashList] = await getNewItems(
+                    oldHashList,
+                    fetchedItems.value
+                );
+                if (sendItems.length > 0) {
+                    await updateHashList(eachFeed.feed_id, newHashList);
+                }
+                cb(null, sendItems);
             }
-            cb(null, sendItems);
+        } catch (e) {
+            cb(e, undefined);
         }
-    } catch (e) {
-        cb(e, undefined);
+    },
+    concurrency,
+    { filePath: path.join(config['PKG_ROOT'], 'data', 'job-queue') },
+    (err, sendItems, feed) => {
+        if (sendItems && !err) {
+            process.send &&
+                sendItems &&
+                process.send({
+                    success: true,
+                    sendItems: sendItems.slice(0, item_num),
+                    feed
+                } as SuccessMessage);
+        }
     }
-}, concurrency);
+);
 
 const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
     const allFeeds = await getAllFeeds(config.strict_ttl);
-    allFeeds.forEach((feed) =>
-        queue.push(feed, (err, sendItems) => {
-            if (sendItems && !err) {
-                process.send &&
-                    sendItems &&
-                    process.send({
-                        success: true,
-                        sendItems: sendItems.slice(0, item_num),
-                        feed: feed
-                    } as SuccessMessage);
-            }
-        })
-    );
+    if (queue.length > allFeeds.length * 3) {
+        queue.reset();
+    }
+    allFeeds.forEach((feed) => queue.push(feed));
 };
 
 function run() {
-    try {
-        fetchAll().then(() => logger.info('fetch a round'));
-    } catch (e) {
-        logger.error(
-            `[Catch in all ${e.name}] ${e.url} ${e.statusCode} ${e.statusMessage}`
-        );
-        logger.debug(e);
-    }
+    fetchAll()
+        .then(() => logger.info('fetch a round'))
+        .catch((e) => {
+            logger.error(
+                `[Catch in all ${e.name}] ${e.url} ${e.statusCode} ${e.statusMessage}`
+            );
+            logger.debug(e);
+        });
 }
 function gc() {
     const beforeGC = process.memoryUsage();
@@ -245,12 +250,9 @@ switch (unit) {
 
 scheduleJob(rule, run);
 process.on('SIGUSR2', () => {
-    const theQueue = queue.getQueue();
-    if (!process.env.NODE_PRODUTION) {
-        fs.writeFileSync(
-            path.join(config['PKG_ROOT'], 'logs', 'theQueue.json'),
-            JSON.stringify(theQueue)
-        );
-    }
-    logger.info(`worker queue length: ${queue.length()}`);
+    logger.info(
+        `worker queue length: ${queue.fastq.length()}, ${
+            queue.queue.remainCount
+        } => ${queue.length} Running: ${(queue.fastq as any).running()}`
+    );
 });
