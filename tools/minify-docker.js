@@ -8,15 +8,16 @@ const files = [
     'node_modules/cross-env/src/index.js',
     'dist/source/utils/fetch.js'
 ];
-const exclude = [/cross-env/, /\.wasm$/];
 const resultFolder = 'node_modules-minimal';
 
 (async () => {
+    const cache = Object.create(null);
     const { fileList } = await nodeFileTrace(files, {
-        base: path.resolve(path.join(__dirname, '..'))
+        base: path.resolve(path.join(__dirname, '..')),
+        cache
     });
-
-    const deps = fileList.filter((f) => f.includes('node_modules'));
+    const deps = Array.from(fileList).filter((f) => f.includes('node_modules'));
+    console.log(deps);
     return cpy(deps, path.resolve(resultFolder), {
         parents: true
     });
