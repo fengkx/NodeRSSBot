@@ -21,4 +21,5 @@ export type Config = {
     before_resp_timeout: number;
     allow_list: number[] | null;
     auto_migrate: boolean;
+    sentry_dsn?: string;
 };

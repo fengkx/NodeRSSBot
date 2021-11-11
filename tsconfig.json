@@ -18,6 +18,8 @@
         "useDefineForClassFields": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
+        "sourceMap": true,
+        "inlineSources": true,
         "esModuleInterop": true
     },
     "include": ["source"]

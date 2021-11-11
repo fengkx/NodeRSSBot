@@ -2,6 +2,9 @@ import * as path from 'path';
 import got from '../utils/got';
 import { DiskFastq } from 'disk-fastq';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
+import * as Sentry from '@sentry/node';
+import { RewriteFrames } from '@sentry/integrations';
+
 import logger, { logHttpError } from './logger';
 import { findFeed, getNewItems } from './feed';
 import { config } from '../config';
@@ -207,6 +210,18 @@ function gc() {
         }`
     );
     setTimeout(gc, 3 * 60 * 1000);
+}
+
+if (config.sentry_dsn) {
+    Sentry.init({
+        dsn: config.sentry_dsn,
+        integrations: [
+            new RewriteFrames({
+                root: __dirname
+            })
+        ],
+        tracesSampleRate: 0.5
+    });
 }
 gc();
 run();
