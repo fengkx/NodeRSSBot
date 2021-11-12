@@ -17,7 +17,6 @@ const resultFolder = 'node_modules-minimal';
         cache
     });
     const deps = Array.from(fileList).filter((f) => f.includes('node_modules'));
-    console.log(deps);
     return cpy(deps, path.resolve(resultFolder), {
         parents: true
     });

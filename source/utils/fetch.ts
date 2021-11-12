@@ -217,7 +217,7 @@ if (config.sentry_dsn) {
         dsn: config.sentry_dsn,
         integrations: [
             new RewriteFrames({
-                root: __dirname
+                root: config['PKG_ROOT']
             })
         ],
         tracesSampleRate: 0.5

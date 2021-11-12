@@ -7,7 +7,7 @@ const PKGROOT = path.join(
     __dirname,
     __dirname.includes('dist') ? '../..' : '..'
 );
-export const config: Config = {
+export const config: Omit<Config, 'PKG_ROOT'> = {
     token: env.get('RSSBOT_TOKEN').required().asString(),
     proxy: {
         protocol: env.get('PROXY_PROTOCOL').asString(),

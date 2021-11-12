@@ -20,6 +20,7 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "inlineSources": true,
+        "sourceRoot": "/",
         "esModuleInterop": true
     },
     "include": ["source"]
