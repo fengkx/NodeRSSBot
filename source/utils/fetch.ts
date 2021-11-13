@@ -35,19 +35,6 @@ function nextFetchTimeStr(minutes: number) {
         .replace('T', ' ');
 }
 
-function gotBugWorkaround(req) {
-    req.prependOnceListener('cacheableResponse', (cacheableResponse) => {
-        const fix = () => {
-            if (!cacheableResponse.req) {
-                return;
-            }
-            cacheableResponse.complete = cacheableResponse.req.res.complete;
-        };
-        cacheableResponse.prependOnceListener('end', fix);
-        fix();
-    });
-}
-
 async function handleErr(e: Messager, feed: Feed): Promise<void> {
     logger.info(`${feed.feed_title} ${feed.url}`, 'ERROR_MANY_TIME');
     const message: ErrorMaxTimeMessage = {
@@ -86,9 +73,7 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
                 'If-Modified-Since': feedModal.last_modified_header
             }
         });
-        if (config.http_cache) {
-            request.on('request', gotBugWorkaround);
-        }
+
         const res = await request;
         if (res.statusCode === 304) {
             const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
