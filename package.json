@@ -48,7 +48,7 @@
     "got-iconv": "^3.0.0-beta.0",
     "js-yaml": "^4.1.0",
     "knex": "^0.95.14",
-    "node-schedule": "^2.0.0",
+    "node-schedule": "^2.1.0",
     "pg": "^8.7.1",
     "quick-lru": "^5.1.1",
     "socks-proxy-agent": "^6.1.0",
