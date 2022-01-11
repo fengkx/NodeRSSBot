@@ -17,13 +17,10 @@ describe('no proxy is set', () => {
         const { config } = await import('../source/config');
         expect(config).toEqual(allNullProxy);
     });
-    test('agent should have keepAlive', async () => {
-        const agentModule = await import('../source/utils/agent');
-        const agent = agentModule.default;
-        expect(agent.http).toHaveProperty('keepAlive', true);
-        expect(agent.https).toHaveProperty('keepAlive', true);
+    test('should no have proxyUrl', async () => {
+        const { proxyUrl } = await import('../source/utils/agent');
+        expect(proxyUrl).toBeNull();
     });
-
     afterAll(() => {
         jest.resetModules();
     });
@@ -46,21 +43,10 @@ describe('http proxy is set', () => {
         const { config } = await import('../source/config');
         expect(config).toEqual(httpProxyCofig);
     });
-    test('agent should contain http and https', async () => {
-        const agentModule = await import('../source/utils/agent');
-        const agent = agentModule.default;
-        expect(agent.http).toHaveProperty(
-            'proxyOptions.host',
-            httpProxyCofig.proxy.host
-        );
-        expect(agent.http).toHaveProperty(
-            'proxyOptions.port',
-            parseInt(httpProxyCofig.proxy.port)
-        );
-        expect(agent.http).toHaveProperty('keepAlive', true);
-        expect(agent.https).toHaveProperty('keepAlive', true);
+    test('should have proxyUrl set', async () => {
+        const { proxyUrl } = await import('../source/utils/agent');
+        expect(proxyUrl).toBe('http://10.0.2.2:1080');
     });
-
     afterAll(() => {
         jest.resetModules();
     });
@@ -84,18 +70,8 @@ describe('https proxy is set', () => {
         expect(config).toEqual(httpsProxyCofig);
     });
     test('agent should contain http and https', async () => {
-        const agentModule = await import('../source/utils/agent');
-        const agent = agentModule.default;
-        expect(agent.http).toHaveProperty(
-            'proxyOptions.host',
-            httpsProxyCofig.proxy.host
-        );
-        expect(agent.http).toHaveProperty(
-            'proxyOptions.port',
-            parseInt(httpsProxyCofig.proxy.port)
-        );
-        expect(agent.http).toHaveProperty('keepAlive', true);
-        expect(agent.https).toHaveProperty('keepAlive', true);
+        const { proxyUrl } = await import('../source/utils/agent');
+        expect(proxyUrl).toBe('https://10.0.2.2:1080');
     });
 
     afterAll(() => {
@@ -121,18 +97,8 @@ describe('socks proxy is set', () => {
         expect(config).toEqual(httpsProxyCofig);
     });
     test('agent should contain http and https', async () => {
-        const agentModule = await import('../source/utils/agent');
-        const agent = agentModule.default;
-        expect(agent.http).toHaveProperty(
-            'proxy.host',
-            httpsProxyCofig.proxy.host
-        );
-        expect(agent.http).toHaveProperty(
-            'proxy.port',
-            parseInt(httpsProxyCofig.proxy.port)
-        );
-        expect(agent.http).toHaveProperty('keepAlive', true);
-        expect(agent.https).toHaveProperty('keepAlive', true);
+        const { proxyUrl } = await import('../source/utils/agent');
+        expect(proxyUrl).toBe('socks://10.0.2.2:1080');
     });
 
     afterAll(() => {

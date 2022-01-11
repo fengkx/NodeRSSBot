@@ -21,9 +21,9 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
                 return feed.value;
             } else {
                 try {
-                    const res = await got.get(encodeUrl(url));
-                    const rssFeed = await parseString(res.body);
-                    // const rssFeed = await parser.parseString(res.body);
+                    const res = await got(encodeUrl(url));
+                    const text = await res.textConverted();
+                    const rssFeed = await parseString(text);
                     return {
                         feed_title: rssFeed.title,
                         url,

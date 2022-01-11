@@ -46,9 +46,8 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
     process.send && process.send(message);
     const { origin } = new URL(feed.url);
     const res = await got(origin);
-    const newUrl = await findFeed(res.body, origin);
-    delete res.body;
-    delete res.rawBody;
+    const text = await res.textConverted();
+    const newUrl = await findFeed(text, origin);
     if (newUrl.length > 0) {
         updateFeedUrl(feed.url, newUrl[0]);
         const message: ChangeFeedUrlMessage = {
@@ -67,7 +66,7 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     try {
         logger.debug(`fetching ${feedUrl}`);
         const requestUrl = encodeUrl(feedUrl);
-        const request = got.get(requestUrl, {
+        const request = got(requestUrl, {
             headers: {
                 'If-None-Match': feedModal.etag_header,
                 'If-Modified-Since': feedModal.last_modified_header
@@ -75,7 +74,7 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
         });
 
         const res = await request;
-        if (res.statusCode === 304) {
+        if (res.status === 304) {
             const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
                 feed_id: feedModal.feed_id,
                 error_count: 0,
@@ -86,10 +85,11 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
             updateFeed(updatedFeedModal);
             return none;
         }
-        if (requestUrl !== res.url && res.statusCode === 301) {
+        if (requestUrl !== res.url && res.status === 301) {
             await handleRedirect(feedUrl, res.url);
         }
-        const feed = await parseString(res.body);
+        const text = await res.textConverted();
+        const feed = await parseString(text);
         const items = feed.items;
         const ttlMinutes =
             typeof feed.ttl === 'number' && !Number.isNaN(feed.ttl)
@@ -106,13 +106,11 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
         if (!Number.isNaN(feed.ttl) && feed.ttl !== feedModal.ttl) {
             updatedFeedModal.ttl = feed.ttl;
         }
-        if (res.headers['last-modified'] !== feedModal.last_modified_header) {
-            updatedFeedModal.last_modified_header =
-                res.headers['last-modified'];
+        const lastModifiedHeader = res.headers.get('last-modified');
+        if (lastModifiedHeader !== feedModal.last_modified_header) {
+            updatedFeedModal.last_modified_header = lastModifiedHeader;
         }
-        const etag = Array.isArray(res.headers['etag'])
-            ? res.headers['etag'][0]
-            : res.headers['etag'];
+        const etag = res.headers.get('etag');
         if (etag !== feedModal.etag_header) {
             updatedFeedModal.etag_header = etag || '';
         }
