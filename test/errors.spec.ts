@@ -1,5 +1,5 @@
 import { ControllableError, newCtrlErr } from '../source/utils/errors';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 jest.mock('../source/utils/logger');
 import logger from '../source/utils/logger';

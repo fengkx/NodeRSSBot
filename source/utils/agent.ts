@@ -65,3 +65,7 @@ if (proxy.protocol && proxy.host && proxy.port) {
 }
 
 export default agent;
+export const proxyUrl =
+    proxy.protocol && proxy.host && proxy.port
+        ? `${proxy.protocol}://${proxy.host}:${proxy.port}`
+        : null;

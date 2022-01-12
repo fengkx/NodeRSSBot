@@ -23,8 +23,8 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
     const { fileLink, lang } = ctx.state;
 
     try {
-        const res = await got.get(fileLink);
-        const opmlStr = res.body;
+        const res = await got(fileLink);
+        const opmlStr = await res.textConverted();
         const outlines = await getOutlines(opmlStr);
         ctx.state.outlines = outlines;
         await Promise.all(

@@ -6,6 +6,7 @@ dist
 database.db
 db
 data/job-queue
+data/fetch-cache
 # Logs
 error*.log
 combined*.log
