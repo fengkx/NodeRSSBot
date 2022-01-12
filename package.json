@@ -51,7 +51,7 @@
     "node-schedule": "^2.1.0",
     "pg": "^8.7.1",
     "quick-lru": "^5.1.1",
-    "socks-proxy-agent": "^6.1.0",
+    "socks-proxy-agent": "^6.1.1",
     "sqlite3": "^5.0.2",
     "telegraf": "^3.38.0",
     "tunnel": "0.0.6",
