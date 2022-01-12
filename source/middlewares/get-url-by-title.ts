@@ -10,6 +10,7 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
     if (!replyToMessage || replyToMessage.from.id !== myId) {
         throw errors.newCtrlErr('UNSUBTHIS_USAGE');
     }
+    //@ts-expect-error text type
     const title = replyToMessage.text.split('\n')[0];
     const feeds = await getFeedsByTitle(title);
     if (feeds.length > 1) throw errors.newCtrlErr('SAME_NAME');

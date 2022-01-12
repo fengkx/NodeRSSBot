@@ -127,6 +127,7 @@ bot.on(
 
 bot.on('migrate_to_chat_id', (ctx) => {
     const from = ctx.update.message.chat.id;
+    // @ts-expect-error migrate_to_chat_id
     const to = ctx.update.message.migrate_to_chat_id;
     migrateUser(from, to);
 });

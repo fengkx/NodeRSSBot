@@ -41,10 +41,7 @@ export async function changeLangCallback(
     const id = data[data.length - 1];
     await setLangById(parseInt(id), lang);
     // @ts-ignore
-    ctx.telegram.answerCbQuery(
-        parseInt(cb.id),
-        i18n[lang]['SET_LANG_TO'] + ' ' + lang
-    );
+    ctx.telegram.answerCbQuery(cb.id, i18n[lang]['SET_LANG_TO'] + ' ' + lang);
     await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
     await next();
 }
