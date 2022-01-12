@@ -19,10 +19,11 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
         try {
             const res = await got(url);
             ctx.state.feedUrl = decodeUrl(res.url); // handle redirect
-            const feedOption = await isFeedValid(res.body);
+            const text = await res.textConverted();
+            const feedOption = await isFeedValid(text);
             if (isNone(feedOption)) {
                 // feed is NOT valid, try to find feed by link tag with type contain rss/atom
-                ctx.state.feedUrls = await findFeed(res.body, res.url);
+                ctx.state.feedUrls = await findFeed(text, res.url);
                 ctx.state.feedUrls = ctx.state.feedUrls.map(decodeUrl);
                 /* eslint no-case-declarations: 0*/
                 switch (ctx.state.feedUrls.length) {
@@ -30,7 +31,8 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
                         throw errors.newCtrlErr('FETCH_ERROR');
                     case 1:
                         const res = await got(encodeUrl(ctx.state.feedUrls[0]));
-                        const realFeed = await parseString(res.body);
+                        const text = await res.textConverted();
+                        const realFeed = await parseString(text);
                         ctx.state.feed = {
                             url: ctx.state.feedUrls[0],
                             feed_title: realFeed.title
