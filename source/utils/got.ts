@@ -53,7 +53,7 @@ export default async function fetch(
     options?: makeFetchHappen.FetchOptions
 ): Promise<FetchResponse> {
     const res = await request(url, options);
-    if (!res.ok) {
+    if (!res.ok && res.status !== 304) {
         throw new HTTPError(res, options);
     }
     return res;
