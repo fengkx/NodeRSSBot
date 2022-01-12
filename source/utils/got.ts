@@ -45,6 +45,11 @@ export const request = makeFetchHappen.defaults({
     },
     timeout: config.resp_timeout * 1000,
     proxy: proxyUrl,
+    retry: {
+        randomize: true,
+        maxTimeout: 30 * 1000,
+        retries: 5
+    },
     cachePath
 });
 
