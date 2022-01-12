@@ -46,7 +46,7 @@
     "env-var": "^7.1.1",
     "escape-goat": "3.0.0",
     "js-yaml": "^4.1.0",
-    "knex": "^0.95.14",
+    "knex": "^0.95.15",
     "make-fetch-happen": "^9.1.0",
     "node-schedule": "^2.1.0",
     "pg": "^8.7.1",
