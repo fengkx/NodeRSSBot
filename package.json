@@ -45,8 +45,6 @@
     "encoding": "^0.1.13",
     "env-var": "^7.1.1",
     "escape-goat": "3.0.0",
-    "fastq": "^1.13.0",
-    "got-iconv": "^3.0.0-beta.0",
     "js-yaml": "^4.1.0",
     "knex": "^0.95.14",
     "make-fetch-happen": "^9.1.0",
