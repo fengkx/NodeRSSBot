@@ -165,7 +165,6 @@ const queue = new DiskFastq<never, Feed>(
     (err, sendItems, feed) => {
         if (sendItems && !err) {
             process.send &&
-                sendItems &&
                 process.send({
                     success: true,
                     sendItems: sendItems.slice(0, item_num),
