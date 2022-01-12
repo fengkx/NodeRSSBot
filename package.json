@@ -50,7 +50,6 @@
     "make-fetch-happen": "^9.1.0",
     "node-schedule": "^2.1.0",
     "pg": "^8.7.1",
-    "quick-lru": "^5.1.1",
     "socks-proxy-agent": "^6.1.0",
     "sqlite3": "^5.0.2",
     "telegraf": "^3.38.0",
