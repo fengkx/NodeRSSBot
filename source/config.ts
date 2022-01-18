@@ -7,7 +7,7 @@ const PKGROOT = path.join(
     __dirname,
     __dirname.includes('dist') ? '../..' : '..'
 );
-export const config: Config = {
+export const config: Omit<Config, 'PKG_ROOT'> = {
     token: env.get('RSSBOT_TOKEN').required().asString(),
     proxy: {
         protocol: env.get('PROXY_PROTOCOL').asString(),
@@ -45,7 +45,8 @@ export const config: Config = {
         .default('')
         .asArray(',')
         .map((id) => Number(id)),
-    auto_migrate: env.get('AUTO_MIGRATE').default(1).asBool()
+    auto_migrate: env.get('AUTO_MIGRATE').default(1).asBool(),
+    sentry_dsn: env.get('SENTRY_DSN').default('').asString()
 };
 Object.defineProperty(config, 'PKG_ROOT', {
     enumerable: false,
