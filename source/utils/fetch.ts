@@ -47,20 +47,24 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
         feed
     };
     process.send && process.send(message);
-    const { origin } = new URL(feed.url);
-    const res = await got(origin);
-    const text = await res.textConverted();
-    const newUrl = await findFeed(text, origin);
-    if (newUrl.length > 0) {
-        updateFeedUrl(feed.url, newUrl[0]);
-        const message: ChangeFeedUrlMessage = {
-            success: false,
-            message: 'CHANGE',
-            new_feed: newUrl,
-            err: { message: e.message },
-            feed: feed
-        };
-        process.send(message);
+    try {
+        const { origin } = new URL(feed.url);
+        const res = await got(origin);
+        const text = await res.textConverted();
+        const newUrl = await findFeed(text, origin);
+        if (newUrl.length > 0) {
+            updateFeedUrl(feed.url, newUrl[0]);
+            const message: ChangeFeedUrlMessage = {
+                success: false,
+                message: 'CHANGE',
+                new_feed: newUrl,
+                err: { message: e.message },
+                feed: feed
+            };
+            process.send(message);
+        }
+    } catch (err) {
+        logger.error(`handlerError: ${err.stack ?? err.message}`);
     }
 }
 
