@@ -3,6 +3,7 @@
   "version": "0.10.1",
   "description": "Another Telegram RSSBot in Node.js",
   "main": "dist/source",
+  "packageManager": "pnpm@6.27.1+",
   "engines": {
     "node": "^14.13.1 || >=16.0.0"
   },
