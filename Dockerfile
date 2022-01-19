@@ -5,7 +5,7 @@ RUN npm i -g pnpm && pnpm i --ignore-scripts && pnpm run build
 
 FROM node:16-alpine as dep-builder
 WORKDIR /app
-COPY package.json package-lock.json /app/
+COPY package.json pnpm-lock.yaml /app/
 COPY tools /app/tools
 RUN apk add --no-cache --update build-base python2 python3
 COPY --from=ts-builder /app/dist /app/dist
