@@ -4,8 +4,7 @@
   "description": "Another Telegram RSSBot in Node.js",
   "main": "dist/source",
   "engines": {
-    "node": "^14.13.1 || >=16.0.0",
-    "npm": ">=7"
+    "node": "^14.13.1 || >=16.0.0"
   },
   "scripts": {
     "build": "del-cli dist && tsc && cpy source/template dist/source/template && cpy i18n dist/i18n",

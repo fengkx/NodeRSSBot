@@ -13,7 +13,7 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [12.x, 14.x, 15.x, 16.x]
+                node-version: [14.x, 15.x, 16.x]
 
         steps:
             - uses: actions/checkout@v1
@@ -21,12 +21,22 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node-version }}
-            - name: npm install, build, and test
+            - name: Cache pnpm modules
+                uses: actions/cache@v2
+                with:
+                path: ~/.pnpm-store
+                key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+                restore-keys: |
+                    ${{ runner.os }}-
+            - uses: pnpm/action-setup@v2.0.1
+                with:
+                version: 6
+                run_install: |
+                    - recursive: true
+                    - args: [--frozen-lockfile]
+            - name: build, and test
               run: |
-                  npm i -g npm
-                  npm cache clean --force
-                  npm ci
-                  npm run build
-                  npm test -- --forceExit #https://github.com/facebook/jest/issues/9982#issuecomment-758110298
+                  pnpm run build
+                  pnpm test -- --forceExit #https://github.com/facebook/jest/issues/9982#issuecomment-758110298
               env:
                   CI: true
