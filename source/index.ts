@@ -271,6 +271,9 @@ async function startFetchProcess(restartTime: number): Promise<void> {
     const child = fork(fetchJS, [], {
         execArgv
     });
+    process.once('exit', () => {
+        child.kill(9);
+    });
     child.on('message', function (message: Message | string) {
         if (typeof message === 'string') logger.info(message);
         else if (isSuccess(message)) {
