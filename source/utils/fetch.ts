@@ -260,3 +260,6 @@ process.on('SIGUSR2', () => {
         } => ${queue.length} Running: ${(queue.fastq as any).running()}`
     );
 });
+process.on('disconnect', () => {
+    process.exit();
+});
