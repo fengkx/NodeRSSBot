@@ -1,4 +1,4 @@
-import { htmlEscape } from 'escape-goat';
+import { htmlEscape } from '@cjsa/escape-goat/dist-cjs/index.cjs';
 
 // escape and clean up text to send in telegram
 export default function (s: string): string {

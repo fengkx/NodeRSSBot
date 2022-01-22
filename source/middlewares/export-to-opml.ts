@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { MContext, Next } from '../types/ctx';
 import { Feed } from '../types/feed';
 import { config } from '../config';
-import { htmlEscape } from 'escape-goat';
+import { htmlEscape } from '@cjsa/escape-goat/dist-cjs/index.cjs';
 
 function readFilePromise(path: string): Promise<string> {
     return new Promise((resolve, reject) => {
