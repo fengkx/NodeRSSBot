@@ -1,6 +1,6 @@
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import cleanStack from '@cjsa/clean-stack/dist-cjs/index.cjs';
+import cleanStack from '@cjsa/clean-stack';
 const logger = winston.createLogger({
     level: process.env.NODE_PRODUTION ? 'info' : 'debug',
     format: winston.format.combine(

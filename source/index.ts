@@ -7,7 +7,7 @@ import logger from './utils/logger';
 import errors from './utils/errors';
 import i18n from './i18n';
 import { initDB } from './database';
-import cleanStack from '@cjsa/clean-stack/dist-cjs/index.cjs';
+import cleanStack from '@cjsa/clean-stack';
 import { replyKeyboard, changeLangCallback } from './controlers/language';
 import {
     getUrlById,
