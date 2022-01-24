@@ -58,7 +58,7 @@
     "telegraf": "^3.38.0",
     "tunnel": "0.0.6",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5"
+    "winston-daily-rotate-file": "^4.6.0"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.0",
