@@ -17,8 +17,7 @@ import {
     failAttempt,
     getFeedByUrl,
     updateFeed,
-    handleRedirect,
-    updateFeedUrl
+    handleRedirect
 } from '../proxies/rss-feed';
 import {
     Messager,
@@ -53,7 +52,7 @@ async function handleErr(e: Messager, feed: Feed): Promise<void> {
         const text = await res.textConverted();
         const newUrl = await findFeed(text, origin);
         if (newUrl.length > 0) {
-            updateFeedUrl(feed.url, newUrl[0]);
+            await handleRedirect(feed.url, newUrl[0]);
             const message: ChangeFeedUrlMessage = {
                 success: false,
                 message: 'CHANGE',
