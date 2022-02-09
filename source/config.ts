@@ -35,10 +35,6 @@ export const config: Omit<Config, 'PKG_ROOT'> = {
     not_send: env.get('NOT_SEND').default(0).asBool(), // just for debug use
     concurrency: env.get('RSSBOT_CONCURRENCY').default(200).asIntPositive(),
     delete_on_err_send: env.get('DELETE_ON_ERR_SEND').default(1).asBool(), // block and chat not found
-    before_resp_timeout: env
-        .get('RSSBOT_BEFORE_RESP_TIMEOUT')
-        .default(3)
-        .asIntPositive(),
     resp_timeout: env.get('RSSBOT_RESP_TIMEOUT').default(40).asIntPositive(),
     allow_list: env
         .get('RSSBOT_ALLOW_LIST')
