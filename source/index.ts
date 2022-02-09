@@ -1,4 +1,4 @@
-import Telegraf from 'telegraf';
+import { Telegraf } from 'telegraf';
 import { fork } from 'child_process';
 import { join } from 'path';
 import * as pkg from '../package.json';
@@ -34,7 +34,7 @@ import subMultiUrl from './middlewares/sub-multi-url';
 import exportToOpml from './middlewares/export-to-opml';
 import importFromOpml from './middlewares/import-from-opml';
 import userAllowList from './middlewares/user_allow_list';
-import { MContext, Next } from './types/ctx';
+import { MContext, TNextFn } from './types/ctx';
 import twoKeyReply from './utils/two-key-reply';
 import {
     isChangeFeedUrl,
@@ -52,16 +52,13 @@ const bot = new Telegraf(token, {
     }
 });
 
-bot.catch((err: Error) => logger.error(cleanStack(err.stack) || err.message));
-
-// for handling command form group
-bot.telegram.getMe().then((botInfo) => {
-    bot.options.username = botInfo.username;
+bot.catch((err: Error) => {
+    logger.error(cleanStack(err.stack) || err.message);
 });
 
 bot.use(userAllowList);
 
-bot.command('start', sendError, async (ctx: MContext) => {
+bot.command('start', sendError, async (ctx) => {
     const builder = [];
     const { lang } = ctx.state;
     builder.push(i18n[lang]['WELCOME']);
@@ -76,7 +73,7 @@ bot.command('start', sendError, async (ctx: MContext) => {
     await ctx.replyWithMarkdown(builder.join('\n'));
 });
 
-bot.command('help', sendError, async (ctx: MContext) => {
+bot.command('help', sendError, async (ctx) => {
     const builder = [];
     const { lang } = ctx.state;
     builder.push(i18n[lang]['SUB_USAGE']);
@@ -107,7 +104,7 @@ bot.command('import', importReply);
 
 bot.on(
     'document',
-    async (ctx: MContext, next) => {
+    async (ctx, next) => {
         ctx.state.chat = await ctx.getChat();
         if (ctx.state.chat.type === 'private') {
             await next();
@@ -127,7 +124,6 @@ bot.on(
 
 bot.on('migrate_to_chat_id', (ctx) => {
     const from = ctx.update.message.chat.id;
-    // @ts-expect-error migrate_to_chat_id
     const to = ctx.update.message.migrate_to_chat_id;
     migrateUser(from, to);
 });
@@ -180,14 +176,14 @@ bot.action(/^CHANGE_LANG[\w_]+/, changeLangCallback);
 
 bot.hears(
     /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
-    async (ctx: MContext, next: Next) => {
+    async (ctx, next: TNextFn) => {
         ctx.state.chat = await ctx.getChat();
         if (ctx.state.chat.type === 'private') {
             await next();
         }
     },
     async (ctx: MContext, next) => {
-        if (!ctx.message.text.startsWith('/')) {
+        if ('text' in ctx.message && !ctx.message.text.startsWith('/')) {
             await next();
         }
     },
@@ -204,7 +200,6 @@ bot.action(
     unsubAll,
     async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
-        // @ts-ignore
         ctx.telegram.answerCbQuery(cb.id);
         await next();
     }
@@ -212,7 +207,6 @@ bot.action(
 
 bot.action('UNSUB_ALL_NO', async (ctx: MContext, next) => {
     const cb = ctx.callbackQuery;
-    // @ts-ignore
     ctx.telegram.answerCbQuery(cb.id, i18n[lang]['CANCEL']);
     await ctx.telegram.deleteMessage(cb.message.chat.id, cb.message.message_id);
     await next();
@@ -224,12 +218,14 @@ bot.action(
     onlyPrivateChat,
     async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
-        ctx.state.viewallPage = parseInt(cb.data.split('_')[1]);
-        await ctx.telegram.deleteMessage(
-            cb.message.chat.id,
-            cb.message.message_id
-        );
-        await next();
+        if ('data' in cb) {
+            ctx.state.viewallPage = parseInt(cb.data.split('_')[1]);
+            await ctx.telegram.deleteMessage(
+                cb.message.chat.id,
+                cb.message.message_id
+            );
+            await next();
+        }
     },
     viewAll
 );
@@ -240,14 +236,16 @@ bot.action(
     isAdmin,
     async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
-        const splitedStr = cb.data.split('_');
-        if (splitedStr[1] === 'RAW') ctx.state.showRaw = true;
-        ctx.state.rssPage = parseInt(splitedStr[splitedStr.length - 1]);
-        await ctx.telegram.deleteMessage(
-            cb.message.chat.id,
-            cb.message.message_id
-        );
-        await next();
+        if ('data' in cb) {
+            const splitedStr = cb.data.split('_');
+            if (splitedStr[1] === 'RAW') ctx.state.showRaw = true;
+            ctx.state.rssPage = parseInt(splitedStr[splitedStr.length - 1]);
+            await ctx.telegram.deleteMessage(
+                cb.message.chat.id,
+                cb.message.message_id
+            );
+            await next();
+        }
     },
     rss
 );

@@ -1,7 +1,12 @@
 import errors from '../utils/errors';
-import { MContext, Next } from '../types/ctx';
+import { AddMessageKey, MContext, TNextFn } from '../types/ctx';
+import { Message } from 'telegraf/typings/core/types/typegram';
 
-export default async (ctx: MContext, next: Next): Promise<void> => {
+export default async (
+    ctx: MContext &
+        AddMessageKey<'document', Message.DocumentMessage['document']>,
+    next: TNextFn
+): Promise<void> => {
     const fileId = ctx.message.document.file_id;
     const fileName = ctx.message.document.file_name;
     if (fileName.search(/(^@\w+)|(^-\d+)/) !== -1) {
@@ -23,7 +28,7 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
     }
     const fileLink = await ctx.telegram.getFileLink(fileId);
     if (fileLink) {
-        ctx.state.fileLink = fileLink;
+        ctx.state.fileLink = fileLink.toString();
         await next();
     }
 };

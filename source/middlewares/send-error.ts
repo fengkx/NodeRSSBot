@@ -1,9 +1,9 @@
 import i18n from '../i18n';
 import logger from '../utils/logger';
 import errors from '../utils/errors';
-import { MContext, Next } from '../types/ctx';
+import { MContext, TNextFn } from '../types/ctx';
 
-export default async (ctx: MContext, next: Next): Promise<void> => {
+export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     const { lang } = ctx.state;
     const m = await ctx.reply(i18n[lang]['PROCESSING'], {
         reply_markup: {

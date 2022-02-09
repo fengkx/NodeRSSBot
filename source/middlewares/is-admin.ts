@@ -1,10 +1,10 @@
 import { config } from '../config';
 import errors from '../utils/errors';
 import { getUserById, newUser } from '../proxies/users';
-import { MContext, Next } from '../types/ctx';
-import { User } from 'telegraf/typings/telegram-types';
+import { MContext, TNextFn } from '../types/ctx';
 import { isNone, Option } from '../types/option';
 import { User as DBUser } from '../types/user';
+import { User } from 'telegraf/typings/core/types/typegram';
 
 /**
  * Check if using for channel
@@ -19,7 +19,10 @@ function checkChannelId(text: string): boolean {
     return false;
 }
 
-export default async (ctx: MContext, next: Next): Promise<void> => {
+export default async (
+    ctx: MContext & { message: MContext['message'] & Record<string, any> },
+    next: TNextFn
+): Promise<void> => {
     ctx.state.chat = await ctx.getChat();
     const chat = ctx.state.chat;
     let user: Option<DBUser> | DBUser = await getUserById(chat.id);

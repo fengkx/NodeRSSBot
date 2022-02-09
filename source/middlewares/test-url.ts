@@ -3,12 +3,12 @@ import { findFeed, isFeedValid } from '../utils/feed';
 import errors from '../utils/errors';
 import i18n from '../i18n';
 import { getFeedByUrl } from '../proxies/rss-feed';
-import { MContext, Next } from '../types/ctx';
+import { MContext, TNextFn } from '../types/ctx';
 import { isNone, isSome } from '../types/option';
 import { parseString } from '../parser/parse';
 import { decodeUrl, encodeUrl } from '../utils/urlencode';
 
-export default async (ctx: MContext, next: Next): Promise<void> => {
+export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     const url = encodeUrl(ctx.state.feedUrl);
     const feedOption = await getFeedByUrl(url);
     if (isSome(feedOption)) {

@@ -2,9 +2,10 @@ import { Context } from 'telegraf';
 import { Chat } from 'telegraf/typings/telegram-types';
 import { Outline } from './outline';
 import { Feed } from './feed';
+import { Update } from 'telegraf/typings/core/types/typegram';
 
-export interface MContext extends Context {
-    state?: {
+export interface MContext<T = Update> extends Context<T> {
+    state: {
         feedUrl?: string;
         feedUrls?: string[];
         lang?: string;
@@ -20,4 +21,10 @@ export interface MContext extends Context {
     };
 }
 
-export type Next = () => any;
+export type TNextFn = () => void | Promise<void>;
+
+export type AddMessageKey<K, T> = {
+    message: {
+        [P in K]: T;
+    };
+};

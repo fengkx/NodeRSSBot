@@ -1,10 +1,13 @@
 import errors from '../utils/errors';
 import { getSubscribedFeedsByUserId } from '../proxies/rss-feed';
 import i18n from '../i18n';
-import { MContext, Next } from '../types/ctx';
+import { AddMessageKey, MContext, TNextFn } from '../types/ctx';
 import { decodeUrl } from '../utils/urlencode';
 
-export default async (ctx: MContext, next: Next): Promise<void> => {
+export default async (
+    ctx: MContext & AddMessageKey<'text', string>,
+    next: TNextFn
+): Promise<void> => {
     const { lang } = ctx.state;
     const { text } = ctx.message;
     const [command, url] = text.split(/\s+/);
@@ -21,7 +24,6 @@ export default async (ctx: MContext, next: Next): Promise<void> => {
                     );
                     await ctx.reply(i18n[lang]['CHOOSE_UNSUB'], {
                         reply_markup: {
-                            // @ts-ignore
                             keyboard: feeds.map((i) => {
                                 return [`[${i.feed_id}] ${i.feed_title}`];
                             }),
