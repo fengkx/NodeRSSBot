@@ -1,10 +1,10 @@
 import { config } from '../config';
 import i18n from '../i18n';
-import { MContext, Next } from '../types/ctx';
+import { MContext, TNextFn } from '../types/ctx';
 import { getUserById } from '../proxies/users';
 import { isSome } from '../types/option';
 
-export default async (ctx: MContext, next: Next): Promise<void> => {
+export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     let id: number;
     switch (ctx.updateType) {
         case 'callback_query':

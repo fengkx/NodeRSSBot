@@ -1,13 +1,16 @@
-import { MContext, Next } from '../types/ctx';
+import { MContext, TNextFn } from '../types/ctx';
 
 import { getFeedsByTitle } from '../proxies/rss-feed';
 import errors from '../utils/errors';
 import { decodeUrl } from '../utils/urlencode';
-export default async (ctx: MContext, next: Next): Promise<void> => {
+export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     const me = await ctx.telegram.getMe();
     const myId = me.id;
+    if (!('reply_to_message' in ctx.message)) {
+        throw errors.newCtrlErr('UNSUBTHIS_USAGE');
+    }
     const replyToMessage = ctx.message.reply_to_message;
-    if (!replyToMessage || replyToMessage.from.id !== myId) {
+    if (replyToMessage.from.id !== myId) {
         throw errors.newCtrlErr('UNSUBTHIS_USAGE');
     }
     //@ts-expect-error text type

@@ -2,12 +2,12 @@ import * as RSS from '../proxies/rss-feed';
 import i18n from '../i18n';
 import twoKeyReply from '../utils/two-key-reply';
 import errors from '../utils/errors';
-import { MContext, Next } from '../types/ctx';
+import { AddMessageKey, MContext, TNextFn } from '../types/ctx';
 import { isNone } from '../types/option';
 import { decodeUrl, encodeUrl } from '../utils/urlencode';
 import sanitize from '../utils/sanitize';
 
-export async function sub(ctx: MContext, next: Next): Promise<void> {
+export async function sub(ctx: MContext, next: TNextFn): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
     const feedTitle = ctx.state.feed.feed_title;
     const ttl = Number.isNaN(ctx.state.feed.ttl) ? 0 : ctx.state.feed.ttl;
@@ -27,7 +27,7 @@ export async function sub(ctx: MContext, next: Next): Promise<void> {
     await next();
 }
 
-export async function unsub(ctx: MContext, next: Next): Promise<void> {
+export async function unsub(ctx: MContext, next: TNextFn): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
     const userId = chat.id;
     try {
@@ -55,10 +55,13 @@ export async function unsub(ctx: MContext, next: Next): Promise<void> {
     await next();
 }
 
-export async function rss(ctx: MContext, next: Next): Promise<void> {
+export async function rss(
+    ctx: MContext & AddMessageKey<'text', string>,
+    next: TNextFn
+): Promise<void> {
     const limit = 50;
     const page = ctx.state.rssPage || 1;
-    const hasRaw = ctx.message?.text.split(/\s/)[1] === 'raw';
+    const hasRaw = ctx.message.text.split(/\s/)[1] === 'raw';
     const raw = hasRaw || ctx.state.showRaw;
     const rawStr = raw ? 'RAW_' : '';
 
@@ -104,7 +107,7 @@ export async function rss(ctx: MContext, next: Next): Promise<void> {
     await twoKeyReply(kbs, builder.join('\n'))(ctx, next);
 }
 
-export async function unsubAll(ctx: MContext, next: Next): Promise<void> {
+export async function unsubAll(ctx: MContext, next: TNextFn): Promise<void> {
     const userId = ctx.state.chat.id;
     const lang = ctx.state.lang;
     await RSS.unsubAll(userId);
@@ -119,7 +122,7 @@ export async function unsubAll(ctx: MContext, next: Next): Promise<void> {
     await next();
 }
 
-export async function viewAll(ctx: MContext, next: Next): Promise<void> {
+export async function viewAll(ctx: MContext, next: TNextFn): Promise<void> {
     const limit = 50;
     const page = ctx.state.viewallPage || 1;
     const count = await RSS.getAllFeedsCount();
@@ -155,7 +158,10 @@ export async function viewAll(ctx: MContext, next: Next): Promise<void> {
     await twoKeyReply(kbs)(ctx, next);
 }
 
-export async function getUrlById(ctx: MContext, next: Next): Promise<void> {
+export async function getUrlById(
+    ctx: MContext & AddMessageKey<'text', string>,
+    next: TNextFn
+): Promise<void> {
     const { text } = ctx.message;
     const feed_id = text.match(/^\[(\d+)] (.+)/)[1];
     const feed = await RSS.getFeedById(parseInt(feed_id));
@@ -165,7 +171,7 @@ export async function getUrlById(ctx: MContext, next: Next): Promise<void> {
 
 export async function getActiveFeedWithErrorCount(
     ctx: MContext,
-    next: Next
+    next: TNextFn
 ): Promise<void> {
     const feedsWithErrorCount = await RSS.getActiveFeedWithErrorCount();
     const count = feedsWithErrorCount.reduce((acc, cur) => {
@@ -187,7 +193,7 @@ export async function getActiveFeedWithErrorCount(
 
 export async function cleanUpErrorFeed(
     ctx: MContext,
-    next: Next
+    next: TNextFn
 ): Promise<void> {
     const feedToCleanUp = await RSS.getActiveFeedWithErrorCount(10);
     await RSS.batchUnsubByFeedIds(feedToCleanUp.map((f) => f.feed_id));
