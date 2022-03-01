@@ -71,7 +71,7 @@
     "@typescript-eslint/parser": "^5.12.1",
     "@vercel/nft": "^0.17.5",
     "cpy": "^8.1.2",
-    "cpy-cli": "^3.1.1",
+    "cpy-cli": "^4.0.0",
     "del-cli": "^4.0.1",
     "eslint": "^8.9.0",
     "eslint-plugin-import": "^2.25.4",
