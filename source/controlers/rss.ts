@@ -61,7 +61,7 @@ export async function rss(
 ): Promise<void> {
     const limit = 50;
     const page = ctx.state.rssPage || 1;
-    const hasRaw = ctx.message.text.split(/\s/)[1] === 'raw';
+    const hasRaw = ctx.message?.text.split(/\s/)[1] === 'raw';
     const raw = hasRaw || ctx.state.showRaw;
     const rawStr = raw ? 'RAW_' : '';
 
