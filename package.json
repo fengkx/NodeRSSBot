@@ -73,7 +73,7 @@
     "cpy": "^8.1.2",
     "cpy-cli": "^4.0.0",
     "del-cli": "^4.0.1",
-    "eslint": "^8.9.0",
+    "eslint": "^8.10.0",
     "eslint-plugin-import": "^2.25.4",
     "iconv-lite": "^0.6.3",
     "jest": "^27.5.1",
