@@ -8,7 +8,7 @@
     "npm": ">=7"
   },
   "scripts": {
-    "build": "del-cli dist && tsc && cpy source/template dist/source/template && cpy i18n dist/i18n",
+    "build": "del-cli dist && tsc && cpy source/template dist/source/template && cpy i18n/ dist",
     "start": "cross-env NODE_PRODUTION=true node dist/source/index.js",
     "start-withsnapshot": "cross-env NODE_PRODUTION=true node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "start-docker": "node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
