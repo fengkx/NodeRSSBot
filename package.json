@@ -78,7 +78,7 @@
     "eslint-plugin-import": "^2.25.4",
     "iconv-lite": "^0.6.3",
     "jest": "^27.5.1",
-    "lockfile-lint": "^4.6.2",
+    "lockfile-lint": "^4.7.3",
     "nock": "^13.2.4",
     "pre-commit": "^1.2.2",
     "prettier": "^2.5.1",
