@@ -72,7 +72,7 @@
     "@vercel/nft": "^0.17.5",
     "cp-file": "^9.1.0",
     "cpy": "^9.0.1",
-    "cpy-cli": "^4.0.0",
+    "cpy-cli": "^4.1.0",
     "del-cli": "^4.0.1",
     "eslint": "^8.10.0",
     "eslint-plugin-import": "^2.25.4",
