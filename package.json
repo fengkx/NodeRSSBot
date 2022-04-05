@@ -41,7 +41,7 @@
     "@cjsa/escape-goat": "^4.0.0-cjsa.0",
     "@sentry/integrations": "^6.18.1",
     "@sentry/node": "^6.18.1",
-    "@sentry/tracing": "^6.18.2",
+    "@sentry/tracing": "^6.19.4",
     "@vscode/sqlite3": "^5.0.7",
     "camaro": "^6.1.0",
     "cross-env": "^7.0.3",
