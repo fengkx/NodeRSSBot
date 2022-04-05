@@ -39,7 +39,7 @@
   "dependencies": {
     "@cjsa/clean-stack": "^4.1.0-cjsa.0",
     "@cjsa/escape-goat": "^4.0.0-cjsa.0",
-    "@sentry/integrations": "^6.18.1",
+    "@sentry/integrations": "^6.19.4",
     "@sentry/node": "^6.18.1",
     "@sentry/tracing": "^6.18.2",
     "@vscode/sqlite3": "^5.0.7",
