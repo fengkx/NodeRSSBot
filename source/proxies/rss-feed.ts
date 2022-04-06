@@ -10,7 +10,7 @@ export async function sub(
     feedUrl: string,
     feedTitle: string,
     ttl = 0
-): Promise<string> {
+): Promise<'ok'> {
     feedUrl = decodeUrl(feedUrl);
     const feed = await db<Feed>('rss_feed').where('url', feedUrl).first();
     if (feed) {
@@ -31,18 +31,22 @@ export async function sub(
             throw errors.newCtrlErr('ALREADY_SUB');
         }
     } else {
-        const [feed_id] = await db('rss_feed').insert(
-            {
-                url: feedUrl,
-                feed_title: feedTitle,
-                ttl: ttl
-            },
-            'feed_id'
-        );
-        await db('subscribes').insert(
-            { feed_id, user_id: userId },
-            'subscribe_id'
-        );
+        await db.transaction(async (trx) => {
+            const [feed_id] = await db('rss_feed')
+                .insert(
+                    {
+                        url: feedUrl,
+                        feed_title: feedTitle,
+                        ttl: ttl
+                    },
+                    'feed_id'
+                )
+                .transacting(trx);
+            await db('subscribes')
+                .insert({ feed_id, user_id: userId }, 'subscribe_id')
+                .transacting(trx);
+        });
+
         return 'ok';
     }
 }
