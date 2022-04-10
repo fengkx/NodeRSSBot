@@ -1,4 +1,10 @@
 /* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
+try {
+    const pg = require('pg');
+    pg.types.setTypeParser(20, 'text', parseInt);
+} catch (err) {
+    logger.info('There is no pg');
+}
 import { config } from './config';
 import { parse } from 'url';
 import { Knex } from 'knex';

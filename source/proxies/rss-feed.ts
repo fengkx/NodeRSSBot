@@ -32,7 +32,7 @@ export async function sub(
         }
     } else {
         await db.transaction(async (trx) => {
-            const [feed_id] = await db('rss_feed')
+            let [feed_id] = await db('rss_feed')
                 .insert(
                     {
                         url: feedUrl,
@@ -41,7 +41,11 @@ export async function sub(
                     },
                     'feed_id'
                 )
+                .returning('feed_id')
                 .transacting(trx);
+            if (typeof feed_id === 'object') {
+                feed_id = feed_id.feed_id; // pg return object
+            }
             await db('subscribes')
                 .insert({ feed_id, user_id: userId }, 'subscribe_id')
                 .transacting(trx);
