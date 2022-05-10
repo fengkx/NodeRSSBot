@@ -42,7 +42,8 @@ export const config: Omit<Config, 'PKG_ROOT'> = {
         .asArray(',')
         .map((id) => Number(id)),
     auto_migrate: env.get('AUTO_MIGRATE').default(1).asBool(),
-    sentry_dsn: env.get('SENTRY_DSN').default('').asString()
+    sentry_dsn: env.get('SENTRY_DSN').default('').asString(),
+    enable_throttle: env.get('ENABLE_THROTTLE').default(0).asBool()
 };
 Object.defineProperty(config, 'PKG_ROOT', {
     enumerable: false,

@@ -1,4 +1,5 @@
 import { Telegraf } from 'telegraf';
+import { telegrafThrottler } from 'telegraf-throttler';
 import { fork } from 'child_process';
 import { join } from 'path';
 import * as pkg from '../package.json';
@@ -56,6 +57,11 @@ bot.catch((err: Error) => {
     logger.error(cleanStack(err.stack) || err.message);
 });
 
+const throttler = telegrafThrottler();
+
+if (config.enable_throttle) {
+    bot.use(throttler);
+}
 bot.use(userAllowList);
 
 bot.command('start', sendError, async (ctx) => {

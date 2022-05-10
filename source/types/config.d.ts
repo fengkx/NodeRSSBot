@@ -21,5 +21,6 @@ export type Config = {
     allow_list: number[] | null;
     auto_migrate: boolean;
     sentry_dsn?: string;
+    enable_throttle: boolean;
     ['PKG_ROOT']: Readonly<string>;
 };
