@@ -54,7 +54,7 @@
     "make-fetch-happen": "^10.1.6",
     "node-schedule": "^2.1.0",
     "pg": "^8.7.3",
-    "socks-proxy-agent": "^6.2.0",
+    "socks-proxy-agent": "^7.0.0",
     "telegraf": "^4.8.2",
     "telegraf-throttler": "^0.6.0",
     "tunnel": "0.0.6",
