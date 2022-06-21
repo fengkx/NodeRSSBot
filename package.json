@@ -51,7 +51,7 @@
     "env-var": "^7.1.1",
     "js-yaml": "^4.1.0",
     "knex": "^1.0.7",
-    "make-fetch-happen": "^10.1.7",
+    "make-fetch-happen": "^10.1.8",
     "node-schedule": "^2.1.0",
     "pg": "^8.7.3",
     "socks-proxy-agent": "^7.0.0",
