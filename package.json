@@ -80,7 +80,7 @@
     "iconv-lite": "^0.6.3",
     "jest": "^27.5.1",
     "lockfile-lint": "^4.7.5",
-    "nock": "^13.2.7",
+    "nock": "^13.2.8",
     "pre-commit": "^1.2.2",
     "prettier": "^2.7.1",
     "prettier-check": "^2.0.0",
