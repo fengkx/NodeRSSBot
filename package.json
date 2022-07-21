@@ -70,7 +70,7 @@
     "@types/tunnel": "^0.0.3",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "@typescript-eslint/parser": "^5.30.7",
-    "@vercel/nft": "^0.20.1",
+    "@vercel/nft": "^0.21.0",
     "cp-file": "^9.1.0",
     "cpy": "^9.0.1",
     "cpy-cli": "^4.1.0",
