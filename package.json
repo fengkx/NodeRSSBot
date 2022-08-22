@@ -68,7 +68,7 @@
     "@types/make-fetch-happen": "^10.0.0",
     "@types/node-schedule": "^2.1.0",
     "@types/tunnel": "^0.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/eslint-plugin": "^5.34.0",
     "@typescript-eslint/parser": "^5.33.1",
     "@vercel/nft": "^0.21.0",
     "cp-file": "^9.1.0",
