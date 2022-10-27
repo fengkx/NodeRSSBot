@@ -40,7 +40,7 @@
     "@cjsa/clean-stack": "^4.2.0",
     "@cjsa/escape-goat": "^4.0.0-cjsa.0",
     "@sentry/integrations": "^6.18.1",
-    "@sentry/node": "^6.18.1",
+    "@sentry/node": "^7.17.1",
     "@sentry/tracing": "^7.8.1",
     "camaro": "^6.2.0",
     "cross-env": "^7.0.3",
