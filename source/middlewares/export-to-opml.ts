@@ -49,8 +49,8 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     if (feeds.length === 0) {
         throw errors.newCtrlErr('NOT_SUB');
     }
-    const opml = await render(feeds);
     try {
+        const opml = await render(feeds);
         const filePath = path.join(
             config['PKG_ROOT'],
             'data',
