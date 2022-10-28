@@ -23,15 +23,20 @@ function readFilePromise(path: string): Promise<string> {
     });
 }
 
+const opmlTemplatePath = path.join(__dirname, '../template/opml.ejs');
+const teamplateCacheMap = new Map<string, ReturnType<typeof ejs.compile>>();
 const render = async (feeds: Feed[]): Promise<string> => {
-    const tpl = await readFilePromise(
-        path.join(__dirname, '../template/opml.ejs')
-    );
+    if (!teamplateCacheMap.has(opmlTemplatePath)) {
+        const tpl = await readFilePromise(opmlTemplatePath);
+        teamplateCacheMap.set(opmlTemplatePath, ejs.compile(tpl));
+    }
+    const template = teamplateCacheMap.get(opmlTemplatePath);
+
     feeds.forEach((feed) => {
         feed.feed_title = htmlEscape(feed.feed_title);
         feed.url = htmlEscape(feed.url);
     });
-    return ejs.render(tpl, { feeds });
+    return template({ feeds });
 };
 
 function remove(path: string): Promise<void> {
