@@ -1,5 +1,5 @@
 {
-  "name": "noderssbot",
+  "name": "node_rssbot",
   "version": "0.11.0",
   "description": "Another Telegram RSSBot in Node.js",
   "main": "dist/source",
@@ -9,8 +9,8 @@
   },
   "scripts": {
     "build": "del-cli dist && tsc && node tools/copy-assets.mjs",
-    "start": "cross-env NODE_PRODUTION=true node dist/source/index.js",
-    "start-withsnapshot": "cross-env NODE_PRODUTION=true node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
+    "start": "cross-env NODE_PRODUCTION=true node dist/source/index.js",
+    "start-withsnapshot": "cross-env NODE_PRODUCTION=true node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "start-docker": "node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "dev": "node $NODE_DEBUG_OPTIONS dist/source/index",
     "test": "cross-env RSSBOT_DB_PATH=test/test-data/test.db RSSBOT_TOKEN=1 npx jest --verbose",
@@ -62,6 +62,7 @@
     "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
+    "@types/create-test-server": "^3.0.1",
     "@types/ejs": "^3.1.1",
     "@types/jest": "^27.5.0",
     "@types/js-yaml": "^4.0.5",
@@ -73,13 +74,14 @@
     "@vercel/nft": "^0.22.1",
     "cp-file": "^9.1.0",
     "cpy": "^9.0.1",
+    "create-test-server": "^3.0.1",
     "del-cli": "^5.0.0",
     "eslint": "^8.27.0",
     "eslint-plugin-import": "^2.26.0",
+    "fastify": "^4.10.2",
     "iconv-lite": "^0.6.3",
     "jest": "^27.5.1",
     "lockfile-lint": "^4.9.6",
-    "nock": "^13.2.9",
     "pre-commit": "^1.2.2",
     "prettier": "^2.7.1",
     "prettier-check": "^2.0.0",

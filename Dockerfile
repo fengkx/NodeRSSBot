@@ -13,7 +13,7 @@ RUN npm i -g npm && npm ci && node tools/minify-docker.js && sh tools/clean-nm.s
 
 FROM node:16-alpine as app
 WORKDIR /app
-ENV NODE_PRODUTION true
+ENV NODE_PRODUCTION true
 COPY data /app/data
 COPY logs /app/logs
 COPY package.json /app/package.json
