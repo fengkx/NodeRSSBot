@@ -269,7 +269,7 @@ async function startFetchProcess(restartTime: number): Promise<void> {
         process.exit(1);
     }
     const fetchJS = join(__dirname, `utils/fetch.js`);
-    const execArgv = process.env.NODE_PRODUTION
+    const execArgv = process.env.NODE_PRODUCTION
         ? ['--expose-gc']
         : ['--inspect-brk=46209', '--expose-gc'];
     const child = fork(fetchJS, [], {
