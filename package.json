@@ -17,7 +17,7 @@
     "pretty-quick": "pretty-quick --staged",
     "format": "eslint \"source/**/*.{js,ts}\" --fix && prettier \"**/*.{js,ts,json,md}\" --write",
     "lint": "eslint \"source/**/*.{js,ts}\" && prettier-check \"**/*.{js,ts,json,md}\" && npm run lint-lockfile",
-    "lint-lockfile": "npx lockfile-lint --path package-lock.json --allowed-hosts npm yarn --validate-https"
+    "lint-lockfile": "npx lockfile-lint --path package-lock.json --allowed-hosts npm yarn github.com  --allowed-schemes \"https:\" \"git+https:\""
   },
   "pre-commit": [
     "lint",
@@ -92,5 +92,12 @@
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts"
+  },
+  "overrides": {
+    "create-test-server": {
+      "create-cert": {
+        "pem": "git+https://git@github.com:Dexus/pem.git#71dae3346801dafb5a8bcebcd4c7267fd182666f"
+      }
+    }
   }
 }
