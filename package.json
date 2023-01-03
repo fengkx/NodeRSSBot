@@ -76,7 +76,7 @@
     "cpy": "^9.0.1",
     "create-test-server": "^3.0.1",
     "del-cli": "^5.0.0",
-    "eslint": "^8.30.0",
+    "eslint": "^8.31.0",
     "eslint-plugin-import": "^2.26.0",
     "fastify": "^4.10.2",
     "iconv-lite": "^0.6.3",
