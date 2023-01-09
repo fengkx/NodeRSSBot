@@ -1,0 +1,12 @@
+{
+    "image": "ghcr.io/fengkx/arch-devcontainer:master",
+    "workspaceFolder": "/home/dev/lowcode/weda-ui",
+    "remoteUser": "dev",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh"
+            }
+        }
+    }
+}
