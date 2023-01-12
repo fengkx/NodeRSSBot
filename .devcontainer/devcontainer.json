@@ -1,6 +1,7 @@
 {
     "image": "ghcr.io/fengkx/arch-devcontainer:master",
     "remoteUser": "dev",
+    "postCreateCommand": "bash .devcontainer/postCreate.sh",
     "customizations": {
         "vscode": {
             "settings": {
