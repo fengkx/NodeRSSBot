@@ -1,0 +1,13 @@
+{
+    "image": "ghcr.io/fengkx/arch-devcontainer:master",
+    "remoteUser": "dev",
+    "postCreateCommand": "bash .devcontainer/postCreate.sh",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.fontFamily": "MesloLGS NF,Menlo , Monaco, 'Courier New', monospace"
+            }
+        }
+    }
+}
