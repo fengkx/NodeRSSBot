@@ -79,7 +79,7 @@
     "eslint": "^8.33.0",
     "eslint-plugin-import": "^2.27.5",
     "iconv-lite": "^0.6.3",
-    "jest": "^29.4.1",
+    "jest": "^29.4.2",
     "lockfile-lint": "^4.10.0",
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.3",
