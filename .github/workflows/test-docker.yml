@@ -24,7 +24,7 @@ jobs:
               run: |
                   unset BRANCH_NAME
                   echo $GITHUB_REF_NAME
-                  BRANCH_NAME=`echo $GITHUB_REF_NAME | cut -d '/' -f3 -`
+                  BRANCH_NAME=`echo $GITHUB_REF_NAME`
                   echo "BRANCH_NAME: $BRANCH_NAME"
                   unset IMG_TAGS ; if [[ $BRANCH_NAME == "master" ]]; then IMG_TAGS='latest' ; else IMG_TAGS="$BRANCH_NAME"; fi
                   SHA_TAG=`echo $GITHUB_SHA | head -c 6`
