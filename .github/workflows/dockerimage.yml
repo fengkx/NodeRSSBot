@@ -23,13 +23,15 @@ jobs:
               id: docker-tag
               run: |
                   unset BRANCH_NAME
-                  BRANCH_NAME=`echo $GITHUB_REF | cut -d '/' -f3 -`
+                  echo $GITHUB_REF_NAME
+                  BRANCH_NAME=`echo $GITHUB_REF_NAME`
                   echo "BRANCH_NAME: $BRANCH_NAME"
+
                   unset IMG_TAGS ; if [[ $BRANCH_NAME == "master" ]]; then IMG_TAGS='latest' ; else IMG_TAGS="$BRANCH_NAME"; fi
                   SHA_TAG=`echo $GITHUB_SHA | head -c 6`
                   echo "SHA_TAG: $SHA_TAG"
-                  echo ::set-output name=DOCKER_BRANCH_TAG::${IMG_TAGS}
-                  echo ::set-output name=DOCKER_SHA_TAG::${SHA_TAG}
+                  echo "DOCKER_BRANCH_TAG=${IMG_TAGS}" >> $GITHUB_OUTPUT
+                  echo "DOCKER_SHA_TAG=${SHA_TAG}" >> $GITHUB_OUTPUT
             - name: Build and push
               uses: docker/build-push-action@v2
               with:
