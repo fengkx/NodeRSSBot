@@ -16,7 +16,7 @@ UNSUB_SUCCESS: Sėkmingai įvykdytas prenumeratos atšaukimas
 NOT_SUB: Nėra prenumeratų
 SUB_LIST: Prenumeratos
 ERROR_MANY_TIME: Daug kartų nepavyko parsisiųsti duomenų, siūlome atšaukti prenumeratą
-OPML_PARSE_ERRO: Nepavyko apdoroti opml
+OPML_PARSE_ERROR: Nepavyko apdoroti opml
 NETWORK_ERROR: Tinklo klaida
 IMPORT_SUCCESS: Sėkmingai įkelta
 FILESYSTEM_ERROR: Failų sistemos klaida

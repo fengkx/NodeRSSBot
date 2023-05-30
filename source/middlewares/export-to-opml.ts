@@ -24,13 +24,13 @@ function readFilePromise(path: string): Promise<string> {
 }
 
 const opmlTemplatePath = path.join(__dirname, '../template/opml.ejs');
-const teamplateCacheMap = new Map<string, ReturnType<typeof ejs.compile>>();
+const templateCacheMap = new Map<string, ReturnType<typeof ejs.compile>>();
 const render = async (feeds: Feed[]): Promise<string> => {
-    if (!teamplateCacheMap.has(opmlTemplatePath)) {
+    if (!templateCacheMap.has(opmlTemplatePath)) {
         const tpl = await readFilePromise(opmlTemplatePath);
-        teamplateCacheMap.set(opmlTemplatePath, ejs.compile(tpl));
+        templateCacheMap.set(opmlTemplatePath, ejs.compile(tpl));
     }
-    const template = teamplateCacheMap.get(opmlTemplatePath);
+    const template = templateCacheMap.get(opmlTemplatePath);
 
     feeds.forEach((feed) => {
         feed.feed_title = htmlEscape(feed.feed_title);

@@ -54,7 +54,7 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
         } else if (e instanceof errors.ControllableError) {
             throw e;
         } else {
-            throw errors.newCtrlErr('OPML_PARSE_ERRO', e);
+            throw errors.newCtrlErr('OPML_PARSE_ERROR', e);
         }
     }
     await next();

@@ -16,7 +16,7 @@ UNSUB_SUCCESS: Erfolgreich abbestellt
 NOT_SUB: Es ist kein Feed abonniert
 SUB_LIST: Abonnements
 ERROR_MANY_TIME: Konnte oft nicht abgerufen werden, vielleicht möchtest du es abbestellen
-OPML_PARSE_ERRO: Die OPML-Datei konnte nicht verarbeitet werden
+OPML_PARSE_ERROR: Die OPML-Datei konnte nicht verarbeitet werden
 NETWORK_ERROR: Netzwerkfehler
 IMPORT_SUCCESS: Import erfolgreich
 FILESYSTEM_ERROR: Dateisystemfehler

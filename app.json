@@ -61,7 +61,7 @@
             "required": false
         },
         "RSSBOT_UA": {
-            "description": "user-agent header of the bot , version in default value is fetch from pacakge.json",
+            "description": "user-agent header of the bot , version in default value is fetch from package.json",
             "required": false
         },
         "RSSBOT_CONCURRENCY": {

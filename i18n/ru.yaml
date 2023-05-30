@@ -16,7 +16,7 @@ UNSUB_SUCCESS: Отписка успешна
 NOT_SUB: Нет ленты для подписки
 SUB_LIST: Подписки
 ERROR_MANY_TIME: Невозможно забирать много раз, возможно, вы захотите его отменить
-OPML_PARSE_ERRO: Невозможно разобрать opml
+OPML_PARSE_ERROR: Невозможно разобрать opml
 NETWORK_ERROR: Сетевая ошибка
 IMPORT_SUCCESS: Импорт успешен
 FILESYSTEM_ERROR: Ошибка файловой системы

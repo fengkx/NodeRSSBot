@@ -1,4 +1,4 @@
-// Option type inspried by Scala
+// Option type inspired by Scala
 
 export const none = Symbol('None');
 export type None = symbol;

@@ -16,7 +16,7 @@ UNSUB_SUCCESS: Annullamento dell'iscrizione riuscito
 NOT_SUB: Non sei iscritto ad alcun feed
 SUB_LIST: Iscrizioni
 ERROR_MANY_TIME: Diversi tentativi falliti, è consigliabile annullare l'iscrizione
-OPML_PARSE_ERRO: Non è stato possibile elaborare l'opml
+OPML_PARSE_ERROR: Non è stato possibile elaborare l'opml
 NETWORK_ERROR: Errore di rete
 IMPORT_SUCCESS: Importazione riuscita
 FILESYSTEM_ERROR: Errore del filesystem

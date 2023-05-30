@@ -8,7 +8,7 @@ import { User } from 'telegraf/typings/core/types/typegram';
 
 /**
  * Check if using for channel
- * @param {string} text message recived
+ * @param {string} text message received
  * @return {boolean} whether contain channel id (can be start with @ or a number start with -)
  */
 function checkChannelId(text: string): boolean {
