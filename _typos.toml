@@ -1,0 +1,2 @@
+[files]
+extend-exclude = ["i18n/*.yaml", "CHANGELOG.md"]
