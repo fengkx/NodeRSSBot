@@ -16,7 +16,7 @@ UNSUB_SUCCESS: 成功退订
 NOT_SUB: 没有订阅任何源
 SUB_LIST: 订阅列表
 ERROR_MANY_TIME: 多次抓取失败，建议取消订阅
-OPML_PARSE_ERRO: opml 文件解析失败
+OPML_PARSE_ERROR: opml 文件解析失败
 NETWORK_ERROR: 网络错误
 IMPORT_SUCCESS: 成功导入
 FILESYSTEM_ERROR: 读写文件发生错误

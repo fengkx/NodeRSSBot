@@ -16,7 +16,7 @@ UNSUB_SUCCESS: لغو اشتراک با موفقیت انجام شد
 NOT_SUB: فیدی را مشترک نشده‌اید
 SUB_LIST: اشتراک‌ها
 ERROR_MANY_TIME: خطا در دریافت اطلاعات برای چندبار، شاید بخواهید لغواشتراک کنید
-OPML_PARSE_ERRO: خطا در تجزیه opml
+OPML_PARSE_ERROR: خطا در تجزیه opml
 NETWORK_ERROR: خطای شبکه
 IMPORT_SUCCESS: با موفقیت وارد شد
 FILESYSTEM_ERROR: خطای FileSystem

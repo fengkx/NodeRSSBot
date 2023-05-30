@@ -16,7 +16,7 @@ UNSUB_SUCCESS: Inscrição removida com sucesso
 NOT_SUB: Não está inscrito em nenhum feed
 SUB_LIST: Inscrições
 ERROR_MANY_TIME: Não foi possível buscar por diversas vezes, você talvez deseje remover a inscrição
-OPML_PARSE_ERRO: Erro ao analisar o opml
+OPML_PARSE_ERROR: Erro ao analisar o opml
 NETWORK_ERROR: Erro de rede
 IMPORT_SUCCESS: Importado com sucesso
 FILESYSTEM_ERROR: Erro no filesystem

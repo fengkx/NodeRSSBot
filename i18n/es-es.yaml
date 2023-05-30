@@ -16,7 +16,7 @@ UNSUB_SUCCESS: Cancelación exitosa
 NOT_SUB: No se ha suscrito a ningún feed
 SUB_LIST: Suscripciones
 ERROR_MANY_TIME: Varios intentos fallidos, es posible que desee anular la suscripción
-OPML_PARSE_ERRO: No se puede procesar el archivo OPML
+OPML_PARSE_ERROR: No se puede procesar el archivo OPML
 NETWORK_ERROR: Error de red
 IMPORT_SUCCESS: Importado con éxito
 FILESYSTEM_ERROR: Error del sistema de archivos

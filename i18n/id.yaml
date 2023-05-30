@@ -16,7 +16,7 @@ UNSUB_SUCCESS: Berhasil membatalkan langganan
 NOT_SUB: Belum ada langganan feed
 SUB_LIST: Langganan Anda
 ERROR_MANY_TIME: Terjadi kesalahan saat mengambil link berkali-kali, Anda mungkin ingin memberhentikan langganan
-OPML_PARSE_ERRO: Gagal mengurai opml
+OPML_PARSE_ERROR: Gagal mengurai opml
 NETWORK_ERROR: Kesalahan pada jaringan
 IMPORT_SUCCESS: Berhasil mengimpor
 FILESYSTEM_ERROR: Kesalahan pada filesystem
