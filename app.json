@@ -92,7 +92,7 @@
             "required": false
         },
         "RSSBOT_ALLOW_LIST": {
-            "description": "allow list by user id splited by comma. You can get your userid by @userinfobot or @getidsbot",
+            "description": "allow list by user id split by comma. You can get your userid by @userinfobot or @getidsbot",
             "required": false
         }
     }

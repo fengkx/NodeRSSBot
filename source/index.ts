@@ -243,9 +243,9 @@ bot.action(
     async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
         if ('data' in cb) {
-            const splitedStr = cb.data.split('_');
-            if (splitedStr[1] === 'RAW') ctx.state.showRaw = true;
-            ctx.state.rssPage = parseInt(splitedStr[splitedStr.length - 1]);
+            const splitStr = cb.data.split('_');
+            if (splitStr[1] === 'RAW') ctx.state.showRaw = true;
+            ctx.state.rssPage = parseInt(splitStr[splitStr.length - 1]);
             await ctx.telegram.deleteMessage(
                 cb.message.chat.id,
                 cb.message.message_id
