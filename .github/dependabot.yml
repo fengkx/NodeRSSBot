@@ -6,3 +6,7 @@ updates:
           interval: daily
           time: '21:00'
       open-pull-requests-limit: 10
+      groups:
+          typescript-eslint:
+              patterns:
+                  - "@typescript-eslint*"
