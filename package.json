@@ -58,7 +58,7 @@
     "telegraf": "^4.12.2",
     "telegraf-throttler": "^0.6.0",
     "tunnel": "0.0.6",
-    "winston": "^3.9.0",
+    "winston": "^3.10.0",
     "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
