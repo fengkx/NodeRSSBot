@@ -4,6 +4,7 @@
 [![Publish Docker](https://github.com/fengkx/NodeRSSBot/workflows/Publish%20Docker/badge.svg?branch=master)](https://github.com/fengkx/NodeRSSBot/actions?query=workflow%3A%22Publish+Docker%22)
 [![Docker pulls](https://badgen.net/docker/pulls/fengkx/node_rssbot)](https://hub.docker.com/repository/docker/fengkx/node_rssbot)
 [![Docker image size](https://badgen.net/docker/size/fengkx/node_rssbot/latest/amd64)](https://hub.docker.com/repository/docker/fengkx/node_rssbot)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffengkx%2FNodeRSSBot.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffengkx%2FNodeRSSBot?ref=badge_shield)
 
 <p>
 <a href="https://www.heroku.com/deploy?template=https://github.com/fengkx/NodeRSSBot/tree/master">
@@ -42,3 +43,7 @@ Visit [rssbot.vercel.app](https://rssbot.vercel.app) to see full documentation.
 # 文档
 
 完整文档请访问 [rssbot.vercel.app](https://rssbot.vercel.app/zh)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffengkx%2FNodeRSSBot.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffengkx%2FNodeRSSBot?ref=badge_large)
