@@ -39,9 +39,9 @@
   "dependencies": {
     "@cjsa/clean-stack": "^4.2.0",
     "@cjsa/escape-goat": "^4.0.0-cjsa.0",
-    "@sentry/integrations": "^7.60.1",
-    "@sentry/node": "^7.60.1",
-    "@sentry/tracing": "^7.60.1",
+    "@sentry/integrations": "^7.61.0",
+    "@sentry/node": "^7.61.0",
+    "@sentry/tracing": "^7.61.0",
     "camaro": "^6.2.0",
     "cross-env": "^7.0.3",
     "disk-fastq": "^0.1.9",
