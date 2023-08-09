@@ -40,8 +40,8 @@ export async function unsub(ctx: MContext, next: TNextFn): Promise<void> {
         ctx.replyWithMarkdown(
             `
         ${i18n[lang]['UNSUB_SUCCESS']} [${feed.value.feed_title}](${encodeUrl(
-                ctx.state.feedUrl
-            )})`,
+            ctx.state.feedUrl
+        )})`,
             {
                 reply_markup: {
                     remove_keyboard: true
