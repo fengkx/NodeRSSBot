@@ -90,7 +90,10 @@
     "typescript": "^5.1.6"
   },
   "jest": {
-    "preset": "ts-jest/presets/js-with-ts"
+    "preset": "ts-jest/presets/js-with-ts",
+    "coveragePathIgnorePatterns": [
+	    "<rootDir>/test/test-data/*"
+    ]
   },
   "overrides": {
     "create-test-server": {
