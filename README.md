@@ -44,6 +44,6 @@ Visit [rssbot.vercel.app](https://rssbot.vercel.app) to see full documentation.
 
 完整文档请访问 [rssbot.vercel.app](https://rssbot.vercel.app/zh)
 
-
 ## License
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffengkx%2FNodeRSSBot.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffengkx%2FNodeRSSBot?ref=badge_large)
