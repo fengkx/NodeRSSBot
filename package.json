@@ -75,7 +75,7 @@
     "cp-file": "^9.1.0",
     "cpy": "^10.1.0",
     "create-test-server": "^3.0.1",
-    "del-cli": "^5.0.0",
+    "del-cli": "^5.0.1",
     "eslint": "^8.47.0",
     "eslint-plugin-import": "npm:eslint-plugin-i@^2.27.5-4",
     "iconv-lite": "^0.6.3",
