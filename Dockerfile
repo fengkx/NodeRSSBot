@@ -1,7 +1,7 @@
 FROM node:18-alpine as ts-builder
 WORKDIR /app
 COPY . /app
-RUN npm i -g npm && npm ci --ignore-scripts && npm run build
+RUN npm i -g npm@8 && npm ci --ignore-scripts && npm run build
 
 FROM node:18-alpine as dep-builder
 WORKDIR /app
