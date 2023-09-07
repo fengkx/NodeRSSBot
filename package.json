@@ -81,6 +81,7 @@
     "iconv-lite": "^0.6.3",
     "jest": "^29.6.4",
     "lockfile-lint": "^4.12.0",
+    "nolyfill": "^1.0.21",
     "pre-commit": "^1.2.2",
     "prettier": "^3.0.3",
     "prettier-check": "^2.0.0",
@@ -92,7 +93,7 @@
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
     "coveragePathIgnorePatterns": [
-	    "<rootDir>/test/test-data/*"
+      "<rootDir>/test/test-data/*"
     ]
   },
   "overrides": {
@@ -100,6 +101,8 @@
       "create-cert": {
         "pem": "git+https://git@github.com:Dexus/pem.git#71dae3346801dafb5a8bcebcd4c7267fd182666f"
       }
-    }
+    },
+    "has": "npm:@nolyfill/has@latest",
+    "side-channel": "npm:@nolyfill/side-channel@latest"
   }
 }
