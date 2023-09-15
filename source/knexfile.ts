@@ -35,7 +35,7 @@ const knexConfig: Knex.Config = {
     },
     pool: {
         min: 1,
-        max: client === SQLITE_CLIENT ? 4 : 8,
+        max: client === SQLITE_CLIENT ? 4 : 10,
         acquireTimeoutMillis: 1000 * 5 * 60, // timeout 5 minutes
         afterCreate: (conn: any, done: (err: Error, conn: any) => void) => {
             if (client === SQLITE_CLIENT) {

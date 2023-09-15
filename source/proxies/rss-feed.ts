@@ -4,6 +4,7 @@ import { Feed } from '../types/feed';
 import { Subscribe } from '../types/subscribe';
 import { isSome, Option, Optional, Some } from '../types/option';
 import { decodeUrl } from '../utils/urlencode';
+import arrayShuffle from '../utils/shuffle';
 
 export async function sub(
     userId: number,
@@ -99,7 +100,8 @@ export async function getAllFeeds(ttl = true): Promise<Feed[]> {
         if (ttl) {
             query = query.where('next_fetch_time', '<', db.fn.now());
         }
-        const feeds = await query.orderByRaw('random()').select();
+        const feeds = await query.select();
+        arrayShuffle(feeds);
 
         return feeds;
     } catch (e) {
