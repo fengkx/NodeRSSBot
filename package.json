@@ -4,7 +4,7 @@
   "description": "Another Telegram RSSBot in Node.js",
   "main": "dist/source",
   "engines": {
-    "node": "^14.13.1 || >=16.0.0",
+    "node": ">16.13",
     "npm": ">=7"
   },
   "scripts": {
