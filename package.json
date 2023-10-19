@@ -68,7 +68,7 @@
     "@types/js-yaml": "^4.0.7",
     "@types/make-fetch-happen": "^10.0.1",
     "@types/node-schedule": "^2.1.2",
-    "@types/tunnel": "^0.0.4",
+    "@types/tunnel": "^0.0.5",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "@vercel/nft": "^0.24.3",
