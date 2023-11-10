@@ -62,7 +62,7 @@
     "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
-    "@types/create-test-server": "^3.0.3",
+    "@types/create-test-server": "^3.0.4",
     "@types/ejs": "^3.1.4",
     "@types/jest": "^29.5.8",
     "@types/js-yaml": "^4.0.8",
