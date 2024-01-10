@@ -35,6 +35,6 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                   context: .
-                  platforms: linux/amd64,linux/arm64,linux/arm/v7
+                  platforms: linux/amd64,linux/arm64
                   push: false
                   tags: fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_BRANCH_TAG}},fengkx/node_rssbot:${{steps.docker-tag.outputs.DOCKER_SHA_TAG}}
