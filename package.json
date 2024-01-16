@@ -42,7 +42,7 @@
     "@sentry/integrations": "^7.93.0",
     "@sentry/node": "^7.93.0",
     "@sentry/tracing": "^7.93.0",
-    "camaro": "^6.2.1",
+    "camaro": "^6.2.2",
     "cross-env": "^7.0.3",
     "disk-fastq": "^0.1.9",
     "ejs": "^3.1.9",
