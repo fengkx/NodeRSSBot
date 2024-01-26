@@ -71,7 +71,7 @@
     "@types/tunnel": "^0.0.6",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
-    "@vercel/nft": "^0.26.0",
+    "@vercel/nft": "^0.26.2",
     "cp-file": "^9.1.0",
     "cpy": "^10.1.0",
     "create-test-server": "^3.0.1",
