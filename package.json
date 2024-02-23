@@ -59,7 +59,7 @@
     "telegraf-throttler": "^0.6.0",
     "tunnel": "0.0.6",
     "winston": "^3.11.0",
-    "winston-daily-rotate-file": "^4.7.1"
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@types/create-test-server": "^3.0.4",
