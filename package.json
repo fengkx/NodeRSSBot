@@ -52,7 +52,7 @@
     "knex": "^3.1.0",
     "make-fetch-happen": "^13.0.0",
     "node-schedule": "^2.1.1",
-    "pg": "^8.11.3",
+    "pg": "^8.11.4",
     "socks-proxy-agent": "^8.0.1",
     "sqlite3": "^5.1.7",
     "telegraf": "^4.15.3",
