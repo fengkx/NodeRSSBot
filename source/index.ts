@@ -171,7 +171,7 @@ bot.command(
 bot.command('lang', sendError, isAdmin, replyKeyboard);
 
 bot.command(
-    'heath',
+    'health',
     sendError,
     onlyPrivateChat,
     isAdmin,
