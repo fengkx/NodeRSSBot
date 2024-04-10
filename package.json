@@ -73,7 +73,7 @@
     "@typescript-eslint/parser": "^7.6.0",
     "@vercel/nft": "^0.26.4",
     "cp-file": "^9.1.0",
-    "cpy": "^10.1.0",
+    "cpy": "^11.0.1",
     "create-test-server": "^3.0.1",
     "del-cli": "^5.1.0",
     "eslint": "^8.57.0",
