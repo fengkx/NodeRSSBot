@@ -1,6 +1,6 @@
 const path = require('path');
 const { nodeFileTrace } = require('@vercel/nft');
-const cpFile = require('cp-file');
+const fs = require('fs/promises');
 
 const files = [
     'dist/source/index.js',
@@ -19,7 +19,7 @@ const resultFolder = path.resolve('node_modules-minimal');
     const deps = Array.from(fileList).filter((f) => f.includes('node_modules'));
     await Promise.all(
         deps.map(async (f) => {
-            cpFile(f, path.join(resultFolder, f));
+            fs.cp(f, path.join(resultFolder, f));
         })
     );
 })();
