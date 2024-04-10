@@ -67,13 +67,12 @@
     "@types/jest": "^29.5.12",
     "@types/js-yaml": "^4.0.9",
     "@types/make-fetch-happen": "^10.0.4",
+    "@types/node": "^20.12.7",
     "@types/node-schedule": "^2.1.7",
     "@types/tunnel": "^0.0.7",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
     "@vercel/nft": "^0.26.4",
-    "cp-file": "^9.1.0",
-    "cpy": "^10.1.0",
     "create-test-server": "^3.0.1",
     "del-cli": "^5.1.0",
     "eslint": "^8.57.0",
@@ -98,7 +97,7 @@
   "overrides": {
     "create-test-server": {
       "create-cert": {
-        "pem": "git+https://git@github.com:Dexus/pem.git#71dae3346801dafb5a8bcebcd4c7267fd182666f"
+        "pem": "^1.14.8"
       }
     },
     "has": "npm:@nolyfill/has@latest",

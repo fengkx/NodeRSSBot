@@ -1,5 +1,4 @@
-import {readdir} from 'node:fs/promises'
-import cpy from 'cpy';
+import {readdir, cp as cpy} from 'node:fs/promises'
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -29,7 +28,7 @@ const parisOfPathToCopy = [
 
 try {
     await Promise.all(parisOfPathToCopy.map(async ([src, dst, checker]) => {
-        await cpy(src, dst);
+        await cpy(src, dst, {recursive: true});
         if(!checker(dst)) {
             throw new Error(`Asset copy path is wrong ${src}`)
         }
