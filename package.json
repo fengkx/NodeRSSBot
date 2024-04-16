@@ -76,7 +76,6 @@
     "create-test-server": "^3.0.1",
     "del-cli": "^5.1.0",
     "eslint": "^8.57.0",
-    "eslint-plugin-import": "npm:eslint-plugin-i@^2.27.5-4",
     "iconv-lite": "^0.6.3",
     "jest": "^29.7.0",
     "lockfile-lint": "^4.13.2",
@@ -95,12 +94,12 @@
     ]
   },
   "overrides": {
+    "has": "npm:@nolyfill/has@latest",
+    "side-channel": "npm:@nolyfill/side-channel@latest",
     "create-test-server": {
       "create-cert": {
         "pem": "^1.14.8"
       }
-    },
-    "has": "npm:@nolyfill/has@latest",
-    "side-channel": "npm:@nolyfill/side-channel@latest"
+    }
   }
 }
