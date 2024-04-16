@@ -14,9 +14,8 @@
     "start-docker": "node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "dev": "node $NODE_DEBUG_OPTIONS dist/source/index",
     "test": "cross-env RSSBOT_DB_PATH=test/test-data/test.db RSSBOT_TOKEN=1 npx jest --verbose",
-    "pretty-quick": "pretty-quick --staged",
     "format": "eslint \"source/**/*.{js,ts}\" --fix && prettier \"**/*.{js,ts,json,md}\" --write",
-    "lint": "eslint \"source/**/*.{js,ts}\" && prettier-check \"**/*.{js,ts,json,md}\" && npm run lint-lockfile",
+    "lint": "eslint \"source/**/*.{js,ts}\" && prettier -c \"**/*.{js,ts,json,md}\" && npm run lint-lockfile",
     "lint-lockfile": "npx lockfile-lint --path package-lock.json --allowed-hosts npm yarn github.com  --allowed-schemes \"https:\" \"git+https:\""
   },
   "pre-commit": [
@@ -81,8 +80,6 @@
     "lockfile-lint": "^4.13.2",
     "pre-commit": "^1.2.2",
     "prettier": "^3.2.5",
-    "prettier-check": "^2.0.0",
-    "pretty-quick": "^4.0.0",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
@@ -94,6 +91,7 @@
     ]
   },
   "overrides": {
+    "make-fetch-happen": "$make-fetch-happen",
     "has": "npm:@nolyfill/has@latest",
     "side-channel": "npm:@nolyfill/side-channel@latest",
     "create-test-server": {
