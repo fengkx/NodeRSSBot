@@ -55,7 +55,7 @@
     "pg": "^8.11.5",
     "socks-proxy-agent": "^8.0.3",
     "sqlite3": "^5.1.7",
-    "telegraf": "^4.15.3",
+    "telegraf": "^4.16.3",
     "telegraf-throttler": "^0.6.0",
     "tunnel": "0.0.6",
     "winston": "^3.13.0",
