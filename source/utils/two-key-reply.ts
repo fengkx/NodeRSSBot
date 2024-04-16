@@ -19,7 +19,9 @@ export default (kbs: InlineKeyboardButton[], text?: string): Middleware => {
             text || ctx.state.replyText,
             {
                 parse_mode: 'HTML',
-                disable_web_page_preview: true,
+                link_preview_options: {
+                    is_disabled: true
+                },
                 reply_markup: {
                     inline_keyboard: [[...kbs]]
                 }
