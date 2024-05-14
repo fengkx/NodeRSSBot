@@ -3,7 +3,6 @@ import got from '../utils/got';
 import { DiskFastq } from 'disk-fastq';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import * as Sentry from '@sentry/node';
-import { RewriteFrames } from '@sentry/integrations';
 
 import logger, { logHttpError } from './logger';
 import { findFeed, getNewItems } from './feed';
@@ -206,10 +205,8 @@ function gc() {
     const afterGC = process.memoryUsage();
     const gcEndTime = process.hrtime.bigint();
     logger.info(
-        `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${
-            afterGC.heapUsed
-        } rssBefore: ${beforeGC.rss} rssAfater: ${afterGC.rss} costed ${
-            gcEndTime - gcStartTime
+        `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${afterGC.heapUsed
+        } rssBefore: ${beforeGC.rss} rssAfater: ${afterGC.rss} costed ${gcEndTime - gcStartTime
         }`
     );
     setTimeout(gc, 3 * 60 * 1000);
@@ -219,7 +216,7 @@ if (config.sentry_dsn) {
     Sentry.init({
         dsn: config.sentry_dsn,
         integrations: [
-            new RewriteFrames({
+            Sentry.rewriteFramesIntegration({
                 root: config['PKG_ROOT']
             })
         ],
@@ -254,8 +251,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 process.on('SIGUSR2', () => {
     logger.info(
-        `worker queue length: ${queue.fastq.length()}, ${
-            queue.queue.remainCount
+        `worker queue length: ${queue.fastq.length()}, ${queue.queue.remainCount
         } => ${queue.length} Running: ${(queue.fastq as any).running()}`
     );
 });
