@@ -205,10 +205,8 @@ function gc() {
     const afterGC = process.memoryUsage();
     const gcEndTime = process.hrtime.bigint();
     logger.info(
-        `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${
-            afterGC.heapUsed
-        } rssBefore: ${beforeGC.rss} rssAfater: ${afterGC.rss} costed ${
-            gcEndTime - gcStartTime
+        `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${afterGC.heapUsed
+        } rssBefore: ${beforeGC.rss} rssAfater: ${afterGC.rss} costed ${gcEndTime - gcStartTime
         }`
     );
     setTimeout(gc, 3 * 60 * 1000);
@@ -253,8 +251,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 process.on('SIGUSR2', () => {
     logger.info(
-        `worker queue length: ${queue.fastq.length()}, ${
-            queue.queue.remainCount
+        `worker queue length: ${queue.fastq.length()}, ${queue.queue.remainCount
         } => ${queue.length} Running: ${(queue.fastq as any).running()}`
     );
 });
