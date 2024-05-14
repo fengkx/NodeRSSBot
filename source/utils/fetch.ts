@@ -3,7 +3,6 @@ import got from '../utils/got';
 import { DiskFastq } from 'disk-fastq';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import * as Sentry from '@sentry/node';
-import { RewriteFrames } from '@sentry/integrations';
 
 import logger, { logHttpError } from './logger';
 import { findFeed, getNewItems } from './feed';
@@ -219,7 +218,7 @@ if (config.sentry_dsn) {
     Sentry.init({
         dsn: config.sentry_dsn,
         integrations: [
-            new RewriteFrames({
+            Sentry.rewriteFramesIntegration({
                 root: config['PKG_ROOT']
             })
         ],
