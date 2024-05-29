@@ -64,7 +64,7 @@
     "@types/jest": "^29.5.12",
     "@types/js-yaml": "^4.0.9",
     "@types/make-fetch-happen": "^10.0.4",
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.12.13",
     "@types/node-schedule": "^2.1.7",
     "@types/tunnel": "^0.0.7",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
