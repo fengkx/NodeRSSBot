@@ -44,7 +44,7 @@
     "disk-fastq": "^0.1.9",
     "ejs": "^3.1.10",
     "encoding": "^0.1.13",
-    "env-var": "^7.4.2",
+    "env-var": "^7.5.0",
     "js-yaml": "^4.1.0",
     "knex": "^3.1.0",
     "make-fetch-happen": "^13.0.1",
