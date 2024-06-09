@@ -69,7 +69,7 @@
     "@types/tunnel": "^0.0.7",
     "@typescript-eslint/eslint-plugin": "^7.12.0",
     "@typescript-eslint/parser": "^7.12.0",
-    "@vercel/nft": "^0.27.1",
+    "@vercel/nft": "^0.27.2",
     "create-test-server": "^3.0.1",
     "del-cli": "^5.1.0",
     "eslint": "^8.57.0",
