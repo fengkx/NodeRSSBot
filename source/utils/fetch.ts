@@ -1,6 +1,5 @@
-import * as path from 'path';
 import got from '../utils/got';
-import { DiskFastq } from 'disk-fastq';
+import fastQueue from 'fastq';
 import { RecurrenceRule, scheduleJob } from 'node-schedule';
 import * as Sentry from '@sentry/node';
 
@@ -143,49 +142,43 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
     return none;
 }
 
-const queue = new DiskFastq<never, Feed>(
-    async (eachFeed: Feed, cb) => {
-        const oldHashList = JSON.parse(eachFeed.recent_hash_list);
-        let fetchedItems: Option<FeedItem[]>;
-        try {
-            fetchedItems = await fetch(eachFeed);
-            if (isNone(fetchedItems)) {
-                cb(undefined, undefined);
-            } else {
-                const [sendItems, newHashList] = await getNewItems(
-                    oldHashList,
-                    fetchedItems.value
-                );
-                if (sendItems.length > 0) {
-                    await updateHashList(eachFeed.feed_id, newHashList);
-                }
-                cb(null, sendItems);
+const queue = fastQueue(async (eachFeed: Feed, cb) => {
+    const oldHashList = JSON.parse(eachFeed.recent_hash_list);
+    let fetchedItems: Option<FeedItem[]>;
+    try {
+        fetchedItems = await fetch(eachFeed);
+        if (isNone(fetchedItems)) {
+            cb(undefined, undefined);
+        } else {
+            const [sendItems, newHashList] = await getNewItems(
+                oldHashList,
+                fetchedItems.value
+            );
+            if (sendItems.length > 0) {
+                await updateHashList(eachFeed.feed_id, newHashList);
             }
-        } catch (e) {
-            cb(e, undefined);
+            cb(null, sendItems);
         }
-    },
-    concurrency,
-    { filePath: path.join(config['PKG_ROOT'], 'data', 'job-queue') },
-    (err, sendItems, feed) => {
-        if (sendItems && !err) {
-            process.send &&
-                process.send({
-                    success: true,
-                    sendItems: sendItems.slice(0, item_num),
-                    feed
-                } as SuccessMessage);
-        }
+    } catch (e) {
+        cb(e, undefined);
     }
-);
+}, concurrency);
 
 const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
     const allFeeds = await getAllFeeds(config.strict_ttl);
-    if (queue.length > allFeeds.length * 3) {
-        queue.reset();
-    }
-    allFeeds.forEach((feed) => queue.push(feed));
+    allFeeds.forEach((feed) =>
+        queue.push(feed, (err, sendItems) => {
+            if (sendItems && !err) {
+                process.send &&
+                    process.send({
+                        success: true,
+                        sendItems: sendItems.slice(0, item_num),
+                        feed
+                    } as SuccessMessage);
+            }
+        })
+    );
 };
 
 function run() {
@@ -205,8 +198,10 @@ function gc() {
     const afterGC = process.memoryUsage();
     const gcEndTime = process.hrtime.bigint();
     logger.info(
-        `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${afterGC.heapUsed
-        } rssBefore: ${beforeGC.rss} rssAfater: ${afterGC.rss} costed ${gcEndTime - gcStartTime
+        `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${
+            afterGC.heapUsed
+        } rssBefore: ${beforeGC.rss} rssAfater: ${afterGC.rss} costed ${
+            gcEndTime - gcStartTime
         }`
     );
     setTimeout(gc, 3 * 60 * 1000);
@@ -251,8 +246,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 process.on('SIGUSR2', () => {
     logger.info(
-        `worker queue length: ${queue.fastq.length()}, ${queue.queue.remainCount
-        } => ${queue.length} Running: ${(queue.fastq as any).running()}`
+        `worker queue length: ${queue.length()},  Running: ${queue.running()}`
     );
 });
 process.on('disconnect', () => {
