@@ -167,18 +167,22 @@ const queue = fastQueue(async (eachFeed: Feed, cb) => {
 const fetchAll = async (): Promise<void> => {
     process.send && process.send('start fetching');
     const allFeeds = await getAllFeeds(config.strict_ttl);
-    allFeeds.forEach((feed) =>
-        queue.push(feed, (err, sendItems) => {
-            if (sendItems && !err) {
-                process.send &&
-                    process.send({
-                        success: true,
-                        sendItems: sendItems.slice(0, item_num),
-                        feed
-                    } as SuccessMessage);
-            }
-        })
-    );
+    const inQueueSet = new Set<number>();
+    allFeeds.forEach((feed) => {
+        if (!inQueueSet.has(feed.feed_id)) {
+            queue.push(feed, (err, sendItems) => {
+                inQueueSet.delete(feed.feed_id);
+                if (sendItems && !err) {
+                    process.send &&
+                        process.send({
+                            success: true,
+                            sendItems: sendItems.slice(0, item_num),
+                            feed
+                        } as SuccessMessage);
+                }
+            });
+        }
+    });
 };
 
 function run() {
