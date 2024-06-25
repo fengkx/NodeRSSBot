@@ -38,7 +38,7 @@
   "dependencies": {
     "@cjsa/clean-stack": "^4.2.0",
     "@cjsa/escape-goat": "^4.0.0-cjsa.0",
-    "@sentry/node": "^8.11.0",
+    "@sentry/node": "^8.12.0",
     "camaro": "^6.2.3",
     "cross-env": "^7.0.3",
     "ejs": "^3.1.10",
