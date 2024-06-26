@@ -34,7 +34,8 @@ const knexConfig: Knex.Config = {
         directory: join(__dirname, 'migrations')
     },
     pool: {
-        min: 1,
+        // try https://stackoverflow.com/questions/78221948/knex-timeout-what-is-the-best-approach-to-fix-it
+        min: 0,
         max: client === SQLITE_CLIENT ? 4 : 30,
         idleTimeoutMillis: 20 * 100,
         acquireTimeoutMillis: 1000 * 5 * 60, // timeout 5 minutes
