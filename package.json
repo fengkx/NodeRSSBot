@@ -93,12 +93,15 @@
   },
   "overrides": {
     "make-fetch-happen": "$make-fetch-happen",
-    "has": "npm:@nolyfill/has@latest",
-    "side-channel": "npm:@nolyfill/side-channel@latest",
+    "has": "npm:@nolyfill/has@^1",
+    "side-channel": "npm:@nolyfill/side-channel@^1",
     "create-test-server": {
       "create-cert": {
         "pem": "^1.14.8"
       }
-    }
+    },
+    "is-core-module": "npm:@nolyfill/is-core-module@^1",
+    "isarray": "npm:@nolyfill/isarray@^1",
+    "typedarray": "npm:@nolyfill/typedarray@^1"
   }
 }
