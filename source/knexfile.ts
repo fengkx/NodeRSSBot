@@ -1,4 +1,5 @@
 /* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
+/* eslint @typescript-eslint/no-require-imports: 0 */
 try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const pg = require('pg');

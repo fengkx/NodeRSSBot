@@ -24,7 +24,6 @@ export class ControllableError extends Error {
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function newCtrlErr(code: string, e?: any): Error {
     if (e && e.response) {
         switch (e.response.statusCode) {

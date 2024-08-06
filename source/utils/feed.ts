@@ -7,7 +7,7 @@ export async function isFeedValid(feedStr: string): Promise<Option<TRSS>> {
     try {
         const feed = await parseString(feedStr);
         return Optional(feed);
-    } catch (_e) {
+    } catch {
         return none;
     }
 }
@@ -27,7 +27,7 @@ export async function findFeed(
             const url = linkTag.match(/href="(.+?)"/)[1];
             try {
                 return new URL(url).toString();
-            } catch (_e) {
+            } catch {
                 reqURL.pathname = url;
                 return reqURL.toString();
             }
