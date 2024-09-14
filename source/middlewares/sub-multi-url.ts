@@ -33,7 +33,9 @@ export default async (
                         ttl: Number.isNaN(rssFeed.ttl) ? 0 : rssFeed.ttl
                     };
                 } catch (e) {
-                    ctx.reply(`${url} ${i18n[lang]['FETCH_ERROR']}`);
+                    ctx.reply(
+                        `${url} ${i18n[lang]['FETCH_ERROR']} ${e.message}`
+                    );
                     return undefined;
                 }
             }

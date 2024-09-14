@@ -28,6 +28,19 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/ban-ts-comment': 'warn'
+        '@typescript-eslint/ban-ts-comment': 'warn',
+        '@typescript-eslint/no-unused-expressions': 'off',
+        '@typescript-eslint/no-unused-vars': [
+            'error',
+            {
+                args: 'all',
+                argsIgnorePattern: '^_',
+                caughtErrors: 'all',
+                caughtErrorsIgnorePattern: '^_',
+                destructuredArrayIgnorePattern: '^_',
+                varsIgnorePattern: '^_',
+                ignoreRestSiblings: true
+            }
+        ]
     }
 };

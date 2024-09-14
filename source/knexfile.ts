@@ -1,8 +1,9 @@
 /* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
 try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const pg = require('pg');
     pg.types.setTypeParser(20, 'text', parseInt);
-} catch (err) {
+} catch (_err) {
     logger.info('There is no pg');
 }
 import { config } from './config';
