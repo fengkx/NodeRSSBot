@@ -40,14 +40,14 @@ logger.add(
         )
     })
 );
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+
 export function logHttpError(url: string, error: any): void {
     if (error.stack) {
         error = cleanStack(error.stack);
     }
     logger.error({ type: 'http', url, error });
 }
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+
 export function logDBError(error: any): void {
     if (error.stack) {
         error = cleanStack(error.stack);
