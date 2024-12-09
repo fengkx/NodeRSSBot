@@ -50,7 +50,7 @@
     "make-fetch-happen": "^14.0.3",
     "node-schedule": "^2.1.1",
     "pg": "8.13.1",
-    "socks-proxy-agent": "^8.0.4",
+    "socks-proxy-agent": "^8.0.5",
     "sqlite3": "^5.1.7",
     "telegraf": "^4.16.3",
     "telegraf-throttler": "^0.6.0",
