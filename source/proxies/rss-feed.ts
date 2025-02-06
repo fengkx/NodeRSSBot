@@ -93,10 +93,11 @@ export async function unsub(userId: number, feedId: number): Promise<void> {
 
 export async function getAllFeeds(ttl = true): Promise<Feed[]> {
     try {
-        let query = db('rss_feed').whereIn(
-            'feed_id',
-            db('subscribes').distinct('feed_id')
-        );
+        let query = db('rss_feed as rss').whereExists(function () {
+            this.select(1)
+                .from('subscribes as s')
+                .whereRaw('s.feed_id = rss.feed_id');
+        });
         if (ttl) {
             query = query.where('next_fetch_time', '<', db.fn.now());
         }
