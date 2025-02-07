@@ -1,27 +1,21 @@
 {
+    "extends": "@fengkx/tsconfig",
     "compilerOptions": {
-        "outDir": "dist",
-        "target": "es2022", // Node.js 18
+        "alwaysStrict": false,
+        "exactOptionalPropertyTypes": false,
         "module": "commonjs",
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "declaration": false,
-        "pretty": true,
-        "newLine": "lf",
-        "stripInternal": true,
-        //    "strict": true,
-        "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true,
-        "noEmitOnError": true,
-        "useDefineForClassFields": true,
-        "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true,
-        "sourceMap": true,
+        "isolatedDeclarations": false,
         "inlineSources": true,
         "sourceRoot": "/",
-        "esModuleInterop": true
+        "strictNullChecks": false,
+        "verbatimModuleSyntax": false,
+        "strict": false,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noFallthroughCasesInSwitch": true
     },
     "include": ["source"]
 }

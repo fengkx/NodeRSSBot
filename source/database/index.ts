@@ -4,7 +4,7 @@ import knexConfig from '../knexfile';
 import logger from '../utils/logger';
 export const db = knex({
     ...knexConfig,
-    debug: process.env.NODE_ENV === 'development'
+    debug: process.env['NODE_ENV'] === 'development'
 });
 
 export async function initDB(): Promise<void> {

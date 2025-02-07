@@ -15,9 +15,9 @@ export const config: Omit<Config, 'PKG_ROOT'> = {
         port: env.get('PROXY_PORT').asString()
     },
     db_path:
-        (process.env.DYNO // heroku
-            ? process.env.DATABASE_URL
-            : process.env.RSSBOT_DB_PATH) ||
+        (process.env['DYNO'] // heroku
+            ? process.env['DATABASE_URL']
+            : process.env['RSSBOT_DB_PATH']) ||
         path.join(PKGROOT, 'data', 'database.db'), // /dist/source/config.js -> /data/
     lang: env.get('RSSBOT_LANG').default('zh-cn').asString(),
     item_num: env.get('RSSBOT_ITEM_NUM').default(10).asIntPositive(),

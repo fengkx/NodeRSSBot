@@ -110,11 +110,12 @@ bot.command('import', importReply);
 
 bot.on(
     'document',
-    async (ctx, next) => {
+    async (ctx: MContext, next) => {
         ctx.state.chat = await ctx.getChat();
         if (ctx.state.chat.type === 'private') {
             await next();
         } else {
+            // @ts-expect-error optional chain
             const replyFromId = ctx.message?.reply_to_message?.from.id;
             const me = await ctx.telegram.getMe();
             if (replyFromId && replyFromId === me.id) {
@@ -182,7 +183,7 @@ bot.action(/^CHANGE_LANG[\w_]+/, changeLangCallback);
 
 bot.hears(
     /(((https?:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gm,
-    async (ctx, next: TNextFn) => {
+    async (ctx: MContext, next: TNextFn) => {
         ctx.state.chat = await ctx.getChat();
         if (ctx.state.chat.type === 'private') {
             await next();
@@ -269,7 +270,7 @@ async function startFetchProcess(restartTime: number): Promise<void> {
         process.exit(1);
     }
     const fetchJS = join(__dirname, `utils/fetch.js`);
-    const execArgv = process.env.NODE_PRODUCTION
+    const execArgv = process.env['NODE_PRODUCTION']
         ? ['--expose-gc']
         : ['--inspect-brk=46209', '--expose-gc'];
     const child = fork(fetchJS, [], {

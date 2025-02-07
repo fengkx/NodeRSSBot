@@ -17,7 +17,7 @@ export const pass = (text, channelId) => ({
         return this.telegram.getChatAdministrators();
     },
     telegram: {
-        getChat: async (id) => {
+        getChat: async (id?: number) => {
             // return current chat or by getChatById
             const chatId = chat.id;
             return id

@@ -2,8 +2,8 @@ import { setLangById } from '../proxies/users';
 import i18n from '../i18n';
 import { MContext, TNextFn } from '../types/ctx';
 
-const chunk = (input: any[], size: number) => {
-    return input.reduce((arr, item, idx): any[][] => {
+const chunk = <T = unknown>(input: T[], size: number) => {
+    return input.reduce((arr, item, idx): T[][] => {
         return idx % size === 0
             ? [...arr, [item]]
             : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];

@@ -2,7 +2,7 @@ import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import cleanStack from '@cjsa/clean-stack';
 const logger = winston.createLogger({
-    level: process.env.NODE_PRODUCTION ? 'info' : 'debug',
+    level: process.env['NODE_PRODUCTION'] ? 'info' : 'debug',
     format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.json()
