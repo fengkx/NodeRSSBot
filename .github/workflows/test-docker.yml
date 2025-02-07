@@ -32,7 +32,7 @@ jobs:
                   echo "DOCKER_BRANCH_TAG=${IMG_TAGS}" >> $GITHUB_OUTPUT
                   echo "DOCKER_SHA_TAG=${SHA_TAG}" >> $GITHUB_OUTPUT
             - name: Build and push
-              uses: docker/build-push-action@v5
+              uses: docker/build-push-action@v6
               with:
                   context: .
                   platforms: linux/amd64,linux/arm64,linux/arm/v7
