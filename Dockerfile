@@ -7,7 +7,7 @@ FROM node:22-alpine as dep-builder
 WORKDIR /app
 COPY package.json package-lock.json /app/
 COPY tools /app/tools
-RUN apk add --no-cache --update build-base python3
+RUN apk add --no-cache --update build-base python3 py3-pip
 COPY --from=ts-builder /app/dist /app/dist
 RUN npm i -g npm && npm ci && node tools/minify-docker.js && sh tools/clean-nm.sh
 
