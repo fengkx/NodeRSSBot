@@ -70,7 +70,7 @@
     "@types/node": "^22.15.17",
     "@types/node-schedule": "^2.1.7",
     "@types/tunnel": "^0.0.7",
-    "@vercel/nft": "^0.29.2",
+    "@vercel/nft": "^0.29.3",
     "create-test-server": "^3.0.1",
     "del-cli": "^6.0.0",
     "eslint": "^9.26.0",
