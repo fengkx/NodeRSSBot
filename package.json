@@ -67,7 +67,7 @@
     "@types/jest": "^29.5.14",
     "@types/js-yaml": "^4.0.9",
     "@types/make-fetch-happen": "^10.0.4",
-    "@types/node": "^22.15.20",
+    "@types/node": "^22.15.24",
     "@types/node-schedule": "^2.1.7",
     "@types/tunnel": "^0.0.7",
     "@vercel/nft": "^0.29.3",
