@@ -1,4 +1,4 @@
-import { InlineKeyboardButton } from 'telegraf/typings/core/types/typegram';
+import { InlineKeyboardButton } from 'telegraf/types';
 import { MContext, TNextFn } from '../types/ctx';
 
 interface Middleware {
