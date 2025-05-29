@@ -4,7 +4,7 @@ import { getUserById, newUser } from '../proxies/users';
 import { MContext, TNextFn } from '../types/ctx';
 import { isNone, Option } from '../types/option';
 import { User as DBUser } from '../types/user';
-import { User } from 'telegraf/typings/core/types/typegram';
+import { User } from 'telegraf/types';
 
 /**
  * Check if using for channel
