@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { MContext, TNextFn } from '../types/ctx';
 import { Feed } from '../types/feed';
 import { config } from '../config';
-import { htmlEscape } from '@cjsa/escape-goat';
+import { escapeHTML } from 'fast-escape-html';
 
 function readFilePromise(path: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -33,8 +33,8 @@ const render = async (feeds: Feed[]): Promise<string> => {
     const template = templateCacheMap.get(opmlTemplatePath);
 
     feeds.forEach((feed) => {
-        feed.feed_title = htmlEscape(feed.feed_title);
-        feed.url = htmlEscape(feed.url);
+        feed.feed_title = escapeHTML(feed.feed_title);
+        feed.url = escapeHTML(feed.url);
     });
     return template({ feeds });
 };
