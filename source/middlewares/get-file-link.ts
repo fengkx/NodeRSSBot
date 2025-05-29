@@ -1,6 +1,6 @@
 import errors from '../utils/errors';
 import { AddMessageKey, MContext, TNextFn } from '../types/ctx';
-import { Message } from 'telegraf/typings/core/types/typegram';
+import { Message } from 'telegraf/types';
 
 export default async (
     ctx: MContext &

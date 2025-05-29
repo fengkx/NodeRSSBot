@@ -1,10 +1,9 @@
 import { Context } from 'telegraf';
-import { Chat } from 'telegraf/typings/telegram-types';
+import { Chat } from 'telegraf/types';
 import { Outline } from './outline';
 import { Feed } from './feed';
-import { Update } from 'telegraf/typings/core/types/typegram';
 
-export interface MContext<T = Update> extends Context<T> {
+export interface MContext extends Context {
     state: {
         feedUrl?: string;
         feedUrls?: string[];

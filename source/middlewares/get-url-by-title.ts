@@ -13,7 +13,9 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     if (replyToMessage.from.id !== myId) {
         throw errors.newCtrlErr('UNSUBTHIS_USAGE');
     }
-    //@ts-expect-error text type
+    if (!('text' in replyToMessage)) {
+        throw errors.newCtrlErr('UNSUBTHIS_USAGE');
+    }
     const title = replyToMessage.text.split('\n')[0];
     const feeds = await getFeedsByTitle(title);
     if (feeds.length > 1) throw errors.newCtrlErr('SAME_NAME');
