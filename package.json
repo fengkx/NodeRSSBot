@@ -64,7 +64,7 @@
     "@types/create-test-server": "^3.0.5",
     "@types/ejs": "^3.1.5",
     "@types/eslint__js": "^8.42.3",
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/make-fetch-happen": "^10.0.4",
     "@types/node": "^24.0.1",
