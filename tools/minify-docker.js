@@ -4,8 +4,8 @@ const fs = require('fs/promises');
 
 const files = [
     'dist/source/index.js',
-    'node_modules/cross-env/src/bin/cross-env.js',
-    'node_modules/cross-env/src/index.js',
+    'node_modules/cross-env/dist/bin/cross-env.js',
+    'node_modules/cross-env/dist/bin/cross-env-shell.js',
     'dist/source/utils/fetch.js'
 ];
 const resultFolder = path.resolve('node_modules-minimal');
