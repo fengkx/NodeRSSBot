@@ -32,6 +32,10 @@
             "description": "Telegram Bot Token from @BotFather",
             "required": true
         },
+        "TELEGRAM_API_BASE": {
+            "description": "Telegram API Base URL",
+            "required": false
+        },
         "DATABASE_URL": {
             "description": "connection string of other c/s dbms",
             "required": false

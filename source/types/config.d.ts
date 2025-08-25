@@ -1,5 +1,6 @@
 export type Config = {
     token: string;
+    telegram_api_base: string;
     proxy: {
         protocol: string;
         host: string;
