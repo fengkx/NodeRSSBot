@@ -22,7 +22,15 @@ import {
 import importReply from './controlers/import-reply';
 import { config } from './config';
 import agent from './utils/agent';
-const { token, view_all, lang, item_num, db_path, not_send, telegram_api_base } = config;
+const {
+    token,
+    view_all,
+    lang,
+    item_num,
+    db_path,
+    not_send,
+    telegram_api_base
+} = config;
 
 import getUrl from './middlewares/get-url';
 import getUrlByTitle from './middlewares/get-url-by-title';
