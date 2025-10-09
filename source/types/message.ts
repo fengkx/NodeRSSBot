@@ -28,12 +28,12 @@ export function isChangeFeedUrl(m: Message): m is ChangeFeedUrlMessage {
     return m.message === 'CHANGE';
 }
 
-export interface Message extends Messager {
+export interface Message extends Messenger {
     success: boolean;
-    err: Messager;
+    err: Messenger;
     feed: Feed;
 }
 
-export interface Messager {
+export interface Messenger {
     message: string;
 }

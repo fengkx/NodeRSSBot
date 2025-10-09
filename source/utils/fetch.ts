@@ -18,7 +18,7 @@ import {
     handleRedirect
 } from '../proxies/rss-feed';
 import {
-    Messager,
+    Messenger,
     SuccessMessage,
     ErrorMaxTimeMessage,
     ChangeFeedUrlMessage
@@ -35,7 +35,7 @@ function nextFetchTimeStr(minutes: number) {
         .replace('T', ' ');
 }
 
-async function handleErr(e: Messager, feed: Feed): Promise<void> {
+async function handleErr(e: Messenger, feed: Feed): Promise<void> {
     logger.info(`${feed.feed_title} ${feed.url}`, 'ERROR_MANY_TIME');
     const message: ErrorMaxTimeMessage = {
         success: false,
@@ -204,7 +204,7 @@ function gc() {
     logger.info(
         `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${
             afterGC.heapUsed
-        } rssBefore: ${beforeGC.rss} rssAfater: ${afterGC.rss} costed ${
+        } rssBefore: ${beforeGC.rss} rssAfter: ${afterGC.rss} costed ${
             gcEndTime - gcStartTime
         }`
     );
