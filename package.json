@@ -40,7 +40,7 @@
     "@sentry/node": "^10.20.0",
     "@typescript-eslint/parser": "^8.46.1",
     "camaro": "^6.2.3",
-    "cross-env": "^10.0.0",
+    "cross-env": "^10.1.0",
     "ejs": "^3.1.10",
     "encoding": "^0.1.13",
     "env-var": "^7.5.0",
