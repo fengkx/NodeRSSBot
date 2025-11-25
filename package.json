@@ -37,7 +37,7 @@
   "homepage": "https://github.com/fengkx/NodeRSSBot#readme",
   "dependencies": {
     "@cjsa/clean-stack": "^4.2.0",
-    "@sentry/node": "^10.20.0",
+    "@sentry/node": "^10.27.0",
     "@typescript-eslint/parser": "^8.47.0",
     "camaro": "^6.2.3",
     "cross-env": "^10.0.0",
