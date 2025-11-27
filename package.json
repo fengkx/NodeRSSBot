@@ -38,7 +38,7 @@
   "dependencies": {
     "@cjsa/clean-stack": "^4.2.0",
     "@sentry/node": "^10.27.0",
-    "@typescript-eslint/parser": "^8.47.0",
+    "@typescript-eslint/parser": "^8.48.0",
     "camaro": "^6.2.3",
     "cross-env": "^10.1.0",
     "ejs": "^3.1.10",
@@ -60,7 +60,7 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
     "@types/create-test-server": "^3.0.5",
     "@types/ejs": "^3.1.5",
@@ -73,17 +73,17 @@
     "@vercel/nft": "^0.30.4",
     "create-test-server": "^3.0.1",
     "del-cli": "^6.0.0",
-    "eslint": "^9.37.0",
+    "eslint": "^9.39.1",
     "globals": "^16.5.0",
     "iconv-lite": "^0.6.3",
-    "jest": "^30.0.0",
+    "jest": "^30.2.0",
     "lockfile-lint": "^4.14.1",
     "pre-commit": "^1.2.2",
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.0"
+    "typescript-eslint": "^8.48.0"
   },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
@@ -92,16 +92,16 @@
     ]
   },
   "overrides": {
+    "has": "npm:@nolyfill/has@^1.0.44",
+    "is-core-module": "npm:@nolyfill/is-core-module@^1.0.39",
+    "isarray": "npm:@nolyfill/isarray@^1.0.44",
     "make-fetch-happen": "$make-fetch-happen",
-    "has": "npm:@nolyfill/has@^1",
-    "side-channel": "npm:@nolyfill/side-channel@^1",
     "create-test-server": {
       "create-cert": {
         "pem": "^1.14.8"
       }
     },
-    "is-core-module": "npm:@nolyfill/is-core-module@^1",
-    "isarray": "npm:@nolyfill/isarray@^1",
-    "typedarray": "npm:@nolyfill/typedarray@^1"
+    "side-channel": "npm:@nolyfill/side-channel@^1.0.44",
+    "typedarray": "npm:@nolyfill/typedarray@^1.0.44"
   }
 }
