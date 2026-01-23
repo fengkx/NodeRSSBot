@@ -41,7 +41,7 @@
     "@typescript-eslint/parser": "^8.48.1",
     "camaro": "^6.2.3",
     "cross-env": "^10.1.0",
-    "ejs": "^3.1.10",
+    "ejs": "^4.0.1",
     "encoding": "^0.1.13",
     "env-var": "^7.5.0",
     "fast-escape-html": "^1.1.0",
