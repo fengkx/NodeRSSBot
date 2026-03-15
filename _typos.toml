@@ -1,2 +1,5 @@
 [files]
 extend-exclude = ["i18n/*.yaml", "CHANGELOG.md"]
+
+[default.extend-words]
+cpy = "cpy"
