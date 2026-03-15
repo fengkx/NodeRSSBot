@@ -73,6 +73,11 @@
             "description": "how many concurrency requests will be send in a batch",
             "required": false
         },
+        "RSSBOT_DB_POOL_MAX": {
+            "value": "15",
+            "description": "maximum PostgreSQL connections used by each process-local knex pool",
+            "required": false
+        },
         "PROXY_PROTOCOL": {
             "description": "proxy protocol http/https/socks",
             "required": false

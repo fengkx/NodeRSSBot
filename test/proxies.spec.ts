@@ -41,7 +41,7 @@ test('RSS getAllFeeds', async () => {
 
 test('RSS updateFeed', async () => {
     const feed = (await RSS.getFeedByUrl(feedUrl)) as Some<Feed>;
-    RSS.updateFeed({
+    await RSS.updateFeed({
         feed_id: feed.value.feed_id,
         next_fetch_time: '3000-01-01'
     });

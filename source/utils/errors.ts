@@ -4,9 +4,19 @@ import { config } from '../config';
 
 export class ControllableError extends Error {
     code: string;
-    constructor(err: string, code: string) {
-        super(err);
+    override cause?: unknown;
+    constructor(err: unknown, code: string) {
+        super(
+            typeof err === 'string'
+                ? err
+                : err instanceof Error
+                  ? err.message
+                  : err === undefined
+                    ? ''
+                    : String(err)
+        );
         this.code = code;
+        this.cause = err;
         if (err) {
             if (code === 'DB_ERROR') {
                 logDBError(err);

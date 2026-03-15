@@ -1,7 +1,8 @@
-import got from '../utils/got';
-import fastQueue from 'fastq';
-import { RecurrenceRule, scheduleJob } from 'node-schedule';
+import cleanStack from '@cjsa/clean-stack';
 import * as Sentry from '@sentry/node';
+import fastQueue from 'fastq';
+import got from '../utils/got';
+import { RecurrenceRule, scheduleJob } from 'node-schedule';
 
 import logger, { logHttpError } from './logger';
 import { findFeed, getNewItems } from './feed';
@@ -24,7 +25,34 @@ import {
     ChangeFeedUrlMessage
 } from '../types/message';
 import { encodeUrl } from './urlencode';
-const { notify_error_count, item_num, concurrency, fetch_gap } = config;
+import { db } from '../database';
+
+type QueueResult = FeedItem[] | undefined;
+type QueueCallback = (err?: Error | null, result?: QueueResult) => void;
+type ErrorLike = {
+    cause?: unknown;
+    message?: string;
+    name?: string;
+    stack?: string;
+};
+
+const { notify_error_count, item_num, concurrency, fetch_gap, db_pool_max } =
+    config;
+
+export function getEffectiveConcurrency(
+    configuredConcurrency: number,
+    dbPoolMax: number
+): number {
+    return Math.min(configuredConcurrency, Math.max(1, dbPoolMax - 2));
+}
+
+export const effectiveConcurrency = getEffectiveConcurrency(
+    concurrency,
+    db_pool_max
+);
+
+const inQueueSet = new Set<number>();
+let isFetchingRound = false;
 
 function nextFetchTimeStr(minutes: number) {
     // use SQLite CURRENT_TIMESTAMP return format like `2021-03-09 06:23:43`
@@ -35,7 +63,136 @@ function nextFetchTimeStr(minutes: number) {
         .replace('T', ' ');
 }
 
-async function handleErr(e: Messenger, feed: Feed): Promise<void> {
+function serializeError(error: unknown): string | unknown {
+    if (error instanceof Error && error.stack) {
+        return cleanStack(error.stack);
+    }
+    if (error && typeof error === 'object' && 'stack' in error) {
+        const stack = (error as ErrorLike).stack;
+        if (stack) {
+            return cleanStack(stack);
+        }
+    }
+    return error;
+}
+
+function getKnexTimeoutError(error: unknown): ErrorLike | undefined {
+    const seen = new Set<unknown>();
+    let current: unknown = error;
+
+    while (current && typeof current === 'object' && !seen.has(current)) {
+        seen.add(current);
+        const currentError = current as ErrorLike;
+        if (
+            currentError.name === 'KnexTimeoutError' ||
+            currentError.message?.includes(
+                'Knex: Timeout acquiring a connection'
+            )
+        ) {
+            return currentError;
+        }
+        current = currentError.cause;
+    }
+
+    return undefined;
+}
+
+function getKnexPoolStats():
+    | {
+          used?: number;
+          free?: number;
+          pendingAcquires?: number;
+          pendingCreates?: number;
+      }
+    | undefined {
+    const pool = (db.client as { pool?: Record<string, unknown> }).pool;
+    if (!pool) {
+        return undefined;
+    }
+    const readMetric = (name: string): number | undefined => {
+        const metric = pool[name];
+        if (typeof metric === 'function') {
+            return (metric as () => number)();
+        }
+        return undefined;
+    };
+    return {
+        used: readMetric('numUsed'),
+        free: readMetric('numFree'),
+        pendingAcquires: readMetric('numPendingAcquires'),
+        pendingCreates: readMetric('numPendingCreates')
+    };
+}
+
+export function getFetchRuntimeState(): {
+    configuredConcurrency: number;
+    effectiveConcurrency: number;
+    dbPoolMax: number;
+    isFetchingRound: boolean;
+    queueLength: number;
+    queueRunning: number;
+    inflightFeedCount: number;
+} {
+    return {
+        configuredConcurrency: concurrency,
+        effectiveConcurrency,
+        dbPoolMax: db_pool_max,
+        isFetchingRound,
+        queueLength: queue.length(),
+        queueRunning: queue.running(),
+        inflightFeedCount: inQueueSet.size
+    };
+}
+
+function reportKnexTimeoutError(
+    error: unknown,
+    feed?: Pick<Feed, 'feed_id' | 'url'>
+): void {
+    const knexError = getKnexTimeoutError(error);
+    if (!knexError) {
+        return;
+    }
+
+    const poolStats = getKnexPoolStats();
+    const extra = {
+        ...getFetchRuntimeState(),
+        ...poolStats,
+        feed_id: feed?.feed_id,
+        feed_url: feed?.url
+    };
+
+    logger.error({
+        message: 'Knex pool timeout while fetching feed',
+        type: 'db_timeout',
+        error: serializeError(knexError),
+        ...extra
+    });
+
+    if (config.sentry_dsn) {
+        Sentry.withScope((scope) => {
+            scope.setTag('error_type', 'db_timeout');
+            if (feed?.feed_id !== undefined) {
+                scope.setTag('feed_id', String(feed.feed_id));
+            }
+            if (feed?.url) {
+                scope.setTag('feed_url', feed.url);
+            }
+            scope.setExtras(extra);
+            Sentry.captureException(
+                knexError instanceof Error
+                    ? knexError
+                    : new Error(
+                          knexError.message || 'Knex pool timeout detected'
+                      )
+            );
+        });
+    }
+}
+
+async function handleErr(
+    e: Pick<Messenger, 'message'>,
+    feed: Feed
+): Promise<void> {
     logger.info(`${feed.feed_title} ${feed.url}`, 'ERROR_MANY_TIME');
     const message: ErrorMaxTimeMessage = {
         success: false,
@@ -58,14 +215,14 @@ async function handleErr(e: Messenger, feed: Feed): Promise<void> {
                 err: { message: e.message },
                 feed: feed
             };
-            process.send(message);
+            process.send && process.send(message);
         }
     } catch (err) {
         logger.error(`handlerError: ${err.stack ?? err.message}`);
     }
 }
 
-async function fetch(feedModal: Feed): Promise<Option<any[]>> {
+export async function fetch(feedModal: Feed): Promise<Option<FeedItem[]>> {
     const feedUrl = feedModal.url;
     try {
         logger.debug(`fetching ${feedUrl}`);
@@ -86,7 +243,7 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
                     feedModal.ttl || config['GAP_MINUTES']
                 )
             };
-            updateFeed(updatedFeedModal);
+            await updateFeed(updatedFeedModal);
             return none;
         }
         if (requestUrl !== res.url && res.status === 301) {
@@ -122,10 +279,11 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
         return Optional(
             items.map((item) => {
                 const { link, title, id } = item;
-                return { link, title, id };
+                return { link, title, id } as FeedItem;
             })
         );
     } catch (e) {
+        reportKnexTimeoutError(e, feedModal);
         logHttpError(feedUrl, e);
         await failAttempt(feedUrl);
         const feed = await getFeedByUrl(feedUrl);
@@ -135,14 +293,14 @@ async function fetch(feedModal: Feed): Promise<Option<any[]>> {
                 feed.value.error_count % round_time === 0 &&
                 feed.value.error_count > round_time;
             if (feed.value.error_count === notify_error_count || round_happen) {
-                handleErr(e, feed.value);
+                await handleErr(e as Messenger, feed.value);
             }
         }
     }
     return none;
 }
 
-const queue = fastQueue(async (eachFeed: Feed, cb) => {
+const queue = fastQueue(async (eachFeed: Feed, cb: QueueCallback) => {
     const oldHashList = JSON.parse(eachFeed.recent_hash_list);
     let fetchedItems: Option<FeedItem[]>;
     try {
@@ -160,16 +318,36 @@ const queue = fastQueue(async (eachFeed: Feed, cb) => {
             cb(null, sendItems);
         }
     } catch (e) {
-        cb(e, undefined);
+        reportKnexTimeoutError(e, eachFeed);
+        cb(e as Error, undefined);
     }
-}, concurrency);
+}, effectiveConcurrency);
 
-const fetchAll = async (): Promise<void> => {
+export async function fetchAll(): Promise<void> {
     process.send && process.send('start fetching');
     const allFeeds = await getAllFeeds(config.strict_ttl);
-    const inQueueSet = new Set<number>();
-    allFeeds.forEach((feed) => {
-        if (!inQueueSet.has(feed.feed_id)) {
+    const scheduledFeeds = allFeeds.filter((feed) => {
+        if (inQueueSet.has(feed.feed_id)) {
+            return false;
+        }
+        inQueueSet.add(feed.feed_id);
+        return true;
+    });
+
+    if (scheduledFeeds.length === 0) {
+        return;
+    }
+
+    await new Promise<void>((resolve) => {
+        let remaining = scheduledFeeds.length;
+        const complete = () => {
+            remaining -= 1;
+            if (remaining === 0) {
+                resolve();
+            }
+        };
+
+        scheduledFeeds.forEach((feed) => {
             queue.push(feed, (err, sendItems) => {
                 inQueueSet.delete(feed.feed_id);
                 if (sendItems && !err) {
@@ -180,21 +358,44 @@ const fetchAll = async (): Promise<void> => {
                             feed
                         } as SuccessMessage);
                 }
+                complete();
             });
-        }
-    });
-};
-
-function run() {
-    fetchAll()
-        .then(() => logger.info('fetch a round'))
-        .catch((e) => {
-            logger.error(
-                `[Catch in all ${e.name}] ${e.url} ${e.statusCode} ${e.statusMessage}`
-            );
-            logger.debug(e);
         });
+    });
 }
+
+export async function run(): Promise<void> {
+    if (isFetchingRound) {
+        logger.info({
+            message: 'skip fetch round',
+            ...getFetchRuntimeState()
+        });
+        return;
+    }
+
+    isFetchingRound = true;
+    logger.info({
+        message: 'start fetch round',
+        ...getFetchRuntimeState()
+    });
+    try {
+        await fetchAll();
+        logger.info({
+            message: 'fetch round complete',
+            ...getFetchRuntimeState()
+        });
+    } catch (e) {
+        reportKnexTimeoutError(e);
+        logger.error({
+            message: 'fetch round failed',
+            error: serializeError(e),
+            ...getFetchRuntimeState()
+        });
+    } finally {
+        isFetchingRound = false;
+    }
+}
+
 function gc() {
     const beforeGC = process.memoryUsage();
     const gcStartTime = process.hrtime.bigint();
@@ -211,48 +412,64 @@ function gc() {
     setTimeout(gc, 3 * 60 * 1000);
 }
 
-if (config.sentry_dsn) {
-    Sentry.init({
-        dsn: config.sentry_dsn,
-        integrations: [
-            Sentry.rewriteFramesIntegration({
-                root: config['PKG_ROOT']
-            })
-        ],
-        tracesSampleRate: 0.5
+export function startFetchWorker(): void {
+    if (config.sentry_dsn) {
+        Sentry.init({
+            dsn: config.sentry_dsn,
+            integrations: [
+                Sentry.rewriteFramesIntegration({
+                    root: config['PKG_ROOT']
+                })
+            ],
+            tracesSampleRate: 0.5
+        });
+    }
+
+    logger.info({
+        message: 'fetch worker initialized',
+        configuredConcurrency: concurrency,
+        effectiveConcurrency,
+        dbPoolMax: db_pool_max
+    });
+
+    gc();
+    void run();
+    const rule = new RecurrenceRule();
+    const unit = fetch_gap.substring(fetch_gap.length - 1);
+    const gapNum = parseInt(fetch_gap.substring(0, fetch_gap.length - 1));
+    const time_gaps = [];
+    switch (unit) {
+        case 'h':
+            for (let i = 0; i < 24; i = i + gapNum) {
+                time_gaps.push(i);
+            }
+            rule.hour = time_gaps;
+            logger.info('fetch every ' + gapNum + ' hour(s)');
+            break;
+        case 'm':
+        default:
+            for (let i = 0; i < 60; i = i + gapNum) time_gaps.push(i);
+            rule.minute = time_gaps;
+            logger.info('fetch every ' + gapNum + ' minutes');
+            break;
+    }
+
+    scheduleJob(rule, () => {
+        void run();
+    });
+    process.on('unhandledRejection', (reason, promise) => {
+        logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+    });
+    process.on('SIGUSR2', () => {
+        logger.info(
+            `worker queue length: ${queue.length()},  Running: ${queue.running()}`
+        );
+    });
+    process.on('disconnect', () => {
+        process.exit();
     });
 }
-gc();
-run();
-const rule = new RecurrenceRule();
-const unit = fetch_gap.substring(fetch_gap.length - 1);
-const gapNum = parseInt(fetch_gap.substring(0, fetch_gap.length - 1));
-const time_gaps = [];
-switch (unit) {
-    case 'h':
-        for (let i = 0; i < 24; i = i + gapNum) {
-            time_gaps.push(i);
-        }
-        rule.hour = time_gaps;
-        logger.info('fetch every ' + gapNum + ' hour(s)');
-        break;
-    case 'm':
-    default:
-        for (let i = 0; i < 60; i = i + gapNum) time_gaps.push(i);
-        rule.minute = time_gaps;
-        logger.info('fetch every ' + gapNum + ' minutes');
-        break;
-}
 
-scheduleJob(rule, run);
-process.on('unhandledRejection', (reason, promise) => {
-    logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
-});
-process.on('SIGUSR2', () => {
-    logger.info(
-        `worker queue length: ${queue.length()},  Running: ${queue.running()}`
-    );
-});
-process.on('disconnect', () => {
-    process.exit();
-});
+if (require.main === module) {
+    startFetchWorker();
+}
