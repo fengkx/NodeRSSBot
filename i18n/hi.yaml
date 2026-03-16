@@ -1,0 +1,53 @@
+FEED_URL_NOT_PARSE: यूआरएल पार्स करने में असमर्थ
+FETCH_ERROR: त्रुटि मिला
+404: फ़ेच त्रुटि HTTP404 मिला
+403: HTTP403 त्रुटि प्राप्त करना निषिद्ध है
+ALREADY_SUB: आपने पहले ही इस फ़ीड की सदस्यता ले ली है
+DB_ERROR: एसक्यूएल त्रुटि
+DID_NOT_SUB: आपने इस फ़ीड की सदस्यता नहीं ली है
+SUB_USAGE: 'उपयोग: /sub <RSS URL> स्वचालित रूप से RSS फ़ीड का पता लगाना समर्थित है'
+UNSUB_USAGE: 'उपयोग： /unsub  <RSS URL>'
+ADMIN_ONLY: केवल व्यवस्थापकों के लिए सक्षम करें
+UNSUBTHIS_USAGE: 'उपयोग: /unsubthis करें यह उस फ़ीड से संदेश का उत्तर दें जिसे आप सीधे अनसब्सक्राइब करना चाहते हैं '
+SAME_NAME: एक फ़ीड का शीर्षक समान है，कृपया उपयोग करें /unsub करें
+PROCESSING: प्रसंस्करण हो रहा है, कृपया थोड़ी देर प्रतीक्षा करें
+SUB_SUCCESS: सफलतापूर्वक सदस्यता लें
+UNSUB_SUCCESS: सफलतापूर्वक सदस्यता समाप्त करें
+NOT_SUB: किसी फ़ीड की सदस्यता नहीं ली गई है
+SUB_LIST: सदस्यता
+ERROR_MANY_TIME: कई बार लाने में असमर्थ, हो सकता है आप इसे अनसब्सक्राइब करना चाहें
+OPML_PARSE_ERROR: ओपीएमएल को पार्स करने में असमर्थ
+NETWORK_ERROR: नेटवर्क त्रुटि
+IMPORT_SUCCESS: सफलतापूर्वक आयात करें
+FILESYSTEM_ERROR: फ़ाइल सिस्टम त्रुटि
+UNSUB_ALL_SUCCESS: सभी को सफलतापूर्वक अनसब्सक्राइब करें
+EXPORT: 'उपयोग: /export सब्सक्रिप्शन को ओपीएमएल प्रारूप में निर्यात करें'
+SEND_FILE_IMPORT: सदस्यताएँ आयात करने के लिए एक opml फ़ाइल भेजें
+RSS_USAGE: 'उपयोग: /rss आउटपुट सदस्यता सूची में लिंक दिखाने के लिए "कच्चा" जोड़ें'
+VIEW_ALL_USAGE: /viewall सभी सदस्यताएँ और ग्राहकों की संख्या देखें, लिंक दिखाने के लिए कच्चा जोड़ें
+USB_ALL_USAGE: 'उपयोग: /allunsub सभी फ़ीड की सदस्यता समाप्त करें'
+IMPORT_USAGE: 'उपयोग: /import करें ओपीएमएल को सीधे निजी चैट में भेजें या इस संदेश का उत्तर दें'
+WELCOME: '[NodeRSSBot](https://github.com/fengkx/NodeRSSBot) में आपका स्वागत है'
+CONFIRM: क्या आप ऑपरेशन जारी रखना चाहते हैं
+PRIVATE_CHAT_ONLY: केवल निजी चैट में ही उपयोग किया जा सकता है
+ALL_FEED: सभी फ़ीड सब्सक्राइब हो गए
+COMMAND_NOT_ENABLED: आदेश सक्षम नहीं है
+NUMBER_OF_SUBSCRIBER: ग्राहकों की संख्या
+CHANNEL_NOT_FOUND: चैनल नहीं मिला
+CHANNEL_ADMIN_REQUIRE: आपको इस बॉट को चैनल प्रशासकों के साथ जोड़ना होगा और सही ढंग से अधिकार देना होगा
+YES: हाँ
+NO: नहीं
+CANCEL: रद्द
+PAGE_PRE: पिछला पृष्ठ
+PAGE_NEXT: अगला पृष्ठ
+FOUND_FEED_MORE_THAN_ONE: 1 से अधिक फ़ीड मिलीं
+FOUND_FEEDS: फ़ीड मिला
+FEED_CHANGE_TO: फ़ीड बदलें
+CHOOSE_LANG: भाषाएँ चुनें
+SET_LANG_TO: भाषा को इस पर सेट करें
+LANG_USAGE: 'उपयोग: /lang भाषा बदलें'
+CHOOSE_UNSUB: वह सदस्यता चुनें जिसे आप अनसब्सक्राइब करना चाहते हैं
+ACTIVE_FEED_COUNT_WITH_ERROR: त्रुटि के साथ सक्रिय फ़ीड की संख्या
+TOTAL_ACTIVE_FEED_COUNT: सक्रिय फ़ीड की कुल संख्या
+CREATOR_ONLY: केवल बॉट निर्माता के लिए
+ALLOW_LIST_NOT_INCLUDE: उसके बॉट ने अनुमति सूची सक्षम कर दी है और आपको ब्लॉक कर दिया गया है
