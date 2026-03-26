@@ -70,9 +70,8 @@ describe('https proxy is set', () => {
         expect(config).toEqual(httpsProxyConfig);
     });
     test('agent should contain http and https', async () => {
-        const { proxyUrl, default: agent } = await import(
-            '../source/utils/agent'
-        );
+        const { proxyUrl, default: agent } =
+            await import('../source/utils/agent');
         expect(proxyUrl).toBe('https://10.0.2.2:1080');
         expect(agent.http).toHaveProperty(
             'proxyOptions.host',
@@ -109,9 +108,8 @@ describe('socks proxy is set', () => {
         expect(config).toEqual(httpsProxyConfig);
     });
     test('agent should contain http and https', async () => {
-        const { proxyUrl, default: agent } = await import(
-            '../source/utils/agent'
-        );
+        const { proxyUrl, default: agent } =
+            await import('../source/utils/agent');
         expect(proxyUrl).toBe('socks://10.0.2.2:1080');
         expect(agent.http).toHaveProperty(
             'proxy.host',
