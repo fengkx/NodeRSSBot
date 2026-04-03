@@ -75,7 +75,7 @@
     "del-cli": "^6.0.0",
     "eslint": "^9.39.1",
     "globals": "^16.5.0",
-    "iconv-lite": "^0.6.3",
+    "iconv-lite": "^0.7.2",
     "jest": "^30.2.0",
     "lockfile-lint": "^4.14.1",
     "pre-commit": "^1.2.2",
