@@ -53,6 +53,9 @@ export const effectiveConcurrency = getEffectiveConcurrency(
 
 const inQueueSet = new Set<number>();
 let isFetchingRound = false;
+let lastDueFeedCount = 0;
+let lastScheduledFeedCount = 0;
+let lastDuplicateSkippedFeedCount = 0;
 
 function nextFetchTimeStr(minutes: number) {
     // use SQLite CURRENT_TIMESTAMP return format like `2021-03-09 06:23:43`
@@ -132,6 +135,9 @@ export function getFetchRuntimeState(): {
     queueLength: number;
     queueRunning: number;
     inflightFeedCount: number;
+    lastDueFeedCount: number;
+    lastScheduledFeedCount: number;
+    lastDuplicateSkippedFeedCount: number;
 } {
     return {
         configuredConcurrency: concurrency,
@@ -140,8 +146,28 @@ export function getFetchRuntimeState(): {
         isFetchingRound,
         queueLength: queue.length(),
         queueRunning: queue.running(),
-        inflightFeedCount: inQueueSet.size
+        inflightFeedCount: inQueueSet.size,
+        lastDueFeedCount,
+        lastScheduledFeedCount,
+        lastDuplicateSkippedFeedCount
     };
+}
+
+function logFetchBacklog(): void {
+    const state = getFetchRuntimeState();
+    if (
+        state.queueLength === 0 &&
+        state.queueRunning === 0 &&
+        state.inflightFeedCount === 0
+    ) {
+        return;
+    }
+
+    logger.info({
+        message: 'fetch backlog',
+        ...state,
+        ...getKnexPoolStats()
+    });
 }
 
 function reportKnexTimeoutError(
@@ -326,12 +352,26 @@ const queue = fastQueue(async (eachFeed: Feed, cb: QueueCallback) => {
 export async function fetchAll(): Promise<void> {
     process.send && process.send('start fetching');
     const allFeeds = await getAllFeeds(config.strict_ttl);
+    let duplicateSkippedFeedCount = 0;
     const scheduledFeeds = allFeeds.filter((feed) => {
         if (inQueueSet.has(feed.feed_id)) {
+            duplicateSkippedFeedCount += 1;
             return false;
         }
         inQueueSet.add(feed.feed_id);
         return true;
+    });
+    lastDueFeedCount = allFeeds.length;
+    lastScheduledFeedCount = scheduledFeeds.length;
+    lastDuplicateSkippedFeedCount = duplicateSkippedFeedCount;
+
+    logger.info({
+        message: 'fetch round scheduled',
+        dueFeedCount: allFeeds.length,
+        scheduledFeedCount: scheduledFeeds.length,
+        duplicateSkippedFeedCount,
+        ...getFetchRuntimeState(),
+        ...getKnexPoolStats()
     });
 
     if (scheduledFeeds.length === 0) {
@@ -431,6 +471,8 @@ export function startFetchWorker(): void {
         effectiveConcurrency,
         dbPoolMax: db_pool_max
     });
+    const backlogLogTimer = setInterval(logFetchBacklog, 30 * 1000);
+    backlogLogTimer.unref?.();
 
     gc();
     void run();
