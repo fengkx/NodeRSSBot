@@ -17,6 +17,8 @@ export type Config = {
     UA: string;
     not_send: boolean;
     concurrency: number;
+    send_concurrency: number;
+    send_rate: number;
     db_pool_max: number;
     delete_on_err_send: boolean;
     resp_timeout: number;
