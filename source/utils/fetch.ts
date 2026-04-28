@@ -115,7 +115,11 @@ function getKnexPoolStats():
     const readMetric = (name: string): number | undefined => {
         const metric = pool[name];
         if (typeof metric === 'function') {
-            return (metric as () => number)();
+            try {
+                return (metric as () => number)();
+            } catch {
+                return undefined;
+            }
         }
         return undefined;
     };

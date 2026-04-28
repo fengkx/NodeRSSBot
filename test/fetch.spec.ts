@@ -31,7 +31,8 @@ function buildFeed(
 type FetchModule = typeof import('../source/utils/fetch');
 
 async function loadFetchModule(
-    configOverrides: Record<string, unknown> = {}
+    configOverrides: Record<string, unknown> = {},
+    poolOverrides: Record<string, unknown> = {}
 ): Promise<{
     fetchModule: FetchModule;
     gotMock: jest.Mock;
@@ -100,7 +101,8 @@ async function loadFetchModule(
                     numUsed: () => 0,
                     numFree: () => 0,
                     numPendingAcquires: () => 0,
-                    numPendingCreates: () => 0
+                    numPendingCreates: () => 0,
+                    ...poolOverrides
                 }
             }
         }
@@ -158,6 +160,31 @@ describe('fetch worker runtime', () => {
                 configuredConcurrency: 10,
                 effectiveConcurrency: 3,
                 dbPoolMax: 5
+            })
+        );
+    });
+
+    test('ignores pool metric reader failures when reporting runtime state', async () => {
+        const { fetchModule } = await loadFetchModule(
+            {},
+            {
+                numUsed: () => {
+                    throw new TypeError(
+                        "Cannot read properties of undefined (reading 'used')"
+                    );
+                }
+            }
+        );
+
+        expect(fetchModule.getFetchRuntimeState()).toEqual(
+            expect.objectContaining({
+                configuredConcurrency: 8,
+                effectiveConcurrency: 8,
+                dbPoolMax: 15,
+                isFetchingRound: false,
+                queueLength: 0,
+                queueRunning: 0,
+                inflightFeedCount: 0
             })
         );
     });
