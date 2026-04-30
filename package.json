@@ -42,7 +42,7 @@
     "async-sema": "^3.1.1",
     "camaro": "^6.2.3",
     "cross-env": "^10.1.0",
-    "ejs": "^4.0.1",
+    "ejs": "^5.0.2",
     "encoding": "^0.1.13",
     "env-var": "^7.5.0",
     "fast-escape-html": "^1.1.0",
