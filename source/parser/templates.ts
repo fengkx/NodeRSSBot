@@ -12,7 +12,7 @@ export const atomTpl = {
             link: 'link/@href'
         }
     ]
-};
+} as const;
 
 export const rdfTpl = {
     version: '#1',
@@ -27,7 +27,7 @@ export const rdfTpl = {
             id: 'dc:identifier|link'
         }
     ]
-};
+} as const;
 
 export const rss2Tpl = {
     version: '/rss/@version',
@@ -44,4 +44,4 @@ export const rss2Tpl = {
             id: 'guid'
         }
     ]
-};
+} as const;

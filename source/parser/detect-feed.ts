@@ -3,9 +3,10 @@ import { transform } from 'camaro';
 export async function detectFeed(xml: string): Promise<TDocTypeVersion> {
     const docType = await transform(xml, {
         rss: 'rss/channel/title',
+        rssVersion: '/rss/@version',
         atom: 'feed/title',
         rdf: 'rdf:RDF'
-    });
+    } as const);
 
     if (docType.rss) {
         const version = parseFloat(docType.rssVersion);

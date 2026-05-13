@@ -7,14 +7,17 @@ import i18n from '../i18n';
 import { MContext, TNextFn } from '../types/ctx';
 
 const getOutlines = async function (data: string): Promise<Outline[]> {
-    return await transform(data, [
-        '//outline[@type="rss"]',
-        {
-            xmlUrl: '@xmlUrl',
-            type: '@type',
-            text: '@text'
-        }
-    ]);
+    const { outlines } = await transform(data, {
+        outlines: [
+            '//outline[@type="rss"]',
+            {
+                xmlUrl: '@xmlUrl',
+                type: '@type',
+                text: '@text'
+            }
+        ]
+    } as const);
+    return outlines;
 };
 
 export const _getOutlines = getOutlines;
