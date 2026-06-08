@@ -47,7 +47,7 @@
     "env-var": "^7.5.0",
     "fast-escape-html": "^1.1.0",
     "fastq": "^1.20.1",
-    "js-yaml": "^4.1.1",
+    "js-yaml": "^4.2.0",
     "knex": "^3.2.10",
     "make-fetch-happen": "^15.0.6",
     "node-schedule": "^2.1.1",
