@@ -40,7 +40,7 @@
     "@sentry/node": "^10.56.0",
     "@typescript-eslint/parser": "^8.62.0",
     "async-sema": "^3.1.1",
-    "camaro": "^6.3.2",
+    "camaro": "^6.7.1",
     "cross-env": "^10.1.0",
     "ejs": "^6.0.1",
     "encoding": "^0.1.13",
