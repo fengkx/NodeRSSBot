@@ -23,7 +23,6 @@ jobs:
                   node-version: ${{ matrix.node-version }}
             - name: npm install, build, and test
               run: |
-                  npm i -g npm
                   npm cache clean --force
                   npm ci
                   npm run build

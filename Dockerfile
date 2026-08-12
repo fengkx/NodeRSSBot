@@ -1,7 +1,7 @@
 FROM node:24-alpine as ts-builder
 WORKDIR /app
 COPY . /app
-RUN npm i -g npm && npm ci --ignore-scripts && npm run build
+RUN npm ci --ignore-scripts && npm run build
 
 FROM node:24-alpine as dep-builder
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY package.json package-lock.json /app/
 COPY tools /app/tools
 RUN apk add --no-cache --update build-base python3 py3-pip
 COPY --from=ts-builder /app/dist /app/dist
-RUN npm i -g npm && npm ci && node tools/minify-docker.js && sh tools/clean-nm.sh
+RUN npm ci && node tools/minify-docker.js && sh tools/clean-nm.sh
 
 FROM node:24-alpine as app
 WORKDIR /app
