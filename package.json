@@ -48,7 +48,7 @@
     "fast-escape-html": "^1.1.0",
     "fastq": "^1.20.1",
     "js-yaml": "^5.2.2",
-    "knex": "^3.2.10",
+    "knex": "^3.3.0",
     "make-fetch-happen": "^15.0.6",
     "node-schedule": "^2.1.1",
     "pg": "^8.22.0",
