@@ -2,6 +2,7 @@ import { none, Option, Optional } from '../types/option';
 import { parseString, TRSS } from '../parser/parse';
 import { FeedItem } from '../types/feed';
 import hashFeed from './hash-feed';
+import { decodeHtmlEntities } from './html-entities';
 
 export async function isFeedValid(feedStr: string): Promise<Option<TRSS>> {
     try {
@@ -24,14 +25,20 @@ export async function findFeed(
     return linksTag
         .filter((t) => t.match(/rss|atom/) && t.includes('href'))
         .map((linkTag) => {
-            const url = linkTag.match(/href="(.+?)"/)[1];
+            const hrefMatch = linkTag.match(/href="(.+?)"/);
+            if (!hrefMatch) {
+                return '';
+            }
+            // Decode HTML entities from href attribute value
+            const url = decodeHtmlEntities(hrefMatch[1]);
             try {
                 return new URL(url).toString();
             } catch {
                 reqURL.pathname = url;
                 return reqURL.toString();
             }
-        });
+        })
+        .filter((url) => url !== '');
 }
 
 export async function getNewItems(
