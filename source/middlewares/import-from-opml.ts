@@ -5,6 +5,8 @@ import errors from '../utils/errors';
 import { sub } from '../proxies/rss-feed';
 import i18n from '../i18n';
 import { MContext, TNextFn } from '../types/ctx';
+import sanitize from '../utils/sanitize';
+import escapeHtml from '../utils/escape-html';
 
 const getOutlines = async function (data: string): Promise<Outline[]> {
     const { outlines } = await transform(data, {
@@ -42,7 +44,8 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
         );
         let text = `<strong>${i18n[lang]['IMPORT_SUCCESS']}</strong>`;
         outlines.forEach((outline) => {
-            text += `\n<a href="${outline.xmlUrl}">${outline.text}</a>`;
+            // URL is escaped for href, title text is sanitized for display
+            text += `\n<a href="${escapeHtml(outline.xmlUrl)}">${sanitize(outline.text)}</a>`;
         });
         if (text.length > 4096) {
             text = `<strong>${i18n[lang]['IMPORT_SUCCESS']}</strong>\n`;

@@ -4,6 +4,7 @@ import {
 } from '../proxies/subscribes';
 import logger from './logger';
 import sanitize from './sanitize';
+import escapeHtml from './escape-html';
 import { config } from '../config';
 import { Telegraf, Context } from 'telegraf';
 import { Feed, FeedItem } from '../types/feed';
@@ -177,9 +178,10 @@ const send = async (
                 const userId = subscribe.user_id;
                 let text = `<b>${sanitize(feed.feed_title)}</b>`;
                 feedItems.forEach(function (item) {
-                    text += `\n<a href="${item.link.trim()}">${
-                        sanitize(item.title) || item.link.trim()
-                    }</a>`;
+                    // Escape URLs for href attribute; sanitize title, or escape URL as fallback text
+                    const link = escapeHtml(item.link.trim());
+                    const title = sanitize(item.title) || link;
+                    text += `\n<a href="${link}">${title}</a>`;
                 });
                 try {
                     await sendMessageWithLimit(bot, userId, text, {
