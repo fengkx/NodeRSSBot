@@ -2,9 +2,9 @@
 
 ### Bug Fixes
 
-- decode HTML entities in discovered feed URLs ([fdc87a3](https://github.com/fengkx/NodeRSSBot/commit/fdc87a3))
-- escape HTML special characters in feed titles and links ([#2251](https://github.com/fengkx/NodeRSSBot/issues/2251)) ([358ca54](https://github.com/fengkx/NodeRSSBot/commit/358ca54))
-- render notification messages with fixed templates ([#2250](https://github.com/fengkx/NodeRSSBot/issues/2250)) ([358ca54](https://github.com/fengkx/NodeRSSBot/commit/358ca54))
+- decode HTML entities in discovered feed URLs ([#2250](https://github.com/fengkx/NodeRSSBot/issues/2250)) ([358ca54](https://github.com/fengkx/NodeRSSBot/commit/358ca54b7abc3aa27772c84f1c3c1b70ddf3d5b8))
+- escape HTML special characters in feed titles and links ([#2251](https://github.com/fengkx/NodeRSSBot/issues/2251)) ([63431f3](https://github.com/fengkx/NodeRSSBot/commit/63431f3d58735ca18e10ea65156f42268637cb7d))
+- render notification messages with fixed templates ([#2250](https://github.com/fengkx/NodeRSSBot/issues/2250)) ([358ca54](https://github.com/fengkx/NodeRSSBot/commit/358ca54b7abc3aa27772c84f1c3c1b70ddf3d5b8))
 
 # [0.11.0](https://github.com/fengkx/NodeRSSBot/compare/v0.10.1...v0.11.0) (2022-02-09)
 
