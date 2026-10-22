@@ -297,7 +297,7 @@ async function startFetchProcess(restartTime: number): Promise<void> {
                 const { feed, err } = message;
                 send(
                     bot,
-                    '<%= title %>: <a href="<%= url %>"><%= url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%= msg %>',
+                    '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>',
                     feed,
                     {
                         title: feed.feed_title,
@@ -308,20 +308,16 @@ async function startFetchProcess(restartTime: number): Promise<void> {
             }
             if (isChangeFeedUrl(message)) {
                 const { feed, new_feed } = message;
-                const builder = [];
-                builder.push(
-                    '<%= title %>: <a href="<%= url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>'
+                send(
+                    bot,
+                    '<%- title %>: <a href="<%- url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %><%=i18n["FEED_CHANGE_TO"]%> <%- new_feeds[0] %>',
+                    feed,
+                    {
+                        title: feed.feed_title,
+                        url: encodeUrl(feed.url),
+                        new_feeds: new_feed
+                    }
                 );
-                builder.push('<b><%=i18n["FOUND_FEEDS"]%></b>:');
-                builder.push(...new_feed);
-                builder.push(
-                    '<%=i18n["FEED_CHANGE_TO"]%> <%= first_new_feed %>'
-                );
-                send(bot, builder.join('\n'), feed, {
-                    title: feed.feed_title,
-                    url: encodeUrl(feed.url),
-                    first_new_feed: new_feed[0]
-                });
             }
         }
     });

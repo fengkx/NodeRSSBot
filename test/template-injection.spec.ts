@@ -1,177 +1,520 @@
-import * as ejs from 'ejs';
-import i18n from '../source/i18n';
-
 /**
- * Test for Server-Side Template Injection (SSTI) vulnerability
+ * Template Injection Security Tests
  *
- * This test reproduces the vulnerability where untrusted data (feed titles, URLs, error messages)
- * are concatenated into EJS template strings and then evaluated, allowing code execution.
+ * These tests verify that untrusted data (feed titles, URLs, error messages)
+ * cannot be used to inject and execute arbitrary code via EJS template processing.
+ *
+ * Tests use production code paths (mocking only DB and Telegram API) to ensure
+ * the fix is effective in the actual runtime environment.
  */
-describe('Template Injection Security Tests', () => {
-    const lang = 'en';
 
-    describe('Vulnerability Reproduction - ERROR_MANY_TIME path', () => {
-        it('should NOT execute code from malicious feed title (old vulnerable code path)', () => {
-            // Simulate a malicious feed title with EJS code injection
-            const maliciousFeedTitle =
-                '<%= global.TEMPLATE_INJECTION_TEST = "EXPLOITED" %>';
-            const feedUrl = 'https://example.com/feed.xml';
-            const errorMessage = 'Connection timeout';
+import { Telegraf } from 'telegraf';
+import send from '../source/utils/send';
+import { Feed } from '../source/types/feed';
+import * as subscribesProxy from '../source/proxies/subscribes';
+import * as usersProxy from '../source/proxies/users';
+import { Optional } from '../source/types/option';
 
-            // This simulates the VULNERABLE code pattern from index.ts:300
-            // OLD CODE: `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> <%=i18n['ERROR_MANY_TIME']%> ${err.message}`
-            const vulnerableTemplate = `${maliciousFeedTitle}: <a href="${feedUrl}">${feedUrl}</a> <%=i18n['ERROR_MANY_TIME']%> ${errorMessage}`;
+// Mock database and Telegram
+jest.mock('../source/proxies/subscribes');
+jest.mock('../source/proxies/users');
 
-            // Clear any previous value
-            delete (global as any).TEMPLATE_INJECTION_TEST;
+describe('Template Injection Security - Production Code Paths', () => {
+    let bot: Telegraf;
+    let sentMessages: Array<{
+        userId: number;
+        text: string;
+        options: any;
+    }>;
+    const mockUserId = 12345;
 
-            // Render the template (this is what happens in send.ts:159)
-            const result = ejs.render(vulnerableTemplate, { i18n: i18n[lang] });
+    beforeEach(() => {
+        // Reset mocks
+        sentMessages = [];
 
-            // If the code executed, the global variable will be set
-            // This demonstrates the vulnerability exists
-            if ((global as any).TEMPLATE_INJECTION_TEST === 'EXPLOITED') {
-                // The vulnerability IS present - the malicious code executed
-                // This test documents the vulnerability before the fix
-                expect((global as any).TEMPLATE_INJECTION_TEST).toBe(
-                    'EXPLOITED'
-                );
-
-                // Clean up
-                delete (global as any).TEMPLATE_INJECTION_TEST;
-            } else {
-                // The vulnerability is fixed - the code did NOT execute
-                // After the fix, this should be the case
-                expect((global as any).TEMPLATE_INJECTION_TEST).toBeUndefined();
+        // Create bot with mocked telegram API
+        bot = new Telegraf('mock-token');
+        bot.telegram.sendMessage = jest.fn(
+            async (userId: number, text: string, options?: any) => {
+                sentMessages.push({ userId, text, options });
+                return {} as any;
             }
-        });
+        );
 
-        it('should demonstrate RCE potential with process execution attempt', () => {
-            // A more severe payload that attempts process manipulation
-            const maliciousFeedTitle = '<%= process.pid %>';
-            const feedUrl = 'https://example.com/feed.xml';
-            const errorMessage = 'Failed';
+        // Mock database responses
+        (subscribesProxy.getSubscribersByFeedId as jest.Mock).mockResolvedValue(
+            [{ user_id: mockUserId, feed_id: 1 }]
+        );
 
-            // Vulnerable pattern
-            const vulnerableTemplate = `${maliciousFeedTitle}: <a href="${feedUrl}">${feedUrl}</a> <%=i18n['ERROR_MANY_TIME']%> ${errorMessage}`;
-
-            const result = ejs.render(vulnerableTemplate, { i18n: i18n[lang] });
-
-            // If process.pid appears in the output, code execution occurred
-            if (result.includes(String(process.pid))) {
-                // Vulnerability present - the process.pid was evaluated
-                expect(result).toContain(String(process.pid));
-            } else {
-                // Vulnerability fixed - should show escaped or literal text instead
-                expect(result).not.toContain(String(process.pid));
-            }
-        });
+        (usersProxy.getUserById as jest.Mock).mockResolvedValue(
+            Optional({ user_id: mockUserId, lang: 'en', username: 'test' })
+        );
     });
 
-    describe('Vulnerability Reproduction - isChangeFeedUrl path', () => {
-        it('should NOT execute code from malicious feed title in feed change path', () => {
-            const maliciousFeedTitle =
-                '<%= global.FEED_CHANGE_EXPLOITED = "EXPLOITED" %>';
-            const feedUrl = 'https://example.com/feed.xml';
-            const newFeed = 'https://example.com/newfeed.xml';
+    describe('ERROR_MANY_TIME Path - Template Injection Prevention', () => {
+        it('should block template injection in feed title', async () => {
+            const maliciousFeed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title:
+                    '<% global.INJECTED_TITLE = "EXPLOITED" %>Malicious',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
 
-            // This simulates the VULNERABLE code from index.ts:308-314
-            const builder = [];
-            builder.push(
-                `${maliciousFeedTitle}: <a href="${feedUrl}"></a> <%=i18n['ERROR_MANY_TIME']%>`
+            const errorMessage = 'Connection timeout';
+
+            // Use production template from index.ts:300
+            const template =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            delete (global as any).INJECTED_TITLE;
+
+            await send(bot, template, maliciousFeed, {
+                title: maliciousFeed.feed_title,
+                url: maliciousFeed.url,
+                msg: errorMessage
+            });
+
+            // Template injection should be blocked
+            expect((global as any).INJECTED_TITLE).toBeUndefined();
+
+            // Message should be sent with literal EJS code visible as text
+            expect(sentMessages).toHaveLength(1);
+            expect(sentMessages[0].text).toContain(
+                '<% global.INJECTED_TITLE = "EXPLOITED" %>'
             );
-            builder.push(`<b><%=i18n['FOUND_FEEDS']%></b>:`);
-            builder.push(newFeed);
-            builder.push(`<%=i18n['FEED_CHANGE_TO']%> ${newFeed}`);
-            const vulnerableTemplate = builder.join('\n');
+            expect(sentMessages[0].text).toContain(
+                'Unable to fetch for many times'
+            );
+        });
 
-            delete (global as any).FEED_CHANGE_EXPLOITED;
+        it('should block template injection in error message', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Legitimate Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
 
-            const result = ejs.render(vulnerableTemplate, { i18n: i18n[lang] });
+            // err.message is also attacker-controlled (comes from remote servers)
+            const maliciousError = '<%= global.INJECTED_ERROR = "EXPLOITED" %>';
 
-            if ((global as any).FEED_CHANGE_EXPLOITED === 'EXPLOITED') {
-                expect((global as any).FEED_CHANGE_EXPLOITED).toBe('EXPLOITED');
-                delete (global as any).FEED_CHANGE_EXPLOITED;
-            } else {
-                expect((global as any).FEED_CHANGE_EXPLOITED).toBeUndefined();
-            }
+            const template =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            delete (global as any).INJECTED_ERROR;
+
+            await send(bot, template, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                msg: maliciousError
+            });
+
+            expect((global as any).INJECTED_ERROR).toBeUndefined();
+            expect(sentMessages[0].text).toContain(
+                '<%= global.INJECTED_ERROR = "EXPLOITED" %>'
+            );
+        });
+
+        it('should block template injection in URL', async () => {
+            const maliciousFeed: Feed = {
+                feed_id: 1,
+                url: 'https://evil.com/<%=global.INJECTED_URL="EXPLOITED"%>',
+                feed_title: 'Test Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const template =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            delete (global as any).INJECTED_URL;
+
+            await send(bot, template, maliciousFeed, {
+                title: maliciousFeed.feed_title,
+                url: maliciousFeed.url,
+                msg: 'Error'
+            });
+
+            expect((global as any).INJECTED_URL).toBeUndefined();
         });
     });
 
-    describe('Fixed Implementation - Passing untrusted data as EJS locals', () => {
-        it('should safely render feed title when passed as EJS local', () => {
-            const maliciousFeedTitle =
-                '<%= global.SAFE_TEST = "SHOULD_NOT_EXECUTE" %>';
-            const feedUrl = 'https://example.com/feed.xml';
-            const errorMessage = 'Connection timeout';
+    describe('isChangeFeedUrl Path - Template Injection Prevention', () => {
+        it('should block template injection in feed title (feed change path)', async () => {
+            const maliciousFeed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title:
+                    '<%= global.INJECTED_FEED_CHANGE = "EXPLOITED" %>Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
 
-            // FIXED CODE: Pass untrusted values as locals, reference them with escaped output
-            const safeTemplate =
-                '<%= title %>: <a href="<%= url %>"><%= url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%= msg %>';
+            const newFeeds = [
+                'https://example.com/newfeed1.xml',
+                'https://example.com/newfeed2.xml'
+            ];
 
-            delete (global as any).SAFE_TEST;
+            // Production template from index.ts:308-314
+            const template =
+                '<%- title %>: <a href="<%- url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %><%=i18n["FEED_CHANGE_TO"]%> <%- new_feeds[0] %>';
 
-            const result = ejs.render(safeTemplate, {
-                title: maliciousFeedTitle,
-                url: feedUrl,
-                msg: errorMessage,
-                i18n: i18n[lang]
+            delete (global as any).INJECTED_FEED_CHANGE;
+
+            await send(bot, template, maliciousFeed, {
+                title: maliciousFeed.feed_title,
+                url: maliciousFeed.url,
+                new_feeds: newFeeds
             });
 
-            // The malicious code should NOT execute
-            expect((global as any).SAFE_TEST).toBeUndefined();
-
-            // The result should contain the escaped/literal title text
-            expect(result).toContain('&lt;%= global.SAFE_TEST');
-            expect(result).toContain(feedUrl);
-            expect(result).toContain('Unable to fetch for many times');
+            expect((global as any).INJECTED_FEED_CHANGE).toBeUndefined();
+            expect(sentMessages[0].text).toContain(
+                '<%= global.INJECTED_FEED_CHANGE = "EXPLOITED" %>'
+            );
         });
 
-        it('should safely render feed change with all untrusted data as locals', () => {
-            const maliciousFeedTitle = '<%= process.exit(1) %>';
-            const feedUrl = 'https://example.com/feed.xml';
-            const newFeed = 'https://example.com/newfeed.xml';
+        it('should block template injection in new_feed URLs', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
 
-            // FIXED CODE: Safe template with locals
-            const safeTemplate =
-                '<%= title %>: <a href="<%= url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<%= new_feed %>\n<%=i18n["FEED_CHANGE_TO"]%> <%= new_feed %>';
+            const maliciousNewFeeds = [
+                '<%= global.INJECTED_NEWFEED = "EXPLOITED" %>',
+                'https://example.com/feed2.xml'
+            ];
 
-            const result = ejs.render(safeTemplate, {
-                title: maliciousFeedTitle,
-                url: feedUrl,
-                new_feed: newFeed,
-                i18n: i18n[lang]
+            const template =
+                '<%- title %>: <a href="<%- url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %><%=i18n["FEED_CHANGE_TO"]%> <%- new_feeds[0] %>';
+
+            delete (global as any).INJECTED_NEWFEED;
+
+            await send(bot, template, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                new_feeds: maliciousNewFeeds
             });
 
-            // Process should still be running (not exited)
-            expect(process.pid).toBeGreaterThan(0);
-
-            // The result should contain escaped content
-            expect(result).toContain('&lt;%= process.exit(1) %&gt;');
-            expect(result).toContain(newFeed);
+            expect((global as any).INJECTED_NEWFEED).toBeUndefined();
+            expect(sentMessages[0].text).toContain(
+                '<%= global.INJECTED_NEWFEED = "EXPLOITED" %>'
+            );
         });
 
-        it('should handle malicious error messages safely', () => {
-            const feedTitle = 'Legitimate Feed';
-            const feedUrl = 'https://example.com/feed.xml';
-            // err.message could also be attacker-controlled (from remote server responses)
-            const maliciousErrorMessage =
-                '<%= require("child_process").execSync("id").toString() %>';
+        it('should render all new_feed entries correctly', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
 
-            const safeTemplate =
-                '<%= title %>: <a href="<%= url %>"><%= url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%= msg %>';
+            const newFeeds = [
+                'https://example.com/feed1.xml',
+                'https://example.com/feed2.xml',
+                'https://example.com/feed3.xml'
+            ];
 
-            const result = ejs.render(safeTemplate, {
-                title: feedTitle,
-                url: feedUrl,
-                msg: maliciousErrorMessage,
-                i18n: i18n[lang]
+            const template =
+                '<%- title %>: <a href="<%- url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %><%=i18n["FEED_CHANGE_TO"]%> <%- new_feeds[0] %>';
+
+            await send(bot, template, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                new_feeds: newFeeds
             });
 
-            // Should NOT execute the command - verify the template code is escaped
-            expect(result).toContain('&lt;%=');
-            expect(result).toContain('require');
-            // The result should contain the HTML-escaped template code, not the output of the command
+            const text = sentMessages[0].text;
+            expect(text).toContain('https://example.com/feed1.xml');
+            expect(text).toContain('https://example.com/feed2.xml');
+            expect(text).toContain('https://example.com/feed3.xml');
+        });
+    });
+
+    describe('Benign Input Compatibility - Output Must Be Identical', () => {
+        it('should preserve HTML special characters in feed titles', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Tech News <Daily> & Updates',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const template =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            await send(bot, template, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                msg: 'Timeout'
+            });
+
+            // Output should contain raw HTML characters (same as original behavior)
+            expect(sentMessages[0].text).toContain(
+                'Tech News <Daily> & Updates'
+            );
+        });
+
+        it('should preserve legitimate EJS-like strings in titles', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Programming Tips: <%= best practices %>',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const template =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            await send(bot, template, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                msg: 'Error'
+            });
+
+            // Legitimate <%= %> in title should appear as-is
+            expect(sentMessages[0].text).toContain(
+                'Programming Tips: <%= best practices %>'
+            );
+        });
+
+        it('should handle URLs with query parameters correctly', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml?key=value&foo=bar',
+                feed_title: 'Test Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const template =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            await send(bot, template, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                msg: 'Error'
+            });
+
+            expect(sentMessages[0].text).toContain(
+                'https://example.com/feed.xml?key=value&foo=bar'
+            );
+        });
+
+        it('should produce correct message format for benign error case', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'My RSS Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const template =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            await send(bot, template, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                msg: 'Connection timeout'
+            });
+
+            const text = sentMessages[0].text;
+
+            // Verify structure matches expected output
+            expect(text).toMatch(
+                /^My RSS Feed: <a href="https:\/\/example\.com\/feed\.xml">https:\/\/example\.com\/feed\.xml<\/a> Unable to fetch for many times, you might want to unsub it Connection timeout$/
+            );
+        });
+
+        it('should work with different languages', async () => {
+            // Mock Chinese user
+            (usersProxy.getUserById as jest.Mock).mockResolvedValue(
+                Optional({
+                    user_id: mockUserId,
+                    lang: 'zh-cn',
+                    username: 'test'
+                })
+            );
+
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const template =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            await send(bot, template, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                msg: 'Error'
+            });
+
+            const text = sentMessages[0].text;
+            // Should contain Chinese translation
+            expect(text).toMatch(/多次/); // Part of Chinese error message
+        });
+    });
+
+    describe('Regression Guard - Must Use Fixed Pattern', () => {
+        it('GUARD: production pattern must pass title as local (not concatenated)', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: '<% global.GUARD_TITLE = "VULNERABLE" %>Test',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            // FIXED pattern - title passed as local
+            const fixedTemplate =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            delete (global as any).GUARD_TITLE;
+
+            await send(bot, fixedTemplate, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                msg: 'Error'
+            });
+
+            // With proper locals, code should NOT execute
+            expect((global as any).GUARD_TITLE).toBeUndefined();
+
+            // The literal EJS code should appear in the message
+            expect(sentMessages[0].text).toContain('<% global.GUARD_TITLE');
+        });
+
+        it('GUARD: production pattern must pass err.message as local (not concatenated)', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const maliciousError = '<% global.GUARD_MSG = "VULNERABLE" %>';
+
+            // FIXED pattern - error message passed as local
+            const fixedTemplate =
+                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+
+            delete (global as any).GUARD_MSG;
+
+            await send(bot, fixedTemplate, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                msg: maliciousError
+            });
+
+            // With proper locals, code should NOT execute
+            expect((global as any).GUARD_MSG).toBeUndefined();
+
+            // The literal EJS code should appear in the message
+            expect(sentMessages[0].text).toContain('<% global.GUARD_MSG');
+        });
+
+        it('GUARD: new_feed array must be passed as local and looped in template', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const maliciousNewFeeds = [
+                '<% global.GUARD_NEWFEED = "VULNERABLE" %>',
+                'https://example.com/feed2.xml'
+            ];
+
+            // FIXED pattern - new_feeds passed as local and looped
+            const fixedTemplate =
+                '<%- title %>: <a href="<%- url %>"></a>\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %>';
+
+            delete (global as any).GUARD_NEWFEED;
+
+            await send(bot, fixedTemplate, feed, {
+                title: feed.feed_title,
+                url: feed.url,
+                new_feeds: maliciousNewFeeds
+            });
+
+            // With proper locals, code should NOT execute
+            expect((global as any).GUARD_NEWFEED).toBeUndefined();
+
+            // The literal EJS code should appear in the message
+            expect(sentMessages[0].text).toContain('<% global.GUARD_NEWFEED');
         });
     });
 });

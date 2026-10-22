@@ -5,7 +5,6 @@ import { Subscribe } from '../types/subscribe';
 import { isSome, Option, Optional, Some } from '../types/option';
 import { decodeUrl } from '../utils/urlencode';
 import arrayShuffle from '../utils/shuffle';
-import { stripEjsDelimiters } from '../utils/sanitize';
 
 export async function sub(
     userId: number,
@@ -38,7 +37,7 @@ export async function sub(
                 .insert(
                     {
                         url: feedUrl,
-                        feed_title: stripEjsDelimiters(feedTitle),
+                        feed_title: feedTitle,
                         ttl: ttl
                     },
                     'feed_id'
