@@ -6,6 +6,7 @@ import { AddMessageKey, MContext, TNextFn } from '../types/ctx';
 import { isNone } from '../types/option';
 import { decodeUrl, encodeUrl } from '../utils/urlencode';
 import sanitize from '../utils/sanitize';
+import escapeHtml from '../utils/escape-html';
 
 export async function sub(ctx: MContext, next: TNextFn): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
@@ -89,16 +90,19 @@ export async function rss(
     builder.push(`<strong>${i18n[lang]['SUB_LIST']}</strong>`);
     if (raw) {
         feeds.forEach((feed) => {
+            const url = feed.url.trim();
+            // Raw mode: show title, then URL as both href and visible link text
             builder.push(
-                `${sanitize(feed.feed_title)}: <a href="${encodeUrl(
-                    feed.url.trim()
-                )}">${decodeUrl(feed.url.trim())}</a>`
+                `${sanitize(feed.feed_title)}: <a href="${escapeHtml(
+                    encodeUrl(url)
+                )}">${escapeHtml(decodeUrl(url))}</a>`
             );
         });
     } else {
         feeds.forEach((feed) => {
+            // Normal mode: title is link text, URL is href
             builder.push(
-                `<a href="${encodeUrl(feed.url.trim())}">${sanitize(
+                `<a href="${escapeHtml(encodeUrl(feed.url.trim()))}">${sanitize(
                     feed.feed_title
                 )}</a>`
             );
@@ -148,10 +152,11 @@ export async function viewAll(ctx: MContext, next: TNextFn): Promise<void> {
     feeds.forEach((feed) => {
         const url = feed.url.trim();
         const title = sanitize(feed.feed_title);
+        const subscriberCount = feed.sub_count;
         builder.push(
-            `<a href="${encodeUrl(url)}">${title}</a>  ${
+            `<a href="${escapeHtml(encodeUrl(url))}">${title}</a>  ${
                 i18n[lang]['NUMBER_OF_SUBSCRIBER']
-            }: ${feed.sub_count}`
+            }: ${subscriberCount}`
         );
     });
     ctx.state.replyText = builder.join('\n');

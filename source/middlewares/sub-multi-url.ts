@@ -7,6 +7,8 @@ import { isSome } from '../types/option';
 import { Feed } from '../types/feed';
 import { parseString } from '../parser/parse';
 import { decodeUrl, encodeUrl } from '../utils/urlencode';
+import sanitize from '../utils/sanitize';
+import escapeHtml from '../utils/escape-html';
 
 export default async (
     ctx: MContext & AddMessageKey<'text', string>,
@@ -56,9 +58,9 @@ export default async (
                 if (e.message !== 'ALREADY_SUB')
                     throw errors.newCtrlErr('DB_ERROR');
             }
-            // encodeURL because it is decoded
+            // URL is percent-encoded for href, title is sanitized for display
             builder.push(
-                `<a href="${encodeUrl(feed.url)}">${feed.feed_title}</a>`
+                `<a href="${escapeHtml(encodeUrl(feed.url))}">${sanitize(feed.feed_title)}</a>`
             );
         });
     if (builder.length > 1) {
