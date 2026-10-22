@@ -53,6 +53,10 @@ import {
 } from './types/message';
 import { migrateUser } from './proxies/users';
 import { encodeUrl } from './utils/urlencode';
+import {
+    buildErrorNotification,
+    buildFeedChangeNotification
+} from './utils/notification-messages';
 
 const bot = new Telegraf(token, {
     telegram: {
@@ -295,24 +299,17 @@ async function startFetchProcess(restartTime: number): Promise<void> {
         } else {
             if (isErrorMaxTime(message)) {
                 const { feed, err } = message;
-                send(
-                    bot,
-                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> <%=i18n['ERROR_MANY_TIME']%> ${err.message}`,
-                    feed
-                );
+                const [template, locals] = buildErrorNotification(feed, err);
+                send(bot, template, feed, locals);
             }
             if (isChangeFeedUrl(message)) {
                 const { feed, new_feed } = message;
-                const builder = [];
-                builder.push(
-                    `${feed.feed_title}: <a href="${encodeUrl(
-                        feed.url
-                    )}"></a> <%=i18n['ERROR_MANY_TIME']%>`
-                ); // feed is from database which not urlencoded
-                builder.push(`<b><%=i18n['FOUND_FEEDS']%></b>:`);
-                builder.push(...new_feed);
-                builder.push(`<%=i18n['FEED_CHANGE_TO']%> ${new_feed[0]}`);
-                send(bot, builder.join('\n'), feed);
+                const [template, locals] = buildFeedChangeNotification(
+                    feed,
+                    new_feed,
+                    encodeUrl
+                );
+                send(bot, template, feed, locals);
             }
         }
     });
