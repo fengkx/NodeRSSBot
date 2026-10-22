@@ -53,6 +53,10 @@ import {
 } from './types/message';
 import { migrateUser } from './proxies/users';
 import { encodeUrl } from './utils/urlencode';
+import {
+    buildErrorNotification,
+    buildFeedChangeNotification
+} from './utils/notification-messages';
 
 const bot = new Telegraf(token, {
     telegram: {
@@ -295,29 +299,17 @@ async function startFetchProcess(restartTime: number): Promise<void> {
         } else {
             if (isErrorMaxTime(message)) {
                 const { feed, err } = message;
-                send(
-                    bot,
-                    '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>',
-                    feed,
-                    {
-                        title: feed.feed_title,
-                        url: feed.url,
-                        msg: err.message
-                    }
-                );
+                const [template, locals] = buildErrorNotification(feed, err);
+                send(bot, template, feed, locals);
             }
             if (isChangeFeedUrl(message)) {
                 const { feed, new_feed } = message;
-                send(
-                    bot,
-                    '<%- title %>: <a href="<%- url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %><%=i18n["FEED_CHANGE_TO"]%> <%- new_feeds[0] %>',
+                const [template, locals] = buildFeedChangeNotification(
                     feed,
-                    {
-                        title: feed.feed_title,
-                        url: encodeUrl(feed.url),
-                        new_feeds: new_feed
-                    }
+                    new_feed,
+                    encodeUrl
                 );
+                send(bot, template, feed, locals);
             }
         }
     });

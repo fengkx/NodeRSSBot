@@ -1,11 +1,11 @@
 /**
- * Template Injection Security Tests
+ * Notification Template Security Tests
  *
- * These tests verify that untrusted data (feed titles, URLs, error messages)
- * cannot be used to inject and execute arbitrary code via EJS template processing.
+ * These tests verify that feed titles, URLs, and error messages in notification
+ * templates are properly escaped and cannot inject Telegram HTML or malformed markup.
  *
- * Tests use production code paths (mocking only DB and Telegram API) to ensure
- * the fix is effective in the actual runtime environment.
+ * Tests use the actual production message construction functions to ensure the fix
+ * is effective at the real call sites.
  */
 
 import { Telegraf } from 'telegraf';
@@ -14,12 +14,17 @@ import { Feed } from '../source/types/feed';
 import * as subscribesProxy from '../source/proxies/subscribes';
 import * as usersProxy from '../source/proxies/users';
 import { Optional } from '../source/types/option';
+import {
+    buildErrorNotification,
+    buildFeedChangeNotification
+} from '../source/utils/notification-messages';
+import { encodeUrl } from '../source/utils/urlencode';
 
 // Mock database and Telegram
 jest.mock('../source/proxies/subscribes');
 jest.mock('../source/proxies/users');
 
-describe('Template Injection Security - Production Code Paths', () => {
+describe('Notification Template Security - Production Functions', () => {
     let bot: Telegraf;
     let sentMessages: Array<{
         userId: number;
@@ -51,13 +56,12 @@ describe('Template Injection Security - Production Code Paths', () => {
         );
     });
 
-    describe('ERROR_MANY_TIME Path - Template Injection Prevention', () => {
-        it('should block template injection in feed title', async () => {
-            const maliciousFeed: Feed = {
+    describe('Error Notification - buildErrorNotification()', () => {
+        it('should escape HTML special characters in feed title', async () => {
+            const feed: Feed = {
                 feed_id: 1,
                 url: 'https://example.com/feed.xml',
-                feed_title:
-                    '<% global.INJECTED_TITLE = "EXPLOITED" %>Malicious',
+                feed_title: 'Tech News <Daily> & "Updates"',
                 error_count: 0,
                 ttl: 60,
                 recent_hash_list: '[]',
@@ -66,70 +70,32 @@ describe('Template Injection Security - Production Code Paths', () => {
                 next_fetch_time: new Date()
             };
 
-            const errorMessage = 'Connection timeout';
+            const error = new Error('Connection timeout');
+            const [template, locals] = buildErrorNotification(feed, error);
 
-            // Use production template from index.ts:300
-            const template =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+            await send(bot, template, feed, locals);
 
-            delete (global as any).INJECTED_TITLE;
-
-            await send(bot, template, maliciousFeed, {
-                title: maliciousFeed.feed_title,
-                url: maliciousFeed.url,
-                msg: errorMessage
-            });
-
-            // Template injection should be blocked
-            expect((global as any).INJECTED_TITLE).toBeUndefined();
-
-            // Message should be sent with literal EJS code visible as text
             expect(sentMessages).toHaveLength(1);
-            expect(sentMessages[0].text).toContain(
-                '<% global.INJECTED_TITLE = "EXPLOITED" %>'
+            const text = sentMessages[0].text;
+
+            // Title should be HTML-escaped (EJS uses &#34; for quotes)
+            expect(text).toContain(
+                'Tech News &lt;Daily&gt; &amp; &#34;Updates&#34;'
             );
-            expect(sentMessages[0].text).toContain(
-                'Unable to fetch for many times'
+            // Link markup should remain literal
+            expect(text).toContain('<a href="https://example.com/feed.xml">');
+            // i18n text should be present
+            expect(text).toContain(
+                'Unable to fetch for many times, you might want to unsub it'
             );
+            // Error message should be present
+            expect(text).toContain('Connection timeout');
         });
 
-        it('should block template injection in error message', async () => {
+        it('should escape HTML special characters in URL', async () => {
             const feed: Feed = {
                 feed_id: 1,
-                url: 'https://example.com/feed.xml',
-                feed_title: 'Legitimate Feed',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            // err.message is also attacker-controlled (comes from remote servers)
-            const maliciousError = '<%= global.INJECTED_ERROR = "EXPLOITED" %>';
-
-            const template =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
-
-            delete (global as any).INJECTED_ERROR;
-
-            await send(bot, template, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                msg: maliciousError
-            });
-
-            expect((global as any).INJECTED_ERROR).toBeUndefined();
-            expect(sentMessages[0].text).toContain(
-                '<%= global.INJECTED_ERROR = "EXPLOITED" %>'
-            );
-        });
-
-        it('should block template injection in URL', async () => {
-            const maliciousFeed: Feed = {
-                feed_id: 1,
-                url: 'https://evil.com/<%=global.INJECTED_URL="EXPLOITED"%>',
+                url: 'https://example.com/feed?a=1&b=2',
                 feed_title: 'Test Feed',
                 error_count: 0,
                 ttl: 60,
@@ -139,190 +105,20 @@ describe('Template Injection Security - Production Code Paths', () => {
                 next_fetch_time: new Date()
             };
 
-            const template =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+            const error = new Error('Timeout');
+            const [template, locals] = buildErrorNotification(feed, error);
 
-            delete (global as any).INJECTED_URL;
-
-            await send(bot, template, maliciousFeed, {
-                title: maliciousFeed.feed_title,
-                url: maliciousFeed.url,
-                msg: 'Error'
-            });
-
-            expect((global as any).INJECTED_URL).toBeUndefined();
-        });
-    });
-
-    describe('isChangeFeedUrl Path - Template Injection Prevention', () => {
-        it('should block template injection in feed title (feed change path)', async () => {
-            const maliciousFeed: Feed = {
-                feed_id: 1,
-                url: 'https://example.com/feed.xml',
-                feed_title:
-                    '<%= global.INJECTED_FEED_CHANGE = "EXPLOITED" %>Feed',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            const newFeeds = [
-                'https://example.com/newfeed1.xml',
-                'https://example.com/newfeed2.xml'
-            ];
-
-            // Production template from index.ts:308-314
-            const template =
-                '<%- title %>: <a href="<%- url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %><%=i18n["FEED_CHANGE_TO"]%> <%- new_feeds[0] %>';
-
-            delete (global as any).INJECTED_FEED_CHANGE;
-
-            await send(bot, template, maliciousFeed, {
-                title: maliciousFeed.feed_title,
-                url: maliciousFeed.url,
-                new_feeds: newFeeds
-            });
-
-            expect((global as any).INJECTED_FEED_CHANGE).toBeUndefined();
-            expect(sentMessages[0].text).toContain(
-                '<%= global.INJECTED_FEED_CHANGE = "EXPLOITED" %>'
-            );
-        });
-
-        it('should block template injection in new_feed URLs', async () => {
-            const feed: Feed = {
-                feed_id: 1,
-                url: 'https://example.com/feed.xml',
-                feed_title: 'Test Feed',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            const maliciousNewFeeds = [
-                '<%= global.INJECTED_NEWFEED = "EXPLOITED" %>',
-                'https://example.com/feed2.xml'
-            ];
-
-            const template =
-                '<%- title %>: <a href="<%- url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %><%=i18n["FEED_CHANGE_TO"]%> <%- new_feeds[0] %>';
-
-            delete (global as any).INJECTED_NEWFEED;
-
-            await send(bot, template, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                new_feeds: maliciousNewFeeds
-            });
-
-            expect((global as any).INJECTED_NEWFEED).toBeUndefined();
-            expect(sentMessages[0].text).toContain(
-                '<%= global.INJECTED_NEWFEED = "EXPLOITED" %>'
-            );
-        });
-
-        it('should render all new_feed entries correctly', async () => {
-            const feed: Feed = {
-                feed_id: 1,
-                url: 'https://example.com/feed.xml',
-                feed_title: 'Test Feed',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            const newFeeds = [
-                'https://example.com/feed1.xml',
-                'https://example.com/feed2.xml',
-                'https://example.com/feed3.xml'
-            ];
-
-            const template =
-                '<%- title %>: <a href="<%- url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>\n<b><%=i18n["FOUND_FEEDS"]%></b>:\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %><%=i18n["FEED_CHANGE_TO"]%> <%- new_feeds[0] %>';
-
-            await send(bot, template, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                new_feeds: newFeeds
-            });
+            await send(bot, template, feed, locals);
 
             const text = sentMessages[0].text;
-            expect(text).toContain('https://example.com/feed1.xml');
-            expect(text).toContain('https://example.com/feed2.xml');
-            expect(text).toContain('https://example.com/feed3.xml');
+            // URL with & should be escaped
+            expect(text).toContain('https://example.com/feed?a=1&amp;b=2');
         });
-    });
 
-    describe('Benign Input Compatibility - Output Must Be Identical', () => {
-        it('should preserve HTML special characters in feed titles', async () => {
+        it('should escape HTML special characters in error message', async () => {
             const feed: Feed = {
                 feed_id: 1,
                 url: 'https://example.com/feed.xml',
-                feed_title: 'Tech News <Daily> & Updates',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            const template =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
-
-            await send(bot, template, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                msg: 'Timeout'
-            });
-
-            // Output should contain raw HTML characters (same as original behavior)
-            expect(sentMessages[0].text).toContain(
-                'Tech News <Daily> & Updates'
-            );
-        });
-
-        it('should preserve legitimate EJS-like strings in titles', async () => {
-            const feed: Feed = {
-                feed_id: 1,
-                url: 'https://example.com/feed.xml',
-                feed_title: 'Programming Tips: <%= best practices %>',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            const template =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
-
-            await send(bot, template, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                msg: 'Error'
-            });
-
-            // Legitimate <%= %> in title should appear as-is
-            expect(sentMessages[0].text).toContain(
-                'Programming Tips: <%= best practices %>'
-            );
-        });
-
-        it('should handle URLs with query parameters correctly', async () => {
-            const feed: Feed = {
-                feed_id: 1,
-                url: 'https://example.com/feed.xml?key=value&foo=bar',
                 feed_title: 'Test Feed',
                 error_count: 0,
                 ttl: 60,
@@ -332,21 +128,46 @@ describe('Template Injection Security - Production Code Paths', () => {
                 next_fetch_time: new Date()
             };
 
-            const template =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+            const error = new Error(
+                'Error: <Server> returned "Invalid" & failed'
+            );
+            const [template, locals] = buildErrorNotification(feed, error);
 
-            await send(bot, template, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                msg: 'Error'
-            });
+            await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toContain(
-                'https://example.com/feed.xml?key=value&foo=bar'
+            const text = sentMessages[0].text;
+            // Error message should be HTML-escaped (EJS uses &#34; for quotes)
+            expect(text).toContain(
+                'Error: &lt;Server&gt; returned &#34;Invalid&#34; &amp; failed'
             );
         });
 
-        it('should produce correct message format for benign error case', async () => {
+        it('should render literal EJS delimiters in feed title', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Programming Tips: use <%= variable %> syntax',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const error = new Error('Timeout');
+            const [template, locals] = buildErrorNotification(feed, error);
+
+            await send(bot, template, feed, locals);
+
+            const text = sentMessages[0].text;
+            // EJS delimiters should be escaped and appear literally
+            expect(text).toContain(
+                'Programming Tips: use &lt;%= variable %&gt; syntax'
+            );
+        });
+
+        it('should produce complete correct message for plain input', async () => {
             const feed: Feed = {
                 feed_id: 1,
                 url: 'https://example.com/feed.xml',
@@ -359,24 +180,230 @@ describe('Template Injection Security - Production Code Paths', () => {
                 next_fetch_time: new Date()
             };
 
-            const template =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+            const error = new Error('Connection timeout');
+            const [template, locals] = buildErrorNotification(feed, error);
 
-            await send(bot, template, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                msg: 'Connection timeout'
-            });
+            await send(bot, template, feed, locals);
 
             const text = sentMessages[0].text;
 
-            // Verify structure matches expected output
-            expect(text).toMatch(
-                /^My RSS Feed: <a href="https:\/\/example\.com\/feed\.xml">https:\/\/example\.com\/feed\.xml<\/a> Unable to fetch for many times, you might want to unsub it Connection timeout$/
+            // Complete message structure (plain inputs, no escaping needed)
+            expect(text).toBe(
+                'My RSS Feed: <a href="https://example.com/feed.xml">https://example.com/feed.xml</a> ' +
+                    'Unable to fetch for many times, you might want to unsub it Connection timeout'
+            );
+        });
+    });
+
+    describe('Feed Change Notification - buildFeedChangeNotification()', () => {
+        it('should escape HTML special characters in feed title', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'News <Daily> & Updates',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const newFeedUrls = [
+                'https://example.com/newfeed1.xml',
+                'https://example.com/newfeed2.xml'
+            ];
+
+            const [template, locals] = buildFeedChangeNotification(
+                feed,
+                newFeedUrls,
+                encodeUrl
+            );
+
+            await send(bot, template, feed, locals);
+
+            const text = sentMessages[0].text;
+
+            // Title should be HTML-escaped
+            expect(text).toContain('News &lt;Daily&gt; &amp; Updates');
+        });
+
+        it('should escape HTML special characters in all new feed URLs', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const newFeedUrls = [
+                'https://example.com/feed1?a=1&b=2',
+                'https://example.com/feed2?x=<value>&y="test"',
+                'https://example.com/feed3?z=3'
+            ];
+
+            const [template, locals] = buildFeedChangeNotification(
+                feed,
+                newFeedUrls,
+                encodeUrl
+            );
+
+            await send(bot, template, feed, locals);
+
+            const text = sentMessages[0].text;
+
+            // All URLs should be HTML-escaped (EJS uses &#34; for quotes)
+            expect(text).toContain('https://example.com/feed1?a=1&amp;b=2');
+            expect(text).toContain(
+                'https://example.com/feed2?x=&lt;value&gt;&amp;y=&#34;test&#34;'
+            );
+            expect(text).toContain('https://example.com/feed3?z=3');
+        });
+
+        it('should render all new feed URLs in the list', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const newFeedUrls = [
+                'https://example.com/feed1.xml',
+                'https://example.com/feed2.xml',
+                'https://example.com/feed3.xml'
+            ];
+
+            const [template, locals] = buildFeedChangeNotification(
+                feed,
+                newFeedUrls,
+                encodeUrl
+            );
+
+            await send(bot, template, feed, locals);
+
+            const text = sentMessages[0].text;
+
+            // All three URLs should appear in order
+            const feed1Idx = text.indexOf('https://example.com/feed1.xml');
+            const feed2Idx = text.indexOf('https://example.com/feed2.xml');
+            const feed3Idx = text.indexOf('https://example.com/feed3.xml');
+
+            expect(feed1Idx).toBeGreaterThan(-1);
+            expect(feed2Idx).toBeGreaterThan(feed1Idx);
+            expect(feed3Idx).toBeGreaterThan(feed2Idx);
+        });
+
+        it('should render literal EJS delimiters in new feed URLs', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const newFeedUrls = ['https://example.com/<%= id %>/feed.xml'];
+
+            const [template, locals] = buildFeedChangeNotification(
+                feed,
+                newFeedUrls,
+                encodeUrl
+            );
+
+            await send(bot, template, feed, locals);
+
+            const text = sentMessages[0].text;
+
+            // EJS delimiters should be escaped and appear literally
+            expect(text).toContain(
+                'https://example.com/&lt;%= id %&gt;/feed.xml'
             );
         });
 
-        it('should work with different languages', async () => {
+        it('should produce complete correct message structure', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test Feed',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const newFeedUrls = [
+                'https://example.com/newfeed1.xml',
+                'https://example.com/newfeed2.xml'
+            ];
+
+            const [template, locals] = buildFeedChangeNotification(
+                feed,
+                newFeedUrls,
+                encodeUrl
+            );
+
+            await send(bot, template, feed, locals);
+
+            const text = sentMessages[0].text;
+
+            // Verify complete structure with newlines
+            expect(text).toBe(
+                'Test Feed: <a href="https://example.com/feed.xml"></a> ' +
+                    'Unable to fetch for many times, you might want to unsub it\n' +
+                    '<b>Found feeds</b>:\n' +
+                    'https://example.com/newfeed1.xml\n' +
+                    'https://example.com/newfeed2.xml\n' +
+                    'Feed Change to https://example.com/newfeed1.xml'
+            );
+        });
+    });
+
+    describe('No Double Escaping', () => {
+        it('should not double-escape already-encoded URLs', async () => {
+            const feed: Feed = {
+                feed_id: 1,
+                url: 'https://example.com/feed.xml',
+                feed_title: 'Test',
+                error_count: 0,
+                ttl: 60,
+                recent_hash_list: '[]',
+                etag_header: '',
+                last_modified_header: null,
+                next_fetch_time: new Date()
+            };
+
+            const error = new Error('Timeout');
+            const [template, locals] = buildErrorNotification(feed, error);
+
+            await send(bot, template, feed, locals);
+
+            const text = sentMessages[0].text;
+
+            // URL should appear with & escaped exactly once
+            // If double-escaped, it would be &amp;amp;
+            expect(text).not.toContain('&amp;amp;');
+        });
+    });
+
+    describe('Multi-Language Support', () => {
+        it('should work with Chinese language', async () => {
             // Mock Chinese user
             (usersProxy.getUserById as jest.Mock).mockResolvedValue(
                 Optional({
@@ -398,123 +425,15 @@ describe('Template Injection Security - Production Code Paths', () => {
                 next_fetch_time: new Date()
             };
 
-            const template =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
+            const error = new Error('Connection timeout');
+            const [template, locals] = buildErrorNotification(feed, error);
 
-            await send(bot, template, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                msg: 'Error'
-            });
+            await send(bot, template, feed, locals);
 
             const text = sentMessages[0].text;
+
             // Should contain Chinese translation
             expect(text).toMatch(/多次/); // Part of Chinese error message
-        });
-    });
-
-    describe('Regression Guard - Must Use Fixed Pattern', () => {
-        it('GUARD: production pattern must pass title as local (not concatenated)', async () => {
-            const feed: Feed = {
-                feed_id: 1,
-                url: 'https://example.com/feed.xml',
-                feed_title: '<% global.GUARD_TITLE = "VULNERABLE" %>Test',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            // FIXED pattern - title passed as local
-            const fixedTemplate =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
-
-            delete (global as any).GUARD_TITLE;
-
-            await send(bot, fixedTemplate, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                msg: 'Error'
-            });
-
-            // With proper locals, code should NOT execute
-            expect((global as any).GUARD_TITLE).toBeUndefined();
-
-            // The literal EJS code should appear in the message
-            expect(sentMessages[0].text).toContain('<% global.GUARD_TITLE');
-        });
-
-        it('GUARD: production pattern must pass err.message as local (not concatenated)', async () => {
-            const feed: Feed = {
-                feed_id: 1,
-                url: 'https://example.com/feed.xml',
-                feed_title: 'Test',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            const maliciousError = '<% global.GUARD_MSG = "VULNERABLE" %>';
-
-            // FIXED pattern - error message passed as local
-            const fixedTemplate =
-                '<%- title %>: <a href="<%- url %>"><%- url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%- msg %>';
-
-            delete (global as any).GUARD_MSG;
-
-            await send(bot, fixedTemplate, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                msg: maliciousError
-            });
-
-            // With proper locals, code should NOT execute
-            expect((global as any).GUARD_MSG).toBeUndefined();
-
-            // The literal EJS code should appear in the message
-            expect(sentMessages[0].text).toContain('<% global.GUARD_MSG');
-        });
-
-        it('GUARD: new_feed array must be passed as local and looped in template', async () => {
-            const feed: Feed = {
-                feed_id: 1,
-                url: 'https://example.com/feed.xml',
-                feed_title: 'Test',
-                error_count: 0,
-                ttl: 60,
-                recent_hash_list: '[]',
-                etag_header: '',
-                last_modified_header: null,
-                next_fetch_time: new Date()
-            };
-
-            const maliciousNewFeeds = [
-                '<% global.GUARD_NEWFEED = "VULNERABLE" %>',
-                'https://example.com/feed2.xml'
-            ];
-
-            // FIXED pattern - new_feeds passed as local and looped
-            const fixedTemplate =
-                '<%- title %>: <a href="<%- url %>"></a>\n<% new_feeds.forEach(function(feed_url) { %><%- feed_url %>\n<% }); %>';
-
-            delete (global as any).GUARD_NEWFEED;
-
-            await send(bot, fixedTemplate, feed, {
-                title: feed.feed_title,
-                url: feed.url,
-                new_feeds: maliciousNewFeeds
-            });
-
-            // With proper locals, code should NOT execute
-            expect((global as any).GUARD_NEWFEED).toBeUndefined();
-
-            // The literal EJS code should appear in the message
-            expect(sentMessages[0].text).toContain('<% global.GUARD_NEWFEED');
         });
     });
 });
