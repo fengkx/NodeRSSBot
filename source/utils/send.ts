@@ -142,7 +142,8 @@ async function handlerSendError(e: any, userId: number): Promise<boolean> {
 const send = async (
     bot: Telegraf<Context>,
     toSend: NonNullable<string | FeedItem[]>,
-    feed: Feed
+    feed: Feed,
+    templateLocals?: Record<string, any>
 ): Promise<void> => {
     const subscribers = await getSubscribersByFeedId(feed.feed_id);
     if (typeof toSend === 'string') {
@@ -156,7 +157,10 @@ const send = async (
                     if (isSome(user)) {
                         lang = user.value.lang;
                     }
-                    const text = ejs.render(tpl, { i18n: i18n[lang] });
+                    const text = ejs.render(tpl, {
+                        i18n: i18n[lang],
+                        ...templateLocals
+                    });
                     await sendMessageWithLimit(bot, userId, text, {
                         parse_mode: 'HTML',
                         link_preview_options: { is_disabled: true }

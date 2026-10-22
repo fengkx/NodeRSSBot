@@ -297,22 +297,31 @@ async function startFetchProcess(restartTime: number): Promise<void> {
                 const { feed, err } = message;
                 send(
                     bot,
-                    `${feed.feed_title}: <a href="${feed.url}">${feed.url}</a> <%=i18n['ERROR_MANY_TIME']%> ${err.message}`,
-                    feed
+                    '<%= title %>: <a href="<%= url %>"><%= url %></a> <%=i18n["ERROR_MANY_TIME"]%> <%= msg %>',
+                    feed,
+                    {
+                        title: feed.feed_title,
+                        url: feed.url,
+                        msg: err.message
+                    }
                 );
             }
             if (isChangeFeedUrl(message)) {
                 const { feed, new_feed } = message;
                 const builder = [];
                 builder.push(
-                    `${feed.feed_title}: <a href="${encodeUrl(
-                        feed.url
-                    )}"></a> <%=i18n['ERROR_MANY_TIME']%>`
-                ); // feed is from database which not urlencoded
-                builder.push(`<b><%=i18n['FOUND_FEEDS']%></b>:`);
+                    '<%= title %>: <a href="<%= url %>"></a> <%=i18n["ERROR_MANY_TIME"]%>'
+                );
+                builder.push('<b><%=i18n["FOUND_FEEDS"]%></b>:');
                 builder.push(...new_feed);
-                builder.push(`<%=i18n['FEED_CHANGE_TO']%> ${new_feed[0]}`);
-                send(bot, builder.join('\n'), feed);
+                builder.push(
+                    '<%=i18n["FEED_CHANGE_TO"]%> <%= first_new_feed %>'
+                );
+                send(bot, builder.join('\n'), feed, {
+                    title: feed.feed_title,
+                    url: encodeUrl(feed.url),
+                    first_new_feed: new_feed[0]
+                });
             }
         }
     });
