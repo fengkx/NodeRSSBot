@@ -17,10 +17,11 @@ export async function sub(ctx: MContext, next: TNextFn): Promise<void> {
         await RSS.sub(userId, feedUrl, feedTitle, ttl);
         await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
         ctx.state.processMsgId = null;
-        ctx.replyWithMarkdown(`
-        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.feed_title}](${encodeUrl(
-            ctx.state.feedUrl
-        )})`);
+        ctx.replyWithHTML(
+            `${i18n[lang]['SUB_SUCCESS']} <a href="${escapeHtml(
+                encodeUrl(ctx.state.feedUrl)
+            )}">${sanitize(ctx.state.feed.feed_title)}</a>`
+        );
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
@@ -38,11 +39,10 @@ export async function unsub(ctx: MContext, next: TNextFn): Promise<void> {
 
         await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
         ctx.state.processMsgId = null;
-        ctx.replyWithMarkdown(
-            `
-        ${i18n[lang]['UNSUB_SUCCESS']} [${feed.value.feed_title}](${encodeUrl(
-            ctx.state.feedUrl
-        )})`,
+        ctx.replyWithHTML(
+            `${i18n[lang]['UNSUB_SUCCESS']} <a href="${escapeHtml(
+                encodeUrl(ctx.state.feedUrl)
+            )}">${sanitize(feed.value.feed_title)}</a>`,
             {
                 reply_markup: {
                     remove_keyboard: true

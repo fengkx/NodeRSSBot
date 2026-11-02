@@ -7,6 +7,7 @@ import { MContext, TNextFn } from '../types/ctx';
 import { isNone, isSome } from '../types/option';
 import { parseString } from '../parser/parse';
 import { decodeUrl, encodeUrl } from '../utils/urlencode';
+import escapeHtml from '../utils/escape-html';
 
 export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     const url = encodeUrl(ctx.state.feedUrl);
@@ -43,12 +44,14 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
                     default:
                         const builder = [];
                         builder.push(
-                            `**${
+                            `<b>${
                                 i18n[ctx.state.lang]['FOUND_FEED_MORE_THAN_ONE']
-                            }:**`
+                            }:</b>`
                         );
-                        builder.push(...ctx.state.feedUrls);
-                        ctx.replyWithMarkdown(builder.join('\n'));
+                        ctx.state.feedUrls.forEach((url) => {
+                            builder.push(escapeHtml(url));
+                        });
+                        ctx.replyWithHTML(builder.join('\n'));
                         break;
                 }
             } else {
