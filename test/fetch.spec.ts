@@ -50,7 +50,6 @@ async function loadFetchModule(
         getAllFeeds: jest.Mock;
         updateHashList: jest.Mock;
         failAttempt: jest.Mock;
-        getFeedByUrl: jest.Mock;
         updateFeed: jest.Mock;
         handleRedirect: jest.Mock;
     };
@@ -74,8 +73,9 @@ async function loadFetchModule(
     const proxies = {
         getAllFeeds: jest.fn(async () => []),
         updateHashList: jest.fn(async () => undefined),
-        failAttempt: jest.fn(async () => 1),
-        getFeedByUrl: jest.fn(async () => Optional(undefined)),
+        failAttempt: jest.fn(() =>
+            Promise.resolve(require('../source/types/option').none)
+        ),
         updateFeed: jest.fn(async () => 1),
         handleRedirect: jest.fn(async () => undefined)
     };
@@ -228,7 +228,7 @@ describe('fetch worker runtime', () => {
             .mockResolvedValueOnce({
                 textConverted: jest.fn(() => textDeferred.promise)
             });
-        proxies.getFeedByUrl.mockResolvedValue(
+        proxies.failAttempt.mockResolvedValue(
             Optional({
                 ...feed,
                 error_count: 5
@@ -249,11 +249,43 @@ describe('fetch worker runtime', () => {
         textDeferred.resolve('<html></html>');
         const result = await pending;
         expect(typeof result).toBe('symbol');
+        expect(proxies.failAttempt).toHaveBeenCalledTimes(1);
+        expect(proxies.handleRedirect).toHaveBeenCalledTimes(1);
         expect(proxies.handleRedirect).toHaveBeenCalledWith(
             feed.url,
             'https://example.com/new.xml'
         );
     });
+
+    test.each(['read', 'parse'])('counts a %s failure once', async (stage) => {
+        const { fetchModule, gotMock, proxies } = await loadFetchModule();
+        const feed = buildFeed();
+        gotMock.mockResolvedValue({
+            status: 200,
+            url: feed.url,
+            textConverted: async () => {
+                if (stage === 'read') throw new Error('truncated body');
+                return '<html></html>';
+            }
+        });
+        await fetchModule.fetch(feed);
+        expect(proxies.failAttempt).toHaveBeenCalledTimes(1);
+        expect(gotMock).toHaveBeenCalledTimes(1);
+    });
+
+    test.each([301, 304])(
+        'does not count database failures on HTTP %i',
+        async (status) => {
+            const { fetchModule, gotMock, proxies } = await loadFetchModule();
+            const feed = buildFeed();
+            const error = new Error('database unavailable');
+            gotMock.mockResolvedValue({ status, url: feed.url + '/new' });
+            proxies.updateFeed.mockRejectedValue(error);
+            proxies.handleRedirect.mockRejectedValue(error);
+            await expect(fetchModule.fetch(feed)).rejects.toBe(error);
+            expect(proxies.failAttempt).not.toHaveBeenCalled();
+        }
+    );
 
     test('fetchAll resolves only after queued feeds complete', async () => {
         const { fetchModule, gotMock, proxies } = await loadFetchModule();
