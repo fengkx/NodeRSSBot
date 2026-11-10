@@ -47,3 +47,5 @@ CHOOSE_LANG: Scegli la lingua
 SET_LANG_TO: Cambia lingua in
 LANG_USAGE: 'UTILIZZO: /lang cambia lingua'
 CHOOSE_UNSUB: Scegli l'iscrizione che desideri annullare
+EXPORT_SUCCESS: Esportazione completata
+RESPONSE_TOO_LONG: Il risultato è troppo lungo per essere visualizzato.

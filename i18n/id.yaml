@@ -51,3 +51,5 @@ ACTIVE_FEED_COUNT_WITH_ERROR: Banyaknya feed aktif yang error
 TOTAL_ACTIVE_FEED_COUNT: Banyaknya feed yang aktif
 CREATOR_ONLY: Hanya pemilik bot
 ALLOW_LIST_NOT_INCLUDE: Bot ini telah mengaktifkan daftar yang diijinkan dan anda diblok
+EXPORT_SUCCESS: Ekspor selesai
+RESPONSE_TOO_LONG: Hasilnya terlalu panjang untuk ditampilkan.

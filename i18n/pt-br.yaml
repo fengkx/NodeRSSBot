@@ -47,3 +47,5 @@ CHOOSE_LANG: Escolha a língua
 SET_LANG_TO: Configurar língua para
 LANG_USAGE: 'USO: /lang alterar língua'
 CHOOSE_UNSUB: Escolha a inscrição que vocês deseja remover
+EXPORT_SUCCESS: Exportação concluída
+RESPONSE_TOO_LONG: O resultado é longo demais para ser exibido.

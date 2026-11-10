@@ -51,3 +51,5 @@ ACTIVE_FEED_COUNT_WITH_ERROR: تعداد فیدهای فعال با خطا
 TOTAL_ACTIVE_FEED_COUNT: تعداد فیدهای فعال
 CREATOR_ONLY: فقط سازنده ربات
 ALLOW_LIST_NOT_INCLUDE: این ربات لیست مجاز را فعال کرده است و شما مسدود شده اید
+EXPORT_SUCCESS: با موفقیت صادر شد
+RESPONSE_TOO_LONG: نتیجه برای نمایش بیش از حد طولانی است.

@@ -47,3 +47,5 @@ CHOOSE_LANG: ენის არჩევა
 SET_LANG_TO: ენის დაყენება
 LANG_USAGE: 'გამოყენება: /lang ენის შეცვლა'
 CHOOSE_UNSUB: აირჩიეთ გამოწერა რომლის გაუქმებაც გსურთ
+EXPORT_SUCCESS: ექსპორტი დასრულდა
+RESPONSE_TOO_LONG: შედეგი ზედმეტად გრძელია და ვერ გამოჩნდება.
