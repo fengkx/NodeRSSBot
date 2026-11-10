@@ -1,3 +1,5 @@
+import { badRequestDescription, cannotEdit } from '../utils/edit-response';
+import i18n from '../i18n';
 import { getSubscribedFeedsByUserId } from '../proxies/rss-feed';
 import errors from '../utils/errors';
 import * as path from 'path';
@@ -5,7 +7,6 @@ import * as ejs from 'ejs';
 import * as fs from 'fs';
 import { MContext, TNextFn } from '../types/ctx';
 import { Feed } from '../types/feed';
-import { config } from '../config';
 import { escapeHTML } from 'fast-escape-html';
 
 function readFilePromise(path: string): Promise<string> {
@@ -39,13 +40,21 @@ const render = async (feeds: Feed[]): Promise<string> => {
     return template({ feeds });
 };
 
-function remove(path: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-        fs.unlink(path, function (err) {
-            if (err) reject(err);
-            resolve();
-        });
-    });
+/** Replace the still-visible processing message with a completion note. */
+async function markProcessingMessageExported(
+    ctx: MContext,
+    messageId: number
+): Promise<void> {
+    try {
+        await ctx.telegram.editMessageText(
+            ctx.chat.id,
+            messageId,
+            undefined,
+            i18n[ctx.state.lang]['EXPORT_SUCCESS']
+        );
+    } catch (error) {
+        if (!cannotEdit(badRequestDescription(error))) throw error;
+    }
 }
 
 export default async (ctx: MContext, next: TNextFn): Promise<void> => {
@@ -54,21 +63,28 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     if (feeds.length === 0) {
         throw errors.newCtrlErr('NOT_SUB');
     }
+    let opml: string;
     try {
-        const opml = await render(feeds);
-        const filePath = path.join(
-            config['PKG_ROOT'],
-            'data',
-            `${chat.id.toString()}.opml`
-        );
-        fs.writeFileSync(filePath, opml);
-        await ctx.replyWithDocument({
-            source: fs.readFileSync(filePath),
-            filename: 'export.opml'
-        });
-        await remove(filePath);
+        opml = await render(feeds);
     } catch (e) {
         throw errors.newCtrlErr('FILESYSTEM_ERROR', e);
+    }
+    const document = { source: Buffer.from(opml), filename: 'export.opml' };
+    const messageId = ctx.state.processMsgId;
+    try {
+        await ctx.telegram.editMessageMedia(ctx.chat.id, messageId, undefined, {
+            type: 'document',
+            media: document
+        });
+    } catch (error) {
+        // A timeout can arrive after delivery. Only resend after an explicit rejection.
+        const description = badRequestDescription(error);
+        if (!description) throw error;
+        const sent = await ctx.replyWithDocument(document);
+        ctx.state.processMsgId = sent.message_id;
+        if (description !== 'message to edit not found') {
+            await markProcessingMessageExported(ctx, messageId);
+        }
     }
     await next();
 };

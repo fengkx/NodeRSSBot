@@ -36,5 +36,11 @@ test('import from opml', async () => {
         return { type: 'rss', text: item.feed_title, xmlUrl: item.url };
     });
     expect(ctx).toHaveProperty('state.outlines');
-    expect(ctx).toHaveProperty('state.processMsgId');
+    expect(ctx.telegram.editMessageText).toHaveBeenCalledWith(
+        233233233,
+        42,
+        undefined,
+        expect.stringContaining('<a href='),
+        { parse_mode: 'HTML' }
+    );
 });

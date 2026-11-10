@@ -85,7 +85,8 @@ test('RSS updateHashList', async () => {
 });
 
 test('RSS unsub', async () => {
-    await RSS.unsub(userId, 1);
+    expect(await RSS.unsub(userId, 1)).toBe(1);
+    expect(await RSS.unsub(userId, 1)).toBe(0);
     // subscription deleted
     const subscribe = await SUBSCRIBES.getSubscribersByFeedId(1);
     expect(subscribe).toHaveProperty('length', 0);

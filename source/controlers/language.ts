@@ -1,3 +1,4 @@
+import editResponse from '../utils/edit-response';
 import { setLangById } from '../proxies/users';
 import i18n from '../i18n';
 import { MContext, TNextFn } from '../types/ctx';
@@ -20,19 +21,15 @@ export async function replyKeyboard(
             callback_data: `CHANGE_LANG_${i}_${ctx.state.chat.id}`
         };
     });
-    await ctx.telegram.sendMessage(
-        ctx.chat.id,
-        i18n[ctx.state.lang]['CHOOSE_LANG'],
-        {
-            parse_mode: 'HTML',
-            link_preview_options: {
-                is_disabled: true
-            },
-            reply_markup: {
-                inline_keyboard: chunk(kbs, 5)
-            }
+    await editResponse(ctx, i18n[ctx.state.lang]['CHOOSE_LANG'], {
+        parse_mode: 'HTML',
+        link_preview_options: {
+            is_disabled: true
+        },
+        reply_markup: {
+            inline_keyboard: chunk(kbs, 5)
         }
-    );
+    });
     await next();
 }
 
@@ -46,14 +43,7 @@ export async function changeLangCallback(
         const lang = data[data.length - 2];
         const id = data[data.length - 1];
         await setLangById(parseInt(id), lang);
-        ctx.telegram.answerCbQuery(
-            cb.id,
-            i18n[lang]['SET_LANG_TO'] + ' ' + lang
-        );
-        await ctx.telegram.deleteMessage(
-            cb.message.chat.id,
-            cb.message.message_id
-        );
+        await editResponse(ctx, i18n[lang]['SET_LANG_TO'] + ' ' + lang);
         await next();
     }
 }

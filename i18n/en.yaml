@@ -51,3 +51,5 @@ ACTIVE_FEED_COUNT_WITH_ERROR: Number of active feeds with error
 TOTAL_ACTIVE_FEED_COUNT: Total number of active feeds
 CREATOR_ONLY: Bot Craetor only
 ALLOW_LIST_NOT_INCLUDE: This bot has enabled allow list and you are blocked
+EXPORT_SUCCESS: Export complete
+RESPONSE_TOO_LONG: The result is too long to display.
