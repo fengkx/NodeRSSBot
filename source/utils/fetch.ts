@@ -9,12 +9,12 @@ import { findFeed, getNewItems } from './feed';
 import { config } from '../config';
 import { Feed, FeedItem } from '../types/feed';
 import { Optional, Option, isNone, none, isSome } from '../types/option';
-import { parseString } from '../parser/parse';
+import { nextFetchTimeStr } from './next-fetch-time';
+import { parseString, TRSS } from '../parser/parse';
 import {
     getAllFeeds,
     updateHashList,
     failAttempt,
-    getFeedByUrl,
     updateFeed,
     handleRedirect
 } from '../proxies/rss-feed';
@@ -56,15 +56,6 @@ let isFetchingRound = false;
 let lastDueFeedCount = 0;
 let lastScheduledFeedCount = 0;
 let lastDuplicateSkippedFeedCount = 0;
-
-function nextFetchTimeStr(minutes: number) {
-    // use SQLite CURRENT_TIMESTAMP return format like `2021-03-09 06:23:43`
-    // It should use the UTC timezone
-    return new Date(Date.now() + minutes * 60 * 1000)
-        .toISOString()
-        .split('.')[0]
-        .replace('T', ' ');
-}
 
 function serializeError(error: unknown): string | unknown {
     if (error instanceof Error && error.stack) {
@@ -252,82 +243,90 @@ async function handleErr(
     }
 }
 
+async function recordFetchFailure(error: unknown, feedUrl: string) {
+    logHttpError(feedUrl, error);
+    const feed = await failAttempt(feedUrl);
+    if (isSome(feed)) {
+        const count = feed.value.error_count;
+        const repeatInterval = notify_error_count * 10;
+        if (
+            count === notify_error_count ||
+            (count > repeatInterval && count % repeatInterval === 0)
+        ) {
+            await handleErr(error as Messenger, feed.value);
+        }
+    }
+    return none;
+}
+
 export async function fetch(feedModal: Feed): Promise<Option<FeedItem[]>> {
     const feedUrl = feedModal.url;
+    logger.debug(`fetching ${feedUrl}`);
+    let requestUrl: string;
+    let res: Awaited<ReturnType<typeof got>>;
     try {
-        logger.debug(`fetching ${feedUrl}`);
-        const requestUrl = encodeUrl(feedUrl);
-        const request = got(requestUrl, {
+        requestUrl = encodeUrl(feedUrl);
+        res = await got(requestUrl, {
             headers: {
                 'If-None-Match': feedModal.etag_header,
                 'If-Modified-Since': feedModal.last_modified_header
             }
         });
+    } catch (error) {
+        return recordFetchFailure(error, feedUrl);
+    }
 
-        const res = await request;
-        if (res.status === 304) {
-            const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
-                feed_id: feedModal.feed_id,
-                error_count: 0,
-                next_fetch_time: nextFetchTimeStr(
-                    feedModal.ttl || config['GAP_MINUTES']
-                )
-            };
-            await updateFeed(updatedFeedModal);
-            return none;
-        }
-        if (requestUrl !== res.url && res.status === 301) {
-            await handleRedirect(feedUrl, res.url);
-        }
-        const text = await res.textConverted();
-        const feed = await parseString(text);
-        const items = feed.items;
-        const ttlMinutes =
-            typeof feed.ttl === 'number' && !Number.isNaN(feed.ttl)
-                ? feed.ttl
-                : config['GAP_MINUTES'];
-        const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
+    if (res.status === 304) {
+        await updateFeed({
             feed_id: feedModal.feed_id,
             error_count: 0,
-            next_fetch_time: nextFetchTimeStr(ttlMinutes)
-        };
-        if (feed.title !== feedModal.feed_title) {
-            updatedFeedModal.feed_title = feed.title;
-        }
-        if (!Number.isNaN(feed.ttl) && feed.ttl !== feedModal.ttl) {
-            updatedFeedModal.ttl = feed.ttl;
-        }
-        const lastModifiedHeader = res.headers.get('last-modified');
-        if (lastModifiedHeader !== feedModal.last_modified_header) {
-            updatedFeedModal.last_modified_header = lastModifiedHeader;
-        }
-        const etag = res.headers.get('etag');
-        if (etag !== feedModal.etag_header) {
-            updatedFeedModal.etag_header = etag || '';
-        }
-        await updateFeed(updatedFeedModal);
-        return Optional(
-            items.map((item) => {
-                const { link, title, id } = item;
-                return { link, title, id } as FeedItem;
-            })
-        );
-    } catch (e) {
-        reportKnexTimeoutError(e, feedModal);
-        logHttpError(feedUrl, e);
-        await failAttempt(feedUrl);
-        const feed = await getFeedByUrl(feedUrl);
-        if (isSome(feed)) {
-            const round_time = notify_error_count * 10;
-            const round_happen =
-                feed.value.error_count % round_time === 0 &&
-                feed.value.error_count > round_time;
-            if (feed.value.error_count === notify_error_count || round_happen) {
-                await handleErr(e as Messenger, feed.value);
-            }
-        }
+            next_fetch_time: nextFetchTimeStr(
+                feedModal.ttl || config['GAP_MINUTES']
+            )
+        });
+        return none;
     }
-    return none;
+    if (requestUrl !== res.url && res.status === 301) {
+        await handleRedirect(feedUrl, res.url);
+    }
+
+    let feed: TRSS;
+    try {
+        feed = await parseString(await res.textConverted());
+    } catch (error) {
+        return recordFetchFailure(error, feedUrl);
+    }
+    const items = feed.items;
+    const ttlMinutes =
+        typeof feed.ttl === 'number' && !Number.isNaN(feed.ttl)
+            ? feed.ttl
+            : config['GAP_MINUTES'];
+    const updatedFeedModal: Partial<Feed> & { feed_id: number } = {
+        feed_id: feedModal.feed_id,
+        error_count: 0,
+        next_fetch_time: nextFetchTimeStr(ttlMinutes)
+    };
+    if (feed.title !== feedModal.feed_title) {
+        updatedFeedModal.feed_title = feed.title;
+    }
+    if (!Number.isNaN(feed.ttl) && feed.ttl !== feedModal.ttl) {
+        updatedFeedModal.ttl = feed.ttl;
+    }
+    const lastModifiedHeader = res.headers.get('last-modified');
+    if (lastModifiedHeader !== feedModal.last_modified_header) {
+        updatedFeedModal.last_modified_header = lastModifiedHeader;
+    }
+    const etag = res.headers.get('etag');
+    if (etag !== feedModal.etag_header) {
+        updatedFeedModal.etag_header = etag || '';
+    }
+    await updateFeed(updatedFeedModal);
+    return Optional(
+        items.map((item) => {
+            const { link, title, id } = item;
+            return { link, title, id } as FeedItem;
+        })
+    );
 }
 
 const queue = fastQueue(async (eachFeed: Feed, cb: QueueCallback) => {

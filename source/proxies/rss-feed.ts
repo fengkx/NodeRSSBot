@@ -1,3 +1,5 @@
+import { config } from '../config';
+import { nextFetchTimeStr } from '../utils/next-fetch-time';
 import { db } from '../database';
 import errors from '../utils/errors';
 import { Feed } from '../types/feed';
@@ -100,6 +102,14 @@ export async function getAllFeeds(ttl = true): Promise<Feed[]> {
         });
         if (ttl) {
             query = query.where('next_fetch_time', '<', db.fn.now());
+        } else {
+            query = query.where(function () {
+                this.where(
+                    'error_count',
+                    '<',
+                    config.notify_error_count
+                ).orWhere('next_fetch_time', '<', db.fn.now());
+            });
         }
         const feeds = await query.select();
         arrayShuffle(feeds);
@@ -179,11 +189,34 @@ export async function updateFeed(
     }
 }
 
-export async function failAttempt(feedUrl: string): Promise<number> {
+export async function failAttempt(feedUrl: string): Promise<Option<Feed>> {
     try {
-        return await db('rss_feed')
+        const threshold = config.notify_error_count;
+        const gap = config['GAP_MINUTES'];
+        const now = Date.now();
+        const [feed] = await db<Feed>('rss_feed')
             .where('url', feedUrl)
-            .increment('error_count', 1);
+            .increment('error_count', 1)
+            .update({
+                next_fetch_time: db.raw(
+                    `CASE
+                        WHEN error_count + 1 >= ? THEN ?
+                        WHEN error_count + 1 >= ? THEN ?
+                        WHEN error_count + 1 >= ? THEN ?
+                        ELSE next_fetch_time
+                    END`,
+                    [
+                        threshold * 4,
+                        nextFetchTimeStr(gap * 8, now),
+                        threshold * 2,
+                        nextFetchTimeStr(gap * 4, now),
+                        threshold,
+                        nextFetchTimeStr(gap * 2, now)
+                    ]
+                )
+            })
+            .returning('*');
+        return Optional(feed);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     }
