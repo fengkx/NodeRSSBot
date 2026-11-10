@@ -31,15 +31,18 @@ export async function processing(
     next: TNextFn,
     { removeKeyboard = false }: ProcessingOptions = {}
 ): Promise<void> {
-    const message =
-        ctx.callbackQuery?.message ??
-        (await ctx.reply(
+    const callbackMessage = ctx.callbackQuery?.message;
+    if (callbackMessage) {
+        ctx.state.processMsgId = callbackMessage.message_id;
+    } else {
+        const reply = await ctx.reply(
             i18n[ctx.state.lang]['PROCESSING'],
             removeKeyboard
                 ? { reply_markup: { remove_keyboard: true } }
                 : undefined
-        ));
-    ctx.state.processMsgId = message.message_id;
+        );
+        ctx.state.processMsgId = reply.message_id;
+    }
     logger.debug(ctx.message);
     await next();
     if (ctx.callbackQuery) await ctx.answerCbQuery();
