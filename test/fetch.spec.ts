@@ -165,27 +165,29 @@ describe('fetch worker runtime', () => {
         );
     });
 
-    test('ignores pool metric reader failures when reporting runtime state', async () => {
-        const { fetchModule } = await loadFetchModule(
+    test('logs pool metrics with their receiver and tolerates unavailable metrics', async () => {
+        const { fetchModule, loggerMock } = await loadFetchModule(
             {},
             {
-                numUsed: () => {
-                    throw new TypeError(
-                        "Cannot read properties of undefined (reading 'used')"
-                    );
+                used: [1, 2],
+                numUsed(this: { used: number[] }) {
+                    return this.used.length;
+                },
+                numPendingAcquires: () => 3,
+                numPendingCreates() {
+                    throw new Error('metric unavailable');
                 }
             }
         );
 
-        expect(fetchModule.getFetchRuntimeState()).toEqual(
+        await fetchModule.fetchAll();
+        expect(loggerMock.info).toHaveBeenCalledWith(
             expect.objectContaining({
-                configuredConcurrency: 8,
-                effectiveConcurrency: 8,
-                dbPoolMax: 15,
-                isFetchingRound: false,
-                queueLength: 0,
-                queueRunning: 0,
-                inflightFeedCount: 0
+                message: 'fetch round scheduled',
+                used: 2,
+                free: 0,
+                pendingAcquires: 3,
+                pendingCreates: undefined
             })
         );
     });

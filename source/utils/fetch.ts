@@ -107,7 +107,7 @@ function getKnexPoolStats():
         const metric = pool[name];
         if (typeof metric === 'function') {
             try {
-                return (metric as () => number)();
+                return (metric as () => number).call(pool);
             } catch {
                 return undefined;
             }
