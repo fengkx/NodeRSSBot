@@ -47,3 +47,5 @@ CHOOSE_LANG: Pasirinkti kalbą
 SET_LANG_TO: Nustatyti kalbą
 LANG_USAGE: 'NAUDOJIMAS: /lang keisti kalbą'
 CHOOSE_UNSUB: Pasirinkite kanalą, kurio prenumeratą norite atšaukti
+EXPORT_SUCCESS: Eksportas baigtas
+RESPONSE_TOO_LONG: Rezultatas per ilgas, kad jį būtų galima parodyti.

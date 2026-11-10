@@ -1,3 +1,4 @@
+import editResponse from '../utils/edit-response';
 import got from '../utils/got';
 import { findFeed, isFeedValid } from '../utils/feed';
 import errors from '../utils/errors';
@@ -14,7 +15,6 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     if (isSome(feedOption)) {
         // feed is in database;
         ctx.state.feed = feedOption.value;
-        await next();
     } else {
         try {
             const res = await got(url);
@@ -38,17 +38,6 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
                             feed_title: realFeed.title
                         };
                         ctx.state.feedUrl = ctx.state.feedUrls[0];
-                        await next(); // next
-                        break;
-                    default:
-                        const builder = [];
-                        builder.push(
-                            `**${
-                                i18n[ctx.state.lang]['FOUND_FEED_MORE_THAN_ONE']
-                            }:**`
-                        );
-                        builder.push(...ctx.state.feedUrls);
-                        ctx.replyWithMarkdown(builder.join('\n'));
                         break;
                 }
             } else {
@@ -57,11 +46,20 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
                     feed_title: feedOption.value.title,
                     ttl: feedOption.value.ttl
                 };
-                await next();
             }
         } catch (e) {
             if (e instanceof errors.ControllableError) throw e;
             throw errors.newCtrlErr('FETCH_ERROR', e);
         }
+        if (ctx.state.feedUrls?.length > 1) {
+            const heading = i18n[ctx.state.lang]['FOUND_FEED_MORE_THAN_ONE'];
+            await editResponse(
+                ctx,
+                [`**${heading}:**`, ...ctx.state.feedUrls].join('\n'),
+                { parse_mode: 'Markdown' }
+            );
+            return;
+        }
     }
+    await next();
 };

@@ -47,3 +47,5 @@ CHOOSE_LANG: Sprache auswählen
 SET_LANG_TO: Sprache einstellen auf
 LANG_USAGE: 'Verwendung: /lang Sprache ändern'
 CHOOSE_UNSUB: Wähle das Abonnement, das du abbestellen möchtest
+EXPORT_SUCCESS: Export abgeschlossen
+RESPONSE_TOO_LONG: Das Ergebnis ist zu lang, um es anzuzeigen.

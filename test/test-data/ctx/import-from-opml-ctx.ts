@@ -1,5 +1,7 @@
 export default {
+    chat: { id: 233233233 },
     state: {
+        processMsgId: 42,
         lang: 'en',
         fileLink: '',
         chat: {
@@ -11,7 +13,6 @@ export default {
         }
     },
     telegram: {
-        deleteMessage: jest.fn()
-    },
-    replyWithHTML: jest.fn()
+        editMessageText: jest.fn()
+    }
 };

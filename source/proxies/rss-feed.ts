@@ -80,9 +80,9 @@ export async function getFeedById(id: number): Promise<Feed> {
     }
 }
 
-export async function unsub(userId: number, feedId: number): Promise<void> {
+export async function unsub(userId: number, feedId: number): Promise<number> {
     try {
-        await db('subscribes')
+        return await db('subscribes')
             .where('feed_id', feedId)
             .andWhere('user_id', userId)
             .del();

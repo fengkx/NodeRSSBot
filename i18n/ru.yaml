@@ -51,3 +51,5 @@ ACTIVE_FEED_COUNT_WITH_ERROR: Число активных каналов с ош
 TOTAL_ACTIVE_FEED_COUNT: Число активных каналов
 CREATOR_ONLY: Только для создателя бота
 ALLOW_LIST_NOT_INCLUDE: У этого бота включён лист разрешенных и вы в него не входите
+EXPORT_SUCCESS: Экспорт завершён
+RESPONSE_TOO_LONG: Результат слишком длинный для отображения.

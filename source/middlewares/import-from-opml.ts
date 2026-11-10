@@ -1,3 +1,5 @@
+import { MESSAGE_LIMIT } from '../utils/limit-text';
+import editResponse from '../utils/edit-response';
 import { Outline } from '../types/outline';
 import got from '../utils/got';
 import { transform } from 'camaro';
@@ -26,6 +28,7 @@ export const _getOutlines = getOutlines;
 export default async (ctx: MContext, next: TNextFn): Promise<void> => {
     const { fileLink, lang } = ctx.state;
 
+    let text: string;
     try {
         const res = await got(fileLink);
         const opmlStr = await res.textConverted();
@@ -42,17 +45,14 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
                 }
             })
         );
-        let text = `<strong>${i18n[lang]['IMPORT_SUCCESS']}</strong>`;
+        text = `<strong>${i18n[lang]['IMPORT_SUCCESS']}</strong>`;
         outlines.forEach((outline) => {
             // URL is escaped for href, title text is sanitized for display
             text += `\n<a href="${escapeHtml(outline.xmlUrl)}">${sanitize(outline.text)}</a>`;
         });
-        if (text.length > 4096) {
+        if (text.length > MESSAGE_LIMIT) {
             text = `<strong>${i18n[lang]['IMPORT_SUCCESS']}</strong>\n`;
         }
-        ctx.telegram.deleteMessage(ctx.state.chat.id, ctx.state.processMsgId);
-        ctx.state.processMsgId = null;
-        ctx.replyWithHTML(text);
     } catch (e) {
         if (e.response) {
             throw errors.newCtrlErr('NETWORK_ERROR', e);
@@ -62,5 +62,6 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
             throw errors.newCtrlErr('OPML_PARSE_ERROR', e);
         }
     }
+    await editResponse(ctx, text, { parse_mode: 'HTML' });
     await next();
 };

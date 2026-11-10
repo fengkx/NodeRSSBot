@@ -47,3 +47,5 @@ CHOOSE_LANG: Seleccione idiomas
 SET_LANG_TO: Cambiar idioma a
 LANG_USAGE: 'UTILIZACIÓN: /lang cambiar idioma'
 CHOOSE_UNSUB: Elija la suscripción que desee eliminar
+EXPORT_SUCCESS: Exportación completada
+RESPONSE_TOO_LONG: El resultado es demasiado largo para mostrarlo.

@@ -1,3 +1,5 @@
+import { limitText, MESSAGE_LIMIT } from '../utils/limit-text';
+import editResponse from '../utils/edit-response';
 import * as RSS from '../proxies/rss-feed';
 import i18n from '../i18n';
 import twoKeyReply from '../utils/two-key-reply';
@@ -8,6 +10,12 @@ import { decodeUrl, encodeUrl } from '../utils/urlencode';
 import sanitize from '../utils/sanitize';
 import escapeHtml from '../utils/escape-html';
 
+function feedLink(label: string, feedUrl: string, feedTitle: string): string {
+    const href = escapeHtml(encodeUrl(feedUrl));
+    const budget = MESSAGE_LIMIT - label.length - 1;
+    return `${label} <a href="${href}">${sanitize(limitText(feedTitle, budget))}</a>`;
+}
+
 export async function sub(ctx: MContext, next: TNextFn): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
     const feedTitle = ctx.state.feed.feed_title;
@@ -15,44 +23,37 @@ export async function sub(ctx: MContext, next: TNextFn): Promise<void> {
     const userId = chat.id;
     try {
         await RSS.sub(userId, feedUrl, feedTitle, ttl);
-        await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
-        ctx.state.processMsgId = null;
-        ctx.replyWithMarkdown(`
-        ${i18n[lang]['SUB_SUCCESS']} [${ctx.state.feed.feed_title}](${encodeUrl(
-            ctx.state.feedUrl
-        )})`);
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
     }
+    await editResponse(
+        ctx,
+        feedLink(i18n[lang]['SUB_SUCCESS'], feedUrl, feedTitle),
+        {
+            parse_mode: 'HTML'
+        }
+    );
     await next();
 }
 
 export async function unsub(ctx: MContext, next: TNextFn): Promise<void> {
     const { feedUrl, chat, lang } = ctx.state;
     const userId = chat.id;
+    const feed = await RSS.getFeedByUrl(feedUrl);
+    if (isNone(feed)) throw errors.newCtrlErr('DID_NOT_SUB');
     try {
-        const feed = await RSS.getFeedByUrl(feedUrl);
-        if (isNone(feed)) throw errors.newCtrlErr('DID_NOT_SUB');
-        await RSS.unsub(userId, feed.value.feed_id);
-
-        await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
-        ctx.state.processMsgId = null;
-        ctx.replyWithMarkdown(
-            `
-        ${i18n[lang]['UNSUB_SUCCESS']} [${feed.value.feed_title}](${encodeUrl(
-            ctx.state.feedUrl
-        )})`,
-            {
-                reply_markup: {
-                    remove_keyboard: true
-                }
-            }
-        );
+        const deleted = await RSS.unsub(userId, feed.value.feed_id);
+        if (!deleted) throw errors.newCtrlErr('DID_NOT_SUB');
     } catch (e) {
         if (e instanceof errors.ControllableError) throw e;
         throw errors.newCtrlErr('DB_ERROR', e);
     }
+    await editResponse(
+        ctx,
+        feedLink(i18n[lang]['UNSUB_SUCCESS'], feedUrl, feed.value.feed_title),
+        { parse_mode: 'HTML' }
+    );
     await next();
 }
 
@@ -115,14 +116,10 @@ export async function unsubAll(ctx: MContext, next: TNextFn): Promise<void> {
     const userId = ctx.state.chat.id;
     const lang = ctx.state.lang;
     await RSS.unsubAll(userId);
-    await ctx.telegram.sendMessage(
-        ctx.chat.id,
-        i18n[lang]['UNSUB_ALL_SUCCESS'],
-        {
-            parse_mode: 'HTML',
-            link_preview_options: { is_disabled: true }
-        }
-    );
+    await editResponse(ctx, i18n[lang]['UNSUB_ALL_SUCCESS'], {
+        parse_mode: 'HTML',
+        link_preview_options: { is_disabled: true }
+    });
     await next();
 }
 
@@ -170,6 +167,7 @@ export async function getUrlById(
     const { text } = ctx.message;
     const feed_id = text.match(/^\[(\d+)] (.+)/)[1];
     const feed = await RSS.getFeedById(parseInt(feed_id));
+    if (!feed) throw errors.newCtrlErr('DID_NOT_SUB');
     ctx.state.feedUrl = decodeUrl(feed.url);
     await next();
 }
@@ -190,9 +188,7 @@ export async function getActiveFeedWithErrorCount(
     }: ${count} ${i18n[ctx.state.lang]['TOTAL_ACTIVE_FEED_COUNT']}: ${
         feedsWithErrorCount.length
     }`;
-    ctx.reply(heath);
-    await ctx.telegram.deleteMessage(ctx.chat.id, ctx.state.processMsgId);
-    ctx.state.processMsgId = null;
+    await editResponse(ctx, heath);
     await next();
 }
 
