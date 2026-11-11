@@ -72,7 +72,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vercel/nft": "^1.10.2",
     "create-test-server": "^3.0.1",
-    "del-cli": "^6.0.0",
+    "del-cli": "^8.0.1",
     "eslint": "^10.14.0",
     "globals": "^17.7.0",
     "iconv-lite": "^0.7.2",
