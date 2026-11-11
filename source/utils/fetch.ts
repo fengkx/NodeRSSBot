@@ -470,7 +470,7 @@ export function startFetchWorker(): void {
     void run();
     const rule = new RecurrenceRule();
     const unit = fetch_gap.substring(fetch_gap.length - 1);
-    const gapNum = parseInt(fetch_gap.substring(0, fetch_gap.length - 1));
+    const gapNum = parseInt(fetch_gap.substring(0, fetch_gap.length - 1), 10);
     const time_gaps = [];
     switch (unit) {
         case 'h':

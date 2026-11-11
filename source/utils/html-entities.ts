@@ -36,7 +36,7 @@ export function decodeHtmlEntities(text: string): string {
             return NAMED_ENTITIES[normalized] ?? match;
         })
         .replace(/&#(\d+);/g, (_match, decimal) => {
-            return String.fromCharCode(parseInt(decimal));
+            return String.fromCharCode(parseInt(decimal, 10));
         })
         .replace(/&#x([0-9a-f]+);/gi, (_match, hexadecimal) => {
             return String.fromCharCode(parseInt(hexadecimal, 16));

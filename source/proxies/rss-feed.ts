@@ -270,7 +270,7 @@ export async function getAllFeedsCount(): Promise<number> {
         const result = await db('subscribes')
             .countDistinct({ count: 'feed_id' })
             .first();
-        return parseInt(result.count);
+        return parseInt(result.count, 10);
     } catch (e) {
         throw errors.newCtrlErr('DB_ERROR', e);
     }

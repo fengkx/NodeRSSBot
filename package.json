@@ -38,7 +38,6 @@
   "dependencies": {
     "@cjsa/clean-stack": "^4.2.0",
     "@sentry/node": "^11.8.0",
-    "@typescript-eslint/parser": "^8.62.0",
     "async-sema": "^3.1.1",
     "camaro": "^6.7.1",
     "cross-env": "^10.1.0",
@@ -61,8 +60,7 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
-    "@eslint/js": "^9.39.1",
+    "@eslint/js": "^10.0.1",
     "@types/create-test-server": "^3.0.5",
     "@types/ejs": "^3.1.5",
     "@types/jest": "^29.5.14",
@@ -71,20 +69,21 @@
     "@types/node": "^25.9.2",
     "@types/node-schedule": "^2.1.8",
     "@types/tunnel": "^0.0.7",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vercel/nft": "^1.10.2",
     "create-test-server": "^3.0.1",
     "del-cli": "^6.0.0",
-    "eslint": "^9.39.1",
+    "eslint": "^10.14.0",
     "globals": "^17.7.0",
     "iconv-lite": "^0.7.2",
     "jest": "^30.2.0",
     "lockfile-lint": "^5.0.0",
     "pre-commit": "^2.0.0",
     "prettier": "^3.8.4",
-    "ts-jest": "^29.4.11",
+    "ts-jest": "^29.4.15",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.66.0"
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.72.2"
   },
   "jest": {
     "openHandlesTimeout": 0,

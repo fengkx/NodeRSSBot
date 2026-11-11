@@ -63,7 +63,7 @@ Object.defineProperty(config, 'PKG_ROOT', {
 
 let GAP_MINUTES: number;
 const { fetch_gap } = config;
-const gapNum = parseInt(fetch_gap.substring(0, fetch_gap.length - 1));
+const gapNum = parseInt(fetch_gap.substring(0, fetch_gap.length - 1), 10);
 const unit = fetch_gap[fetch_gap.length - 1];
 switch (unit) {
     case 'h':

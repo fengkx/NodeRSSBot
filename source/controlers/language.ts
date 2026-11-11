@@ -42,7 +42,7 @@ export async function changeLangCallback(
         const data = cb.data.split('_');
         const lang = data[data.length - 2];
         const id = data[data.length - 1];
-        await setLangById(parseInt(id), lang);
+        await setLangById(parseInt(id, 10), lang);
         await editResponse(ctx, i18n[lang]['SET_LANG_TO'] + ' ' + lang);
         await next();
     }

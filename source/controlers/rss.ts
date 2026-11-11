@@ -166,7 +166,7 @@ export async function getUrlById(
 ): Promise<void> {
     const { text } = ctx.message;
     const feed_id = text.match(/^\[(\d+)] (.+)/)[1];
-    const feed = await RSS.getFeedById(parseInt(feed_id));
+    const feed = await RSS.getFeedById(parseInt(feed_id, 10));
     if (!feed) throw errors.newCtrlErr('DID_NOT_SUB');
     ctx.state.feedUrl = decodeUrl(feed.url);
     await next();

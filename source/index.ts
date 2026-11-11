@@ -234,7 +234,7 @@ bot.action(
     async (ctx: MContext, next) => {
         const cb = ctx.callbackQuery;
         if ('data' in cb) {
-            ctx.state.viewallPage = parseInt(cb.data.split('_')[1]);
+            ctx.state.viewallPage = parseInt(cb.data.split('_')[1], 10);
             await next();
         }
     },
@@ -250,7 +250,7 @@ bot.action(
         if ('data' in cb) {
             const splitStr = cb.data.split('_');
             if (splitStr[1] === 'RAW') ctx.state.showRaw = true;
-            ctx.state.rssPage = parseInt(splitStr[splitStr.length - 1]);
+            ctx.state.rssPage = parseInt(splitStr[splitStr.length - 1], 10);
             await next();
         }
     },

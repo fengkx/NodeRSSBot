@@ -18,7 +18,7 @@ let agent: Agent = {
     https: new HttpsAgent({ keepAlive: true })
 };
 if (proxy.protocol && proxy.host && proxy.port) {
-    const port = parseInt(proxy.port);
+    const port = parseInt(proxy.port, 10);
     const proxyUrl = `${proxy.protocol}://${proxy.host}:${proxy.port}`;
     switch (proxy.protocol.slice(0, 5)) {
         case 'http':
