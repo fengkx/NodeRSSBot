@@ -439,20 +439,8 @@ export async function run(): Promise<void> {
     }
 }
 
-function gc() {
-    const beforeGC = process.memoryUsage();
-    const gcStartTime = process.hrtime.bigint();
-    global.gc();
-    const afterGC = process.memoryUsage();
-    const gcEndTime = process.hrtime.bigint();
-    logger.info(
-        `heapUsedBefore: ${beforeGC.heapUsed} heapUsedAfter: ${
-            afterGC.heapUsed
-        } rssBefore: ${beforeGC.rss} rssAfter: ${afterGC.rss} costed ${
-            gcEndTime - gcStartTime
-        }`
-    );
-    setTimeout(gc, 3 * 60 * 1000);
+function logWorkerMemory(): void {
+    logger.info({ message: 'fetch worker memory', ...process.memoryUsage() });
 }
 
 export function startFetchWorker(): void {
@@ -477,7 +465,8 @@ export function startFetchWorker(): void {
     const backlogLogTimer = setInterval(logFetchBacklog, 30 * 1000);
     backlogLogTimer.unref?.();
 
-    gc();
+    logWorkerMemory();
+    setInterval(logWorkerMemory, 3 * 60 * 1000).unref();
     void run();
     const rule = new RecurrenceRule();
     const unit = fetch_gap.substring(fetch_gap.length - 1);

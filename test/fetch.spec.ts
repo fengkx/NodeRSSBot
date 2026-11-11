@@ -149,6 +149,36 @@ async function loadFetchModule(
 }
 
 describe('fetch worker runtime', () => {
+    test('samples worker memory at startup and every three minutes', async () => {
+        const { fetchModule, loggerMock } = await loadFetchModule();
+        jest.useFakeTimers();
+        const listeners = jest.spyOn(process, 'on').mockReturnValue(process);
+        const samples = () =>
+            loggerMock.info.mock.calls.filter(
+                ([entry]) => entry.message === 'fetch worker memory'
+            );
+        try {
+            fetchModule.startFetchWorker();
+            expect(samples()).toHaveLength(1);
+            expect(samples()[0][0]).toMatchObject({
+                rss: expect.any(Number),
+                heapTotal: expect.any(Number),
+                heapUsed: expect.any(Number),
+                external: expect.any(Number),
+                arrayBuffers: expect.any(Number)
+            });
+            jest.advanceTimersByTime(179_999);
+            expect(samples()).toHaveLength(1);
+            jest.advanceTimersByTime(1);
+            expect(samples()).toHaveLength(2);
+            jest.advanceTimersByTime(180_000);
+            expect(samples()).toHaveLength(3);
+        } finally {
+            listeners.mockRestore();
+            jest.useRealTimers();
+        }
+    });
+
     test('caps effective concurrency using database pool size', async () => {
         const { fetchModule } = await loadFetchModule({
             concurrency: 10,
