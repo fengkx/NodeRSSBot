@@ -20,7 +20,8 @@ jobs:
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v4
               with:
-                  node-version: ${{ matrix.node-version }}
+                  # Include prereleases until Node 27 reaches its first stable release.
+                  node-version: ${{ matrix.node-version == '27.x' && '^27.0.0-0' || matrix.node-version }}
             - name: npm install, build, and test
               run: |
                   npm cache clean --force
