@@ -100,7 +100,6 @@ describe('HTML escaping in send.ts', () => {
 describe('HTML escaping in sub-multi-url.ts', () => {
     test('escapes URLs in href, sanitizes titles', () => {
         const feedTitle = 'Tech <Daily> & "News"';
-        const url = 'https://example.com/feed?a=1&b=2';
         const encodedUrl = 'https://example.com/feed?a=1&b=2';
 
         // Simulate: escapeHtml for URL, but title would use sanitize() which also escapes

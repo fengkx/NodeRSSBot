@@ -40,15 +40,15 @@ function createTestFeed(overrides: Partial<Feed> = {}): Feed {
 
 describe('Notification Template Security', () => {
     let bot: Telegraf;
-    let sentMessages: Array<{ userId: number; text: string; options: any }>;
+    let sentMessages: string[];
     const mockUserId = 12345;
 
     beforeEach(() => {
         sentMessages = [];
 
         bot = new Telegraf('mock-token');
-        bot.telegram.sendMessage = jest.fn(async (userId, text, options) => {
-            sentMessages.push({ userId, text, options });
+        bot.telegram.sendMessage = jest.fn(async (_userId, text) => {
+            sentMessages.push(typeof text === 'string' ? text : text.text);
             return {} as any;
         });
 
@@ -72,7 +72,7 @@ describe('Notification Template Security', () => {
             const [template, locals] = buildErrorNotification(feed, error);
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toBe(
+            expect(sentMessages[0]).toBe(
                 'Tech News &lt;Daily&gt; &amp; &#34;Updates&#34;: ' +
                     '<a href="https://example.com/feed?a=1&amp;b=2">https://example.com/feed?a=1&amp;b=2</a> ' +
                     'Unable to fetch for many times, you might want to unsub it ' +
@@ -89,7 +89,7 @@ describe('Notification Template Security', () => {
             const [template, locals] = buildErrorNotification(feed, error);
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toBe(
+            expect(sentMessages[0]).toBe(
                 'It&#39;s News &amp; &#39;Updates&#39;: ' +
                     '<a href="https://example.com/feed.xml">https://example.com/feed.xml</a> ' +
                     'Unable to fetch for many times, you might want to unsub it ' +
@@ -106,7 +106,7 @@ describe('Notification Template Security', () => {
             const [template, locals] = buildErrorNotification(feed, error);
             await send(bot, template, feed, locals);
 
-            const text = sentMessages[0].text;
+            const text = sentMessages[0];
             expect(text).toContain(
                 '<a href="https://example.com/feed?x=&lt;val&gt;&amp;y=&#34;test&#34;&amp;z=&#39;quote&#39;">'
             );
@@ -124,7 +124,7 @@ describe('Notification Template Security', () => {
             const [template, locals] = buildErrorNotification(feed, error);
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toContain(
+            expect(sentMessages[0]).toContain(
                 'Tips: &lt;%= var %&gt; and &lt;% code %&gt;'
             );
         });
@@ -136,7 +136,7 @@ describe('Notification Template Security', () => {
             const [template, locals] = buildErrorNotification(feed, error);
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toBe(
+            expect(sentMessages[0]).toBe(
                 'My RSS Feed: <a href="https://example.com/feed.xml">https://example.com/feed.xml</a> ' +
                     'Unable to fetch for many times, you might want to unsub it Connection timeout'
             );
@@ -161,7 +161,7 @@ describe('Notification Template Security', () => {
             );
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toBe(
+            expect(sentMessages[0]).toBe(
                 'News &lt;Daily&gt; &amp; &#34;Updates&#34;: ' +
                     '<a href="https://example.com/old?a=1&amp;b=2"></a> ' +
                     'Unable to fetch for many times, you might want to unsub it\n' +
@@ -187,7 +187,7 @@ describe('Notification Template Security', () => {
             );
             await send(bot, template, feed, locals);
 
-            const text = sentMessages[0].text;
+            const text = sentMessages[0];
             expect(text).toContain('https://ex.com/f1?a=1&amp;b=2&amp;c=3\n');
             expect(text).toContain(
                 'https://ex.com/f2?x=&lt;&gt;&amp;y=&#34;&#39;\n'
@@ -208,7 +208,7 @@ describe('Notification Template Security', () => {
             );
             await send(bot, template, feed, locals);
 
-            const text = sentMessages[0].text;
+            const text = sentMessages[0];
             expect(text).toContain('https://ex.com/&lt;%= id %&gt;/feed.xml\n');
             expect(text).toContain(
                 'Feed Change to https://ex.com/&lt;%= id %&gt;/feed.xml'
@@ -229,7 +229,7 @@ describe('Notification Template Security', () => {
             );
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toBe(
+            expect(sentMessages[0]).toBe(
                 'Test Feed: <a href="https://example.com/feed.xml"></a> ' +
                     'Unable to fetch for many times, you might want to unsub it\n' +
                     '<b>Found feeds</b>:\n' +
@@ -250,8 +250,8 @@ describe('Notification Template Security', () => {
             const [template, locals] = buildErrorNotification(feed, error);
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toContain('?a=1&amp;b=2&amp;c=3');
-            expect(sentMessages[0].text).not.toContain('&amp;amp;');
+            expect(sentMessages[0]).toContain('?a=1&amp;b=2&amp;c=3');
+            expect(sentMessages[0]).not.toContain('&amp;amp;');
         });
 
         it('escapes ampersands exactly once in feed change URLs', async () => {
@@ -265,8 +265,8 @@ describe('Notification Template Security', () => {
             );
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toContain('?a=1&amp;b=2');
-            expect(sentMessages[0].text).not.toContain('&amp;amp;');
+            expect(sentMessages[0]).toContain('?a=1&amp;b=2');
+            expect(sentMessages[0]).not.toContain('&amp;amp;');
         });
     });
 
@@ -289,7 +289,7 @@ describe('Notification Template Security', () => {
             const [template, locals] = buildErrorNotification(feed, error);
             await send(bot, template, feed, locals);
 
-            expect(sentMessages[0].text).toBe(
+            expect(sentMessages[0]).toBe(
                 '科技新闻 &lt;每日&gt; &amp; &#34;更新&#34;: ' +
                     '<a href="https://example.com/feed?a=1&amp;b=2">https://example.com/feed?a=1&amp;b=2</a> ' +
                     '多次抓取失败，建议取消订阅 Connection timeout'
@@ -308,7 +308,7 @@ describe('Notification Template Security', () => {
             const [template, locals] = buildErrorNotification(feed, error);
             await send(bot, template, feed, locals);
 
-            const text = sentMessages[0].text;
+            const text = sentMessages[0];
             expect(text).toContain('https://example.com/rss?a=1&amp;b=2');
             expect(text).not.toContain('&amp;amp;');
         });

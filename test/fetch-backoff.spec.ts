@@ -73,7 +73,7 @@ test('increments and returns the updated count across all retry tiers', async ()
                       .slice(0, 19)
                       .replace('T', ' ')
                 : originalTime;
-            expect(stored.retry_time).toBe(expected);
+            expect(stored).toHaveProperty('retry_time', expected);
         }
     } finally {
         clock.mockRestore();

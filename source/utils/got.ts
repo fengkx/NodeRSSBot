@@ -3,10 +3,6 @@ import makeFetchHappen from 'make-fetch-happen';
 import { config } from '../config';
 import { proxyUrl } from './agent';
 
-// @ts-expect-error make fetch happen textConverted function optional dependency
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import encoding from 'encoding';
-
 export type FetchResponse = Awaited<ReturnType<makeFetchHappen.FetchInterface>>;
 // eslint-lint-disable-next-line @typescript-eslint/naming-convention
 export class HTTPError extends Error {
