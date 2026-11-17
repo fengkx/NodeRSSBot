@@ -73,7 +73,7 @@
     "@vercel/nft": "^1.11.1",
     "create-test-server": "^3.0.1",
     "del-cli": "^8.0.1",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "globals": "^17.14.0",
     "jest": "^30.5.2",
     "lockfile-lint": "^5.1.0",
