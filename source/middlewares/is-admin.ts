@@ -44,12 +44,12 @@ export default async (
         switch (chat.type) {
             case 'group':
             case 'supergroup':
-            case 'channel':
-                // eslint-disable-next-line no-case-declarations
+            case 'channel': {
                 const isAdmin = admins.some(function (item) {
                     return item.user.id === from.id;
                 });
                 if (!isAdmin) throw errors.newCtrlErr('ADMIN_ONLY');
+            }
         }
     } else if (ctx.message?.text && checkChannelId(ctx.message?.text)) {
         // for channel subscription in private chat

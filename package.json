@@ -8,14 +8,14 @@
     "npm": ">=7"
   },
   "scripts": {
-    "build": "del-cli dist && tsc && node tools/copy-assets.mjs",
+    "build": "del-cli dist && tsrs && node tools/copy-assets.mjs",
     "start": "cross-env NODE_PRODUCTION=true node dist/source/index.js",
     "start-withsnapshot": "cross-env NODE_PRODUCTION=true node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "start-docker": "node --heapsnapshot-signal=SIGUSR2 dist/source/index.js",
     "dev": "node $NODE_DEBUG_OPTIONS dist/source/index",
-    "test": "cross-env RSSBOT_DB_PATH=test/test-data/test.db RSSBOT_TOKEN=1 npx jest --verbose",
-    "format": "eslint \"source/**/*.{js,ts}\" --fix && prettier \"**/*.{js,ts,json,md}\" --write",
-    "lint": "eslint \"source/**/*.{js,ts}\" && prettier -c \"**/*.{js,ts,json,md}\" && npm run lint-lockfile",
+    "test": "tsrs --noEmit -p tsconfig.test.json && cross-env RSSBOT_DB_PATH=test/test-data/test.db RSSBOT_TOKEN=1 jest --verbose",
+    "format": "oxlint --type-aware --type-check --fix source && prettier \"**/*.{js,ts,json,md}\" --write",
+    "lint": "oxlint --type-aware --type-check source && prettier -c \"**/*.{js,ts,json,md}\" && npm run lint-lockfile",
     "lint-lockfile": "npx lockfile-lint --path package-lock.json --allowed-hosts npm yarn github.com  --allowed-schemes \"https:\" \"git+https:\""
   },
   "pre-commit": [
@@ -60,7 +60,8 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@swc/core": "^1.16.22",
+    "@swc/jest": "^0.2.39",
     "@types/create-test-server": "^3.0.5",
     "@types/ejs": "^3.1.5",
     "@types/jest": "^30.0.0",
@@ -69,24 +70,18 @@
     "@types/node": "^26.6.6",
     "@types/node-schedule": "^2.1.8",
     "@types/tunnel": "^0.0.7",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "@vercel/nft": "^1.11.1",
     "create-test-server": "^3.0.1",
     "del-cli": "^8.0.1",
-    "eslint": "^10.14.0",
-    "globals": "^17.14.0",
     "jest": "^30.5.2",
     "lockfile-lint": "^5.1.0",
+    "oxlint": "^1.94.0",
     "pre-commit": "^2.0.0",
     "prettier": "^3.10.0",
-    "ts-jest": "^29.4.15",
-    "ts-node": "^10.9.2",
-    "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "typescript-eslint": "^8.72.2"
+    "tsrs": "^0.25.0-ts7.1.0-beta"
   },
   "jest": {
     "openHandlesTimeout": 0,
-    "preset": "ts-jest/presets/js-with-ts",
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
     ],
@@ -95,9 +90,14 @@
     ],
     "transform": {
       "^.+\\.[tj]s$": [
-        "ts-jest",
+        "@swc/jest",
         {
-          "tsconfig": "tsconfig.test.json"
+          "jsc": {
+            "parser": {
+              "syntax": "typescript"
+            },
+            "target": "es2022"
+          }
         }
       ]
     },

@@ -25,11 +25,10 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
                 // feed is NOT valid, try to find feed by link tag with type contain rss/atom
                 ctx.state.feedUrls = await findFeed(text, res.url);
                 ctx.state.feedUrls = ctx.state.feedUrls.map(decodeUrl);
-                /* eslint no-case-declarations: 0*/
                 switch (ctx.state.feedUrls.length) {
                     case 0:
                         throw errors.newCtrlErr('FETCH_ERROR');
-                    case 1:
+                    case 1: {
                         const res = await got(encodeUrl(ctx.state.feedUrls[0]));
                         const text = await res.textConverted();
                         const realFeed = await parseString(text);
@@ -39,6 +38,7 @@ export default async (ctx: MContext, next: TNextFn): Promise<void> => {
                         };
                         ctx.state.feedUrl = ctx.state.feedUrls[0];
                         break;
+                    }
                 }
             } else {
                 // new feed is valid sub it in next middleware

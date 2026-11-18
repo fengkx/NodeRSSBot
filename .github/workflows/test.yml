@@ -22,14 +22,13 @@ jobs:
               with:
                   # Include prereleases until Node 27 reaches its first stable release.
                   node-version: ${{ matrix.node-version == '27.x' && '^27.0.0-0' || matrix.node-version }}
-            - name: npm install, build, and test
-              run: |
-                  npm cache clean --force
-                  npm ci
-                  npm run build
-                  npm run lint
-                  npm test -- --forceExit #https://github.com/facebook/jest/issues/9982#issuecomment-758110298
-              env:
-                  CI: true
+            - name: Install dependencies
+              run: npm ci
+            - name: Lint
+              run: npm run lint
+            - name: Build
+              run: npm run build
+            - name: Test
+              run: npm test -- --forceExit # https://github.com/facebook/jest/issues/9982#issuecomment-758110298
             - name: Check spelling
               uses: crate-ci/typos@master

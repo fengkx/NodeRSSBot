@@ -4,7 +4,6 @@ import { config } from '../config';
 import { proxyUrl } from './agent';
 
 export type FetchResponse = Awaited<ReturnType<makeFetchHappen.FetchInterface>>;
-// eslint-lint-disable-next-line @typescript-eslint/naming-convention
 export class HTTPError extends Error {
     public response: FetchResponse;
     public request: Request;

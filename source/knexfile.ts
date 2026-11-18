@@ -1,6 +1,5 @@
-/* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
-/* eslint @typescript-eslint/no-require-imports: 0 */
 try {
+    // oxlint-disable-next-line typescript/no-require-imports -- Allow startup without the Postgres driver.
     const pg = require('pg');
     pg.types.setTypeParser(20, 'text', parseInt);
 } catch (_err) {
