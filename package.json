@@ -75,7 +75,7 @@
     "del-cli": "^8.0.1",
     "jest": "^30.5.2",
     "lockfile-lint": "^5.1.0",
-    "oxlint": "^1.94.0",
+    "oxlint": "^1.95.0",
     "pre-commit": "^2.0.0",
     "prettier": "^3.10.0",
     "tsrs": "^0.25.0-ts7.1.0-beta"
