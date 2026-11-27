@@ -48,7 +48,7 @@
     "iconv-lite": "^0.7.3",
     "js-yaml": "^5.5.0",
     "knex": "^3.3.0",
-    "make-fetch-happen": "^16.0.1",
+    "make-fetch-happen": "^16.0.2",
     "node-schedule": "^2.1.2",
     "pg": "^8.23.1",
     "socks-proxy-agent": "^10.1.0",
